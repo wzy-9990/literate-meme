@@ -12,6 +12,8 @@ class PullToRefreshExampleLogic extends GetxController {
   int _page = 1;
   static const int _pageSize = 15;
   String _searchKeyword = ''; // 搜索关键词
+  int _total = 0; // 总记录数
+  int _totalPages = 0; // 总页数
 
   @override
   void onInit() {
@@ -50,12 +52,24 @@ class PullToRefreshExampleLogic extends GetxController {
       if (response != null) {
         List<Map<String, dynamic>> newItems = [];
 
-        // 处理不同的响应格式
-        if (response is Map && response['list'] != null) {
-          // 如果返回格式是 {list: [...], total: xx}
-          newItems = List<Map<String, dynamic>>.from(
-            (response['list'] as List).map((item) => Map<String, dynamic>.from(item))
-          );
+        // 处理真实API响应格式
+        if (response is Map) {
+          // 保存分页信息
+          _total = response['total'] ?? 0;
+          _totalPages = response['pages'] ?? 0;
+
+          // 从 records 字段获取数据列表
+          if (response['records'] != null) {
+            newItems = List<Map<String, dynamic>>.from(
+              (response['records'] as List).map((item) => Map<String, dynamic>.from(item))
+            );
+          }
+          // 兼容旧格式 list
+          else if (response['list'] != null) {
+            newItems = List<Map<String, dynamic>>.from(
+              (response['list'] as List).map((item) => Map<String, dynamic>.from(item))
+            );
+          }
         } else if (response is List) {
           // 如果直接返回数组
           newItems = List<Map<String, dynamic>>.from(
@@ -69,7 +83,7 @@ class PullToRefreshExampleLogic extends GetxController {
           items.addAll(newItems);
         }
 
-        debugPrint('✅ 加载了 ${newItems.length} 条数据');
+        debugPrint('✅ 加载了 ${newItems.length} 条数据，当前共 ${items.length} 条，总共 $_total 条，第 $_page/$_totalPages 页');
       }
 
       // 加载完成后隐藏 loading
@@ -98,13 +112,22 @@ class PullToRefreshExampleLogic extends GetxController {
 
   // 上拉加载更多
   void onLoadMore() async {
+    // 判断是否还有更多页
+    if (_page >= _totalPages) {
+      debugPrint('⚠️ 已经是最后一页了');
+      refreshController.loadNoData();
+      return;
+    }
+
     _page++;
     await loadData();
 
-    if (items.length >= 100) {
-      // 没有更多数据
+    // 判断是否还有下一页
+    if (_page >= _totalPages) {
+      debugPrint('✅ 加载完成，没有更多数据了');
       refreshController.loadNoData();
     } else {
+      debugPrint('✅ 加载完成，还有更多数据');
       refreshController.loadComplete();
     }
   }
