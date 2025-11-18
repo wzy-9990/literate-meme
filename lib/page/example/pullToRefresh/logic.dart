@@ -34,6 +34,7 @@ class PullToRefreshExampleLogic extends GetxController {
       Map<String, dynamic> params = {
         'pageNo': _page,
         'pageSize': _pageSize,
+        'organizationId': '0'
       };
 
       // 如果有搜索关键词，添加 userName 参数
@@ -61,20 +62,19 @@ class PullToRefreshExampleLogic extends GetxController {
           // 从 records 字段获取数据列表
           if (response['records'] != null) {
             newItems = List<Map<String, dynamic>>.from(
-              (response['records'] as List).map((item) => Map<String, dynamic>.from(item))
-            );
+                (response['records'] as List)
+                    .map((item) => Map<String, dynamic>.from(item)));
           }
           // 兼容旧格式 list
           else if (response['list'] != null) {
             newItems = List<Map<String, dynamic>>.from(
-              (response['list'] as List).map((item) => Map<String, dynamic>.from(item))
-            );
+                (response['list'] as List)
+                    .map((item) => Map<String, dynamic>.from(item)));
           }
         } else if (response is List) {
           // 如果直接返回数组
           newItems = List<Map<String, dynamic>>.from(
-            response.map((item) => Map<String, dynamic>.from(item))
-          );
+              response.map((item) => Map<String, dynamic>.from(item)));
         }
 
         if (_page == 1) {
@@ -83,7 +83,8 @@ class PullToRefreshExampleLogic extends GetxController {
           items.addAll(newItems);
         }
 
-        debugPrint('✅ 加载了 ${newItems.length} 条数据，当前共 ${items.length} 条，总共 $_total 条，第 $_page/$_totalPages 页');
+        debugPrint(
+            '✅ 加载了 ${newItems.length} 条数据，当前共 ${items.length} 条，总共 $_total 条，第 $_page/$_totalPages 页');
       }
 
       // 加载完成后隐藏 loading
