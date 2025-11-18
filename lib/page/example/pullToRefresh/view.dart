@@ -90,12 +90,50 @@ class _PullToRefreshExampleViewState extends State<PullToRefreshExampleView> {
             child: Stack(
               children: [
                 Obx(
-                  () => BasePullToRefreshList(
-                    refreshController: logic.refreshController,
-                    onRefresh: logic.onRefresh,
-                    onLoadMore: logic.onLoadMore,
-                    children: logic.items
-                        .map(
+                  () {
+                    // 如果数据为空且不在加载中，显示空页面
+                    if (logic.items.isEmpty && !logic.isLoading.value) {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.inbox_outlined,
+                              size: 80.sp,
+                              color: Colors.grey[400],
+                            ),
+                            SizedBox(height: 16.h),
+                            Text(
+                              '暂无数据',
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                            SizedBox(height: 24.h),
+                            ElevatedButton.icon(
+                              onPressed: logic.onRefresh,
+                              icon: const Icon(Icons.refresh),
+                              label: const Text('刷新'),
+                              style: ElevatedButton.styleFrom(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 24.w,
+                                  vertical: 12.h,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+
+                    // 有数据，显示列表
+                    return BasePullToRefreshList(
+                      refreshController: logic.refreshController,
+                      onRefresh: logic.onRefresh,
+                      onLoadMore: logic.onLoadMore,
+                      children: logic.items
+                          .map(
                           (item) => Card(
                             margin: EdgeInsets.symmetric(
                               horizontal: 12.w,
@@ -247,7 +285,8 @@ class _PullToRefreshExampleViewState extends State<PullToRefreshExampleView> {
                           ),
                         )
                         .toList(),
-                  ),
+                    );
+                  },
                 ),
                 Obx(
                   () {

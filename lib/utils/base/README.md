@@ -27,35 +27,37 @@
 继承 `BasePaginationLogic`，只需实现一个方法：
 
 ```dart
-import 'package:flutter_tem/api/modules/my.dart';
 import 'package:flutter_tem/utils/base/base_pagination_logic.dart';
 
-class UserListLogic extends BasePaginationLogic<Map<String, dynamic>> {
+class YourListLogic extends BasePaginationLogic<Map<String, dynamic>> {
   @override
   Future<PaginationResponse<Map<String, dynamic>>> fetchData(
     int page,
     int pageSize,
-    Map<String, dynamic>? searchParams,
+    Map<String, dynamic>? searchParams, // 👈 这里接收任意搜索参数
   ) async {
-    // 1. 构建请求参数
+    // 1️⃣ 构建请求参数（根据你的接口要求）
     final params = {
-      'pageNo': page,
-      'pageSize': pageSize,
-      'organizationId': '0',
-      ...?searchParams, // 合并搜索参数
+      'page': page,           // 👈 参数名根据你的接口调整
+      'size': pageSize,       // 👈 可能是 limit、pageSize、size 等
+      // 👇 添加你的固定参数
+      'status': 'active',
+      'type': '1',
+      ...?searchParams,       // 👈 合并搜索参数
     };
 
-    // 2. 调用接口
-    final response = await yourApi(params);
+    // 2️⃣ 调用你的接口（替换成你的API）
+    final response = await yourApiMethod(params);
 
-    // 3. 解析并返回结果
+    // 3️⃣ 解析并返回结果
     if (response == null) {
       return PaginationResponse(records: [], total: 0, pages: 0);
     }
 
     if (response is Map) {
+      final responseMap = Map<String, dynamic>.from(response);
       return PaginationResponse.fromMap(
-        response,
+        responseMap,
         (item) => Map<String, dynamic>.from(item),
       );
     }
@@ -64,6 +66,11 @@ class UserListLogic extends BasePaginationLogic<Map<String, dynamic>> {
   }
 }
 ```
+
+**💡 重要提示**：
+- `fetchData` 方法的 `searchParams` 参数是 **可选的 Map**，可以包含**任意字段**
+- 你不需要限制搜索参数的具体字段，完全由你的自定义方法决定
+- 不同页面可以使用不同的接口和参数
 
 ### 2. 在 View 中使用
 
@@ -117,19 +124,48 @@ logic.onLoadMore();  // 自动加载下一页
 // 到达最后一页时自动显示 "没有更多了"
 ```
 
-### 4. 搜索功能
+### 4. 搜索功能（灵活自定义）
+
+基类提供了通用的 `search()` 方法，接受任意 `Map<String, dynamic>` 参数：
 
 ```dart
-// 不带参数的搜索
-logic.search();
+// ✅ 方式1：直接调用 search（传入任意参数）
+logic.search({'keyword': '张三'});
+logic.search({'status': 'active', 'type': '1'});
+logic.search({'userName': '李四', 'age': 25, 'city': '北京'});
 
-// 带搜索参数
-logic.search({'userName': '张三', 'status': 'active'});
+// ✅ 方式2：自定义搜索方法（推荐 ⭐）
+// 💡 方法名和参数完全由你决定，不限于 userName
 
-// 自定义搜索方法（推荐）
-void searchUser(String keyword) {
-  final params = keyword.isEmpty ? null : {'userName': keyword};
-  search(params);
+class YourListLogic extends BasePaginationLogic<Map<String, dynamic>> {
+  // 示例1：按关键词搜索
+  void searchByKeyword(String keyword) {
+    search(keyword.isEmpty ? null : {'keyword': keyword});
+  }
+
+  // 示例2：按状态筛选
+  void filterByStatus(String status) {
+    search({'status': status});
+  }
+
+  // 示例3：按多个条件搜索
+  void searchWithFilters({
+    String? name,
+    String? phone,
+    String? position,
+  }) {
+    final params = <String, dynamic>{};
+    if (name != null && name.isNotEmpty) params['name'] = name;
+    if (phone != null && phone.isNotEmpty) params['phone'] = phone;
+    if (position != null) params['position'] = position;
+
+    search(params.isEmpty ? null : params);
+  }
+
+  // 示例4：重置搜索
+  void clearSearch() {
+    search(null); // 传 null 表示清空搜索条件
+  }
 }
 ```
 

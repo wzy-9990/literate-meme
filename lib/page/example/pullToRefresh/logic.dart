@@ -1,28 +1,35 @@
 import 'package:flutter_tem/api/modules/my.dart';
 import 'package:flutter_tem/utils/base/base_pagination_logic.dart';
 
-/// 用户列表逻辑
+/// 用户列表逻辑示例
 ///
-/// 继承 BasePaginationLogic，只需实现 fetchData 方法
-class PullToRefreshExampleLogic extends BasePaginationLogic<Map<String, dynamic>> {
+/// 这是一个使用 BasePaginationLogic 的示例实现
+/// 展示了如何：
+/// 1. 继承基类并实现 fetchData 方法
+/// 2. 调用具体的业务接口（这里是 listPageUserByOrganizationIdApi）
+/// 3. 自定义搜索方法（这里是 searchUser，你可以根据需要命名和实现）
+///
+/// 💡 提示：不同页面的接口和搜索参数都可能不同，请根据实际需求修改
+class PullToRefreshExampleLogic
+    extends BasePaginationLogic<Map<String, dynamic>> {
   @override
   Future<PaginationResponse<Map<String, dynamic>>> fetchData(
     int page,
     int pageSize,
     Map<String, dynamic>? searchParams,
   ) async {
-    // 构建请求参数
+    // 1️⃣ 构建请求参数（根据你的接口要求调整）
     final params = {
       'pageNo': page,
       'pageSize': pageSize,
-      'organizationId': '0', // 组织ID（保留远程版本的参数）
-      ...?searchParams, // 合并搜索参数
+      'organizationId': '0', // 示例：固定的业务参数
+      ...?searchParams, // 合并搜索参数（可以是任意字段）
     };
 
-    // 调用真实接口
+    // 2️⃣ 调用你的业务接口（替换为你自己的接口）
     final response = await listPageUserByOrganizationIdApi(params);
 
-    // 解析响应
+    // 3️⃣ 解析响应并返回
     if (response == null) {
       return PaginationResponse<Map<String, dynamic>>(
         records: [],
@@ -31,9 +38,7 @@ class PullToRefreshExampleLogic extends BasePaginationLogic<Map<String, dynamic>
       );
     }
 
-    // 处理不同的响应格式
     if (response is Map) {
-      // 转换为 Map<String, dynamic>
       final responseMap = Map<String, dynamic>.from(response);
       return PaginationResponse.fromMap(
         responseMap,
@@ -53,11 +58,37 @@ class PullToRefreshExampleLogic extends BasePaginationLogic<Map<String, dynamic>
     );
   }
 
-  /// 搜索用户（带用户名参数）
+  // 💡 自定义搜索方法示例
+  // 方法名、参数名都可以根据你的需求自定义
+  // 例如：
+  // - searchByName(String name) -> {'name': name}
+  // - filterByStatus(String status) -> {'status': status}
+  // - searchByKeyword(String kw) -> {'keyword': kw}
+
+  /// 示例：按用户名搜索
+  /// 💡 你可以改成自己需要的方法名和参数
   void searchUser(String keyword) {
-    final searchParams = keyword.trim().isEmpty
+    final params = keyword.trim().isEmpty
         ? null
-        : {'userName': keyword.trim()};
-    search(searchParams);
+        : {'userName': keyword.trim()}; // 👈 这里的 'userName' 是示例，改成你的字段名
+
+    search(params); // 调用基类的 search 方法
   }
+
+  // 💡 你还可以添加更多自定义搜索方法，例如：
+  //
+  // void searchByPhone(String phone) {
+  //   search({'mobile': phone});
+  // }
+  //
+  // void filterByPosition(String position) {
+  //   search({'position': position});
+  // }
+  //
+  // void searchWithMultipleParams(String name, String status) {
+  //   search({
+  //     'userName': name,
+  //     'status': status,
+  //   });
+  // }
 }
