@@ -63,14 +63,14 @@ class _PullToRefreshExampleViewState extends State<PullToRefreshExampleView> {
                     ),
                     onSubmitted: (value) {
                       // 回车也可以触发搜索
-                      logic.search(value);
+                      logic.searchUser(value);
                     },
                   ),
                 ),
                 SizedBox(width: 8.w),
                 ElevatedButton(
                   onPressed: () {
-                    logic.search(_searchController.text);
+                    logic.searchUser(_searchController.text);
                   },
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(
