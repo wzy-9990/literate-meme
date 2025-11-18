@@ -4,7 +4,7 @@ import 'package:flutter_tem/components/BaseSuperRefreshComponent/components/Pull
 import 'logic.dart';
 
 class PullToRefreshExampleView extends StatelessWidget {
-  const PullToRefreshExampleView(Key key) : super(key: key);
+  const PullToRefreshExampleView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
