@@ -6,6 +6,7 @@ class PullToRefreshExampleLogic extends GetxController {
       RefreshController(initialRefresh: false);
 
   RxList<String> items = <String>[].obs;
+  RxBool isLoading = false.obs;
   int _page = 1;
   static const int _pageSize = 20;
 
@@ -18,6 +19,11 @@ class PullToRefreshExampleLogic extends GetxController {
 
   // 模拟加载数据
   Future<void> loadData() async {
+    // 首次加载时显示 loading
+    if (_page == 1 && items.isEmpty) {
+      isLoading.value = true;
+    }
+
     // 模拟网络请求延迟
     await Future.delayed(const Duration(milliseconds: 1000));
 
@@ -30,6 +36,9 @@ class PullToRefreshExampleLogic extends GetxController {
     } else {
       items.addAll(newItems);
     }
+
+    // 加载完成后隐藏 loading
+    isLoading.value = false;
   }
 
   // 下拉刷新
