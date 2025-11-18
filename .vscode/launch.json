@@ -1,0 +1,29 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "run Development",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "cwd": "${workspaceFolder}",
+      "args": ["--dart-define=ENV=development"]
+    },
+    {
+      "name": "run Test",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "cwd": "${workspaceFolder}",
+      "args": ["--dart-define=ENV=test"]
+    },
+    {
+      "name": "run Production",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "cwd": "${workspaceFolder}",
+      "args": ["--dart-define=ENV=production"]
+    }
+  ]
+}

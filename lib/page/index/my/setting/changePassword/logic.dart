@@ -1,0 +1,51 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_tem/page/index/my/logic.dart';
+import 'package:flutter_tem/routers/app_routes.dart';
+import 'package:flutter_tem/utils/storage/index.dart';
+import 'package:get/get.dart';
+
+class ChangePasswordLogic extends GetxController {
+  final myLogic = Get.find<MyLogic>();
+
+  RxBool isLoading = false.obs;
+  RxMap userInfo = RxMap();
+  @override
+  void onInit() {
+    super.onInit();
+    initData();
+  }
+
+  initData() {
+    debugPrint('设置页面初始化');
+    isLoading.value = true;
+    Future.delayed(const Duration(seconds: 1), () async {
+      isLoading.value = false;
+      await _loadUserInfo();
+    });
+  }
+
+  void logout() async {
+    await Storage.clear();
+    await Get.offAllNamed(AppRoutes.login);
+  }
+
+  updateLastUserInfo() {
+    Get.back(result: true);
+  }
+
+  _loadUserInfo() async {
+    dynamic storedName = await Storage.getMap(StorageKeys.userInfo);
+    userInfo.value = storedName;
+  }
+
+  void updateUserInfo(String name) async {
+    int currentMilliseconds = DateTime.now().millisecondsSinceEpoch;
+    dynamic storedName = await Storage.getMap(StorageKeys.userInfo);
+    storedName['userName'] = '张三$currentMilliseconds';
+    await Storage.setMap(StorageKeys.userInfo, storedName);
+    await initData();
+    await myLogic.initData();
+    EasyLoading.showToast('操作成功');
+  }
+}

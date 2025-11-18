@@ -1,0 +1,38 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_tem/page/index/home/logic.dart';
+import 'package:flutter_tem/utils/dict/home.dart';
+import 'package:get/get.dart';
+
+class HomeView extends StatelessWidget {
+  const HomeView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // ignore: unused_local_variable
+    final logic = Get.find<HomeLogic>();
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('首页'),
+      ),
+      body: Column(
+        children: [
+          ...directionTypeEnum.allItems.map((item) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Text(
+                item['label'].toString(),
+              ),
+            );
+          }),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () {
+              logic.openWebView();
+            },
+            child: const Text('打开 WebView 示例'),
+          ),
+        ],
+      ),
+    );
+  }
+}
