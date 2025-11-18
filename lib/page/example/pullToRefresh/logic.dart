@@ -13,6 +13,7 @@ class PullToRefreshExampleLogic extends GetxController {
   void onInit() {
     super.onInit();
     loadData();
+    print('pullToRefresh');
   }
 
   // 模拟加载数据

@@ -31,6 +31,12 @@ class HomeView extends StatelessWidget {
             },
             child: const Text('打开 WebView 示例'),
           ),
+          ElevatedButton(
+            onPressed: () {
+              logic.pullToRefreshView();
+            },
+            child: const Text('打开下拉刷新上拉加载'),
+          ),
         ],
       ),
     );

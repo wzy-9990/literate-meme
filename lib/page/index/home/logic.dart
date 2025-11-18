@@ -9,6 +9,12 @@ class HomeLogic extends GetxController {
   }
 
   openWebView() {
+    NavigationUtils.toNamed(AppRoutes.webView, arguments: {
+      'url': 'https://manager-test.pinduola.cn/manager/index.html#/login',
+      'title': '看下',
+    });
+  }
+   pullToRefreshView() {
     NavigationUtils.toNamed(AppRoutes.example, arguments: {
       'url': 'https://manager-test.pinduola.cn/manager/index.html#/login',
       'title': '看下',
