@@ -33,8 +33,10 @@ class PullToRefreshExampleLogic extends BasePaginationLogic<Map<String, dynamic>
 
     // 处理不同的响应格式
     if (response is Map) {
+      // 转换为 Map<String, dynamic>
+      final responseMap = Map<String, dynamic>.from(response);
       return PaginationResponse.fromMap(
-        response,
+        responseMap,
         (item) => Map<String, dynamic>.from(item),
       );
     } else if (response is List) {
