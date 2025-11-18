@@ -13,25 +13,22 @@ class PullToRefreshExampleView extends StatelessWidget {
       appBar: AppBar(
         title: const Text('测试页面'),
       ),
-      body: GetBuilder<PullToRefreshExampleLogic>(
-        init: logic,
-        builder: (logic) {
-          return BasePullToRefreshList(
-            refreshController: logic.refreshController,
-            onRefresh: logic.onRefresh,
-            onLoadMore: logic.onLoadMore,
-            children: logic.items
-                .map(
-                  (item) => ListTile(
-                    title: Text(item),
-                    onTap: () {
-                      Get.snackbar('提示', '点击了 $item');
-                    },
-                  ),
-                )
-                .toList(),
-          );
-        },
+      body: Obx(
+        () => BasePullToRefreshList(
+          refreshController: logic.refreshController,
+          onRefresh: logic.onRefresh,
+          onLoadMore: logic.onLoadMore,
+          children: logic.items
+              .map(
+                (item) => ListTile(
+                  title: Text(item),
+                  onTap: () {
+                    Get.snackbar('提示', '点击了 $item');
+                  },
+                ),
+              )
+              .toList(),
+        ),
       ),
     );
   }
