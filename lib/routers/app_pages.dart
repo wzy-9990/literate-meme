@@ -13,6 +13,7 @@ import 'package:flutter_tem/page/webview/view.dart';
 import 'package:flutter_tem/page/example/pullToRefresh/view.dart';
 import 'package:flutter_tem/page/example/imageExample/view.dart';
 import 'package:flutter_tem/page/example/permissionExample/view.dart';
+import 'package:flutter_tem/page/example/uploadExample/view.dart';
 import 'package:get/get.dart';
 
 import 'app_routes.dart';
@@ -63,6 +64,10 @@ class AppPages {
     GetPage(
       name: AppRoutes.permissionExample,
       page: () => const PermissionExampleView(),
+    ),
+    GetPage(
+      name: AppRoutes.uploadExample,
+      page: () => const UploadExampleView(),
     ),
   ];
 }

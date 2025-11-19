@@ -29,4 +29,8 @@ class HomeLogic extends GetxController {
   permissionExampleView() {
     NavigationUtils.toNamed(AppRoutes.permissionExample);
   }
+
+  uploadExampleView() {
+    NavigationUtils.toNamed(AppRoutes.uploadExample);
+  }
 }

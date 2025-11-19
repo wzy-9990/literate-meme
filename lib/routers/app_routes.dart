@@ -11,4 +11,5 @@ class AppRoutes {
   static const example = '/example';
   static const imageExample = '/imageExample';
   static const permissionExample = '/permissionExample';
+  static const uploadExample = '/uploadExample';
 }

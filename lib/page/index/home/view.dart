@@ -50,6 +50,12 @@ class HomeView extends StatelessWidget {
             },
             child: const Text('打开权限工具示例'),
           ),
+          ElevatedButton(
+            onPressed: () {
+              logic.uploadExampleView();
+            },
+            child: const Text('打开上传组件示例'),
+          ),
         ],
       ),
     );
