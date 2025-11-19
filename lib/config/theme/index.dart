@@ -11,8 +11,8 @@ class AppTheme {
     return ThemeData(
       // 主色调设置
       colorScheme: ColorScheme.fromSeed(
-        seedColor: BaseColor.main,
-        primary: BaseColor.main,
+        seedColor: AppColors.primary,
+        primary: AppColors.primary,
       ),
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.white,
@@ -39,8 +39,8 @@ class AppTheme {
       brightness: Brightness.dark,
       // 主色调设置
       colorScheme: ColorScheme.fromSeed(
-        seedColor: BaseColor.main,
-        primary: BaseColor.main,
+        seedColor: AppColors.primary,
+        primary: AppColors.primary,
         brightness: Brightness.dark,
       ),
       appBarTheme: const AppBarTheme(

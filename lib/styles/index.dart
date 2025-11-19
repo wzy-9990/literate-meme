@@ -1,6 +1,7 @@
-import 'dart:ui';
+/// 样式系统统一导出
+/// 包含颜色、间距、圆角等设计系统基础常量
+library styles;
 
-class BaseColor {
-  BaseColor._();
-  static const Color main = Color(0xFFFE6601); //主题色
-}
+export 'colors.dart';
+export 'spacing.dart';
+export 'radius.dart';
