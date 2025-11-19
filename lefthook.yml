@@ -4,18 +4,21 @@
 pre-commit:
   parallel: false  # 顺序执行，先格式化再检查
   commands:
-    # 1. 代码格式化
+    # 1. 代码格式化（自动修复缩进、空格等问题）
     format:
       glob: "*.dart"
-      run: dart format {staged_files}
+      run: |
+        echo "正在格式化代码..."
+        dart format {staged_files}
       stage_fixed: true
 
-    # 2. 代码规范检查（只检查修改的文件）
+    # 2. 代码规范检查（未使用的变量、死代码等会阻止提交）
     analyze:
       glob: "*.dart"
       run: |
         echo "正在检查代码规范..."
-        dart analyze {staged_files} 2>/dev/null || flutter analyze --no-fatal-infos
+        echo "检查未使用的变量、导入和死代码..."
+        flutter analyze --fatal-warnings
 
     # 3. 检查是否有冲突标记
     conflict-markers:

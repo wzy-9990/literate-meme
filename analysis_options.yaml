@@ -19,6 +19,14 @@ analyzer:
     # 将某些 lint 提升为错误
     invalid_annotation_target: ignore
 
+    # 未使用的代码必须删除（提升为错误，阻止提交）
+    unused_local_variable: error
+    unused_element: error
+    unused_field: error
+    unused_import: error
+    unused_shown_name: error
+    dead_code: error
+
   strong-mode:
     implicit-casts: false
     implicit-dynamic: false
@@ -62,6 +70,15 @@ linter:
     test_types_in_equals: true
     throw_in_finally: true
     unnecessary_statements: true
+
+    # 未使用的代码检测（会在提交时阻止）
+    # 注意：这些规则配合 analyzer.errors 中的 error 设置
+    # 未使用的局部变量、字段、导入等都会导致提交失败
+    unnecessary_import: true
+    unnecessary_new: true
+    unnecessary_null_in_if_null_operators: true
+    unnecessary_overrides: true
+    unnecessary_this: true
 
     # 代码组织
     directives_ordering: true
