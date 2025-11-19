@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_tem/utils/upload/index.dart';
 
 /// 上传状态
@@ -188,6 +189,32 @@ class _BaseUploadState extends State<BaseUpload> {
     }
   }
 
+  /// 获取文件类型名称
+  String _getFileTypeName(String fileName) {
+    final extension = fileName.split('.').last.toLowerCase();
+
+    // 图片类型
+    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg', 'ico'];
+    if (imageExtensions.contains(extension)) {
+      return '图片';
+    }
+
+    // 视频类型
+    const videoExtensions = ['mp4', 'avi', 'mov', 'wmv', 'flv', 'mkv', 'webm', 'm4v', '3gp'];
+    if (videoExtensions.contains(extension)) {
+      return '视频';
+    }
+
+    // 音频类型
+    const audioExtensions = ['mp3', 'wav', 'flac', 'aac', 'ogg', 'wma', 'm4a', 'ape'];
+    if (audioExtensions.contains(extension)) {
+      return '音频';
+    }
+
+    // 其他文件类型
+    return '文件';
+  }
+
   /// 上传文件
   Future<void> _uploadFile(UploadItem item) async {
     setState(() {
@@ -225,12 +252,20 @@ class _BaseUploadState extends State<BaseUpload> {
         widget.onUploadedDataChanged?.call(_uploadedDataList);
       }
 
+      // 显示上传成功提示
+      final fileTypeName = _getFileTypeName(item.fileInfo.fileName);
+      EasyLoading.showSuccess('${fileTypeName}上传成功');
+
       widget.onUploadSuccess?.call(item);
     } catch (e) {
       setState(() {
         item.status = UploadStatus.failed;
         item.errorMessage = e.toString();
       });
+
+      // 显示上传失败提示
+      final fileTypeName = _getFileTypeName(item.fileInfo.fileName);
+      EasyLoading.showError('${fileTypeName}上传失败');
 
       widget.onUploadFailed?.call(item, e.toString());
     }

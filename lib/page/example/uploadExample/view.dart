@@ -42,12 +42,6 @@ class _UploadExampleViewState extends State<UploadExampleView> {
               maxFileSize: 5 * 1024 * 1024, // 5MB
               displayMode: 'grid',
               useDefaultUpload: true, // 使用默认上传接口
-              onUploadSuccess: (item) {
-                EasyLoading.showSuccess('图片上传成功');
-              },
-              onUploadFailed: (item, error) {
-                EasyLoading.showError('上传失败：$error');
-              },
               onFilesChanged: (items) {
                 setState(() {
                   _imageUploadList.clear();
