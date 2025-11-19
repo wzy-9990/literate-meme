@@ -441,10 +441,10 @@ class _BaseUploadState extends State<BaseUpload> {
               child: Center(
                 child: item.progress >= 1.0
                     ? // 文件已上传，等待服务器处理
-                    Column(
+                    const Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const SizedBox(
+                          SizedBox(
                             width: 40,
                             height: 40,
                             child: CircularProgressIndicator(
@@ -454,8 +454,8 @@ class _BaseUploadState extends State<BaseUpload> {
                               strokeWidth: 4,
                             ),
                           ),
-                          const SizedBox(height: 8),
-                          const Text(
+                          SizedBox(height: 8),
+                          Text(
                             '上传中...',
                             style: TextStyle(
                               color: Colors.white,
