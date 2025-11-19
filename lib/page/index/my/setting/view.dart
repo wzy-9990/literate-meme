@@ -41,6 +41,39 @@ class MySettingView extends StatelessWidget {
                   logic.logout();
                 },
               ),
+              const SizedBox(height: 30),
+              // 版本号区域（连续点击7次进入开发者选项）
+              GestureDetector(
+                onTap: logic.onVersionTap,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 12,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.info_outline,
+                        size: 18,
+                        color: Colors.grey[600],
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        '版本号 v1.0.0',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
           Obx(

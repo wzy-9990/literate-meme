@@ -8,10 +8,24 @@ import 'package:get/get.dart';
 
 class ApiService {
   late Dio _dio;
+  static String? _customBaseUrl; // 自定义的 API 地址
+
+  /// 在应用启动时调用，用于设置自定义 API 地址
+  static Future<void> init() async {
+    _customBaseUrl = await Storage.getString('custom_api_url');
+    if (_customBaseUrl != null) {
+      debugPrint('🔧 检测到自定义 API 地址: $_customBaseUrl');
+    }
+  }
 
   ApiService() {
+    // 优先使用自定义的 API 地址，否则使用 .env 中的默认地址
+    final baseUrl = _customBaseUrl ?? dotenv.env['API_URL'] ?? '';
+
+    debugPrint('🌐 API Base URL: $baseUrl');
+
     _dio = Dio(BaseOptions(
-      baseUrl: dotenv.env['API_URL'] ?? '',
+      baseUrl: baseUrl,
       connectTimeout: const Duration(milliseconds: 5000),
       receiveTimeout: const Duration(milliseconds: 3000),
       headers: {
