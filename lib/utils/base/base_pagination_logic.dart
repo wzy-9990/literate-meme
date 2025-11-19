@@ -176,16 +176,37 @@ class PaginationResponse<T> {
   });
 
   /// 从 Map 创建（适配不同的 API 响应格式）
-  factory PaginationResponse.fromMap(Map<String, dynamic> map, T Function(Map<String, dynamic>) itemMapper) {
+  ///
+  /// 内部会自动处理 null 和类型转换
+  factory PaginationResponse.fromMap(
+    dynamic response,  // 👈 改为 dynamic，内部处理 null 和类型转换
+    T Function(Map<String, dynamic>) itemMapper,
+  ) {
+    // 处理 null
+    if (response == null) {
+      return PaginationResponse<T>(records: [], total: 0, pages: 0);
+    }
+
+    // 处理非 Map 类型
+    if (response is! Map) {
+      return PaginationResponse<T>(records: [], total: 0, pages: 0);
+    }
+
+    // 转换为 Map<String, dynamic>
+    final map = Map<String, dynamic>.from(response);
     List<T>? records;
 
     // 尝试从 records 字段获取
     if (map['records'] != null) {
-      records = (map['records'] as List).map((item) => itemMapper(item as Map<String, dynamic>)).toList();
+      records = (map['records'] as List)
+          .map((item) => itemMapper(item as Map<String, dynamic>))
+          .toList();
     }
     // 兼容 list 字段
     else if (map['list'] != null) {
-      records = (map['list'] as List).map((item) => itemMapper(item as Map<String, dynamic>)).toList();
+      records = (map['list'] as List)
+          .map((item) => itemMapper(item as Map<String, dynamic>))
+          .toList();
     }
 
     return PaginationResponse<T>(
