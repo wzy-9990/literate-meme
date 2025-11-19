@@ -15,7 +15,7 @@ class PullToRefreshExampleView extends StatelessWidget {
 
     return Scaffold(
       appBar: const BaseAppBar(
-        title: '用户列表',
+        title: '用户列表1111',
       ),
       body: Column(
         children: [
@@ -93,9 +93,10 @@ class PullToRefreshExampleView extends StatelessWidget {
                     searchEmptySubtitle: '试试其他关键词吧',
                     searchEmptyButtonText: '清空搜索',
                     // 按钮回调：搜索时点击清空，普通空时点击刷新
-                    onEmptyButtonPressed: logic.isSearching ? logic.clearSearch : logic.onRefresh,
+                    onEmptyButtonPressed:
+                        logic.isSearching ? logic.clearSearch : logic.onRefresh,
                     children: logic.items
-                          .map(
+                        .map(
                           (item) => Card(
                             margin: EdgeInsets.symmetric(
                               horizontal: 12.w,
@@ -109,7 +110,9 @@ class PullToRefreshExampleView extends StatelessWidget {
                               leading: CircleAvatar(
                                 backgroundColor: Colors.blue.shade100,
                                 child: Text(
-                                  item['userName']?.toString().substring(0, 1) ??
+                                  item['userName']
+                                          ?.toString()
+                                          .substring(0, 1) ??
                                       '?',
                                   style: TextStyle(
                                     color: Colors.blue.shade700,
@@ -227,8 +230,10 @@ class PullToRefreshExampleView extends StatelessWidget {
                                               '代理区域', item['agentRegion']),
                                           _buildDetailRow(
                                               '入职日期', item['joiningDate']),
-                                          _buildDetailRow('直接邀请人数',
-                                              item['directInviteCount']?.toString()),
+                                          _buildDetailRow(
+                                              '直接邀请人数',
+                                              item['directInviteCount']
+                                                  ?.toString()),
                                           _buildDetailRow(
                                               '机构', item['organizationName']),
                                         ],
@@ -266,7 +271,9 @@ class PullToRefreshExampleView extends StatelessWidget {
 
   // 构建详情行
   Widget _buildDetailRow(String label, dynamic value) {
-    if (value == null || value.toString().isEmpty || value.toString() == 'null') {
+    if (value == null ||
+        value.toString().isEmpty ||
+        value.toString() == 'null') {
       return SizedBox.shrink();
     }
     return Padding(
