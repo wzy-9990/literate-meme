@@ -33,4 +33,8 @@ class HomeLogic extends GetxController {
   void uploadExampleView() {
     NavigationUtils.toNamed(AppRoutes.uploadExample);
   }
+
+  void phoneCallExampleView() {
+    NavigationUtils.toNamed(AppRoutes.uploadExample);
+  }
 }
