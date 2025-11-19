@@ -112,20 +112,31 @@ class _BaseUploadState extends State<BaseUpload> {
   Future<void> _pickImages() async {
     final remaining = widget.maxCount - _uploadItems.length;
 
-    if (remaining == 1) {
-      // 只能选一张，弹窗选择来源
-      final source = await UploadUtil.showImageSourceDialog(context);
-      if (source == null) return;
+    // 先弹出弹窗让用户选择来源
+    final source = await UploadUtil.showImageSourceDialog(context);
+    if (source == null) return;
 
+    // 根据来源选择
+    if (source == ImageSourceType.camera) {
+      // 相机只能拍一张
       final fileInfo = await UploadUtil.pickImage(source: source);
       if (fileInfo != null) {
         _addFile(fileInfo);
       }
     } else {
-      // 可选多张
-      final files = await UploadUtil.pickMultipleImages(limit: remaining);
-      for (var fileInfo in files) {
-        _addFile(fileInfo);
+      // 相册可以选多张
+      if (remaining == 1) {
+        // 只能选一张
+        final fileInfo = await UploadUtil.pickImage(source: source);
+        if (fileInfo != null) {
+          _addFile(fileInfo);
+        }
+      } else {
+        // 可以选多张
+        final files = await UploadUtil.pickMultipleImages(limit: remaining);
+        for (var fileInfo in files) {
+          _addFile(fileInfo);
+        }
       }
     }
   }
