@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_tem/components/BaseDoubleBackExitWrapper/index.dart';
@@ -32,10 +33,16 @@ class MyApp extends StatelessWidget {
         // 主题
         theme: ThemeData(
           appBarTheme: const AppBarTheme(
-            color: Colors.white,
+            backgroundColor: Colors.white,
             foregroundColor: Colors.black,
             elevation: 0, // 阴影高度
+            surfaceTintColor: Colors.transparent, // 去除 Material 3 的 surface tint 效果
+            scrolledUnderElevation: 0, // 滚动时不改变阴影
             centerTitle: true,
+            systemOverlayStyle: SystemUiOverlayStyle(
+              statusBarColor: Colors.transparent, // 状态栏透明
+              statusBarIconBrightness: Brightness.dark, // 状态栏图标深色
+            ),
           ),
           scaffoldBackgroundColor: const Color(0xFFF6F6F6),
         ),
