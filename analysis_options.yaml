@@ -34,90 +34,85 @@ analyzer:
     prefer_const_declarations: error  # 强制使用 const 声明
     unnecessary_new: error  # 禁止使用 new 关键字
     unnecessary_this: error  # 禁止不必要的 this
+    always_declare_return_types: error  # 强制声明方法返回类型
 
   strong-mode:
     implicit-casts: false
     implicit-dynamic: false
 
 linter:
-  # The lint rules applied to this project can be customized in the
-  # section below to disable rules from the `package:flutter_lints/flutter.yaml`
-  # included above or to enable additional rules. A list of all available lints
-  # and their documentation is published at https://dart.dev/lints.
-  #
-  # Instead of disabling a lint rule for the entire project in the
-  # section below, it can also be suppressed for a single line of code
-  # or a specific dart file by using the `// ignore: name_of_lint` and
-  # `// ignore_for_file: name_of_lint` syntax on the line or in the file
-  # producing the lint.
+  # Dart/Flutter 代码规范配置
+  # 完整规则列表：https://dart.dev/lints
+  # 单行忽略：// ignore: rule_name
+  # 文件忽略：// ignore_for_file: rule_name
   rules:
-    # 代码风格
-    prefer_single_quotes: true
-    always_declare_return_types: true
-    always_put_control_body_on_new_line: true
-    always_put_required_named_parameters_first: true
-    always_use_package_imports: true
-    avoid_print: true
-    avoid_relative_lib_imports: true
-    avoid_returning_null_for_future: true
-    avoid_slow_async_io: true
-    avoid_type_to_string: true
-    cancel_subscriptions: true
-    close_sinks: true
-    comment_references: true
+    # ==================== 代码风格 ====================
+    prefer_single_quotes: true  # 使用单引号 'text' 而非双引号 "text"
+    always_declare_return_types: true  # 方法必须声明返回类型，如 void、String、int
+    always_put_control_body_on_new_line: true  # 控制流语句体必须换行（if/for/while）
+    always_put_required_named_parameters_first: true  # required 参数必须放在可选参数前
+    always_use_package_imports: true  # 使用 package: 导入而非相对路径
+    avoid_print: true  # 避免使用 print()，应使用 debugPrint() 或日志库
+    avoid_relative_lib_imports: true  # 禁止相对路径导入 lib 目录
+    avoid_returning_null_for_future: true  # Future 方法不应直接返回 null
+    avoid_slow_async_io: true  # 避免慢速异步 IO 操作
+    avoid_type_to_string: true  # 避免对类型使用 toString()
+    cancel_subscriptions: true  # Stream 订阅必须取消，防止内存泄漏
+    close_sinks: true  # StreamController、IOSink 等必须关闭
+    comment_references: true  # 文档注释中的引用必须有效
 
-    # 命名规范
-    constant_identifier_names: true
-    non_constant_identifier_names: true
+    # ==================== 命名规范 ====================
+    constant_identifier_names: true  # 常量使用大写下划线：CONSTANT_NAME
+    non_constant_identifier_names: true  # 非常量使用小驼峰：variableName
 
-    # 错误预防
-    no_adjacent_strings_in_list: true
-    no_duplicate_case_values: true
-    no_logic_in_create_state: true
-    prefer_void_to_null: true
-    test_types_in_equals: true
-    throw_in_finally: true
-    unnecessary_statements: true
+    # ==================== 错误预防 ====================
+    no_adjacent_strings_in_list: true  # 列表中不允许相邻字符串（可能是忘记逗号）
+    no_duplicate_case_values: true  # switch 语句不允许重复 case
+    no_logic_in_create_state: true  # StatefulWidget.createState() 中不应有逻辑
+    prefer_void_to_null: true  # 无返回值使用 void 而非 Null
+    test_types_in_equals: true  # 重写 == 时应检查参数类型
+    throw_in_finally: true  # finally 块中不应抛出异常
+    unnecessary_statements: true  # 避免无效语句
 
-    # 未使用的代码检测（会在提交时阻止）
-    # 注意：这些规则配合 analyzer.errors 中的 error 设置
-    # 未使用的局部变量、字段、导入等都会导致提交失败
-    unnecessary_new: true
-    unnecessary_null_in_if_null_operators: true
-    unnecessary_overrides: true
-    unnecessary_this: true
+    # ==================== 代码简化 ====================
+    # 这些规则配合 analyzer.errors 中的 error 设置，会在提交时强制要求修复
+    unnecessary_new: true  # 禁止使用 new 关键字（Dart 2+ 不需要）
+    unnecessary_null_in_if_null_operators: true  # ?? null 是多余的
+    unnecessary_overrides: true  # 避免无意义的方法重写
+    unnecessary_this: true  # 避免不必要的 this（除非消除歧义）
 
-    # 代码组织
-    directives_ordering: true
-    file_names: true
-    lines_longer_than_80_chars: false  # 关闭行长度限制（现代屏幕足够宽）
+    # ==================== 代码组织 ====================
+    directives_ordering: true  # import/export 语句按字母顺序排列
+    file_names: true  # 文件名使用小写下划线：my_file.dart
+    lines_longer_than_80_chars: false  # 关闭 80 字符行长度限制（现代屏幕足够宽）
 
-    # 性能优化
-    prefer_const_constructors: true
-    prefer_const_constructors_in_immutables: true
-    prefer_const_declarations: true
-    prefer_const_literals_to_create_immutables: true
-    prefer_final_fields: true
-    prefer_final_in_for_each: true
-    prefer_final_locals: true
+    # ==================== 性能优化 ====================
+    # 使用 const 可以减少 Widget 重建，提升性能，减少内存占用
+    prefer_const_constructors: true  # 可能时使用 const 构造函数
+    prefer_const_constructors_in_immutables: true  # 不可变类使用 const 构造函数
+    prefer_const_declarations: true  # 不变的局部变量使用 const 声明
+    prefer_const_literals_to_create_immutables: true  # 不可变集合使用 const 字面量
+    prefer_final_fields: true  # 私有字段不会被重新赋值时使用 final
+    prefer_final_in_for_each: true  # for-each 循环变量使用 final
+    prefer_final_locals: true  # 局部变量不会被重新赋值时使用 final
 
-    # 可读性
-    prefer_expression_function_bodies: false  # 不强制使用箭头函数
-    prefer_if_null_operators: true
-    prefer_interpolation_to_compose_strings: true
-    prefer_is_empty: true
-    prefer_is_not_empty: true
-    prefer_is_not_operator: true
-    prefer_iterable_whereType: true
-    prefer_null_aware_operators: true
+    # ==================== 代码可读性 ====================
+    prefer_expression_function_bodies: false  # 不强制使用箭头函数（保持灵活性）
+    prefer_if_null_operators: true  # 使用 ?? 而非三元表达式
+    prefer_interpolation_to_compose_strings: true  # 使用字符串插值 '$name' 而非拼接
+    prefer_is_empty: true  # 使用 isEmpty 而非 length == 0
+    prefer_is_not_empty: true  # 使用 isNotEmpty 而非 length != 0
+    prefer_is_not_operator: true  # 使用 is! 而非 !(x is Type)
+    prefer_iterable_whereType: true  # 使用 whereType<T>() 筛选类型
+    prefer_null_aware_operators: true  # 使用空值感知运算符 ?.、??、??=
 
-    # Flutter 特定
-    use_build_context_synchronously: true
-    use_full_hex_values_for_flutter_colors: true
-    use_key_in_widget_constructors: true
+    # ==================== Flutter 特定 ====================
+    use_build_context_synchronously: true  # 异步后使用 BuildContext 前检查 mounted
+    use_full_hex_values_for_flutter_colors: true  # 颜色使用完整 8 位：0xFF000000
+    use_key_in_widget_constructors: true  # Widget 构造函数应接受 Key 参数
 
-    # 文档
-    # public_member_api_docs: true  # 可选：要求公共成员有文档注释
+    # ==================== 文档注释 ====================
+    # public_member_api_docs: true  # 开启后要求所有公共成员都有文档注释（可选）
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options

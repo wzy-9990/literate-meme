@@ -11,24 +11,50 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # UI 图标
+  cupertino_icons: ^1.0.8  # iOS 风格图标库
 
-  cupertino_icons: ^1.0.8
-  get: ^4.7.2
-  dio: ^5.8.0+1
-  flutter_screenutil: ^5.9.3
-  flutter_dotenv: ^5.2.1
-  flutter_easyloading: ^3.0.5
-  shared_preferences: 2.3.2
-  jpush_flutter: 3.2.0 #推送
-  webview_flutter: ^4.10.0
-  pull_to_refresh: ^2.0.0
-  cached_network_image: ^3.4.1
-  photo_view: ^0.15.0
-  permission_handler: ^11.3.1
-  image_picker: ^1.1.2
-  file_picker: ^8.1.6
-  path: ^1.9.0
-  mime: ^1.0.6
+  # 状态管理和路由
+  get: ^4.7.2  # 轻量级状态管理、路由导航、依赖注入解决方案
+
+  # 网络请求
+  dio: ^5.8.0+1  # 强大的 HTTP 客户端，支持拦截器、全局配置、FormData、取消请求等
+
+  # UI 适配
+  flutter_screenutil: ^5.9.3  # 屏幕适配解决方案，支持尺寸、字体大小自适应
+
+  # 环境配置
+  flutter_dotenv: ^5.2.1  # 环境变量配置，支持多环境切换（开发/测试/生产）
+
+  # 全局提示
+  flutter_easyloading: ^3.0.5  # 全局 Loading、Toast、Progress 提示组件
+
+  # 本地存储
+  shared_preferences: 2.3.2  # 轻量级键值对本地存储，用于保存用户设置、Token等
+
+  # 消息推送
+  jpush_flutter: 3.2.0  # 极光推送 SDK，支持消息推送、统计分析
+
+  # WebView
+  webview_flutter: ^4.10.0  # 内嵌 WebView，支持加载网页、JS交互
+
+  # 下拉刷新
+  pull_to_refresh: ^2.0.0  # 下拉刷新和上拉加载更多组件
+
+  # 图片加载
+  cached_network_image: ^3.4.1  # 网络图片缓存加载，支持占位图、错误图、淡入动画
+  photo_view: ^0.15.0  # 图片预览组件，支持缩放、平移、旋转
+
+  # 权限管理
+  permission_handler: ^11.3.1  # 跨平台权限请求和管理（相机、相册、存储等）
+
+  # 文件选择
+  image_picker: ^1.1.2  # 图片/视频选择器，支持相机拍摄和相册选择
+  file_picker: ^8.1.6  # 通用文件选择器，支持多种文件类型
+
+  # 文件路径
+  path: ^1.9.0  # 跨平台路径操作工具
+  mime: ^1.0.6  # MIME 类型识别，用于判断文件类型
 
 dev_dependencies:
   flutter_test:

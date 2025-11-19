@@ -129,6 +129,64 @@ error • Unnecessary this • lib/test.dart:6:11 • unnecessary_this
 
 ---
 
+### 5. 缺少方法返回类型
+
+❌ **错误（会阻止提交）：**
+```dart
+class Example {
+  // ❌ 缺少返回类型
+  openWebView() {
+    // ...
+  }
+
+  // ❌ 缺少返回类型
+  getData() {
+    return 'data';
+  }
+}
+```
+
+✅ **正确：**
+```dart
+class Example {
+  // ✅ 声明返回类型
+  void openWebView() {
+    // ...
+  }
+
+  // ✅ 声明返回类型
+  String getData() {
+    return 'data';
+  }
+
+  // ✅ 异步方法也要声明返回类型
+  Future<void> fetchData() async {
+    // ...
+  }
+
+  Future<String> loadData() async {
+    return 'data';
+  }
+}
+```
+
+**提交时错误提示：**
+```
+error • The method 'openWebView' should have a return type but doesn't • lib/test.dart:2:3 • always_declare_return_types
+error • The method 'getData' should have a return type but doesn't • lib/test.dart:6:3 • always_declare_return_types
+```
+
+**快速修复：**
+- IDE 中使用快速修复自动添加返回类型
+- 或手动添加返回类型：
+  - 无返回值：`void`
+  - 返回字符串：`String`
+  - 返回数字：`int`、`double`
+  - 异步无返回值：`Future<void>`
+  - 异步返回值：`Future<String>`、`Future<int>` 等
+
+---
+
 ## 📋 完整示例
 
 ### 错误代码（会被阻止提交）
@@ -149,6 +207,11 @@ class BadExample {
     var list = new List<int>();
   }
 
+  // ❌ 缺少返回类型
+  openWebView() {
+    // ...
+  }
+
   Widget build() {
     return Container(
       // ❌ 缺少 const
@@ -164,10 +227,11 @@ error • Prefer using single quotes • lib/bad_example.dart:3:20 • prefer_si
 error • Prefer const literals to create immutables • lib/bad_example.dart:6:19 • prefer_const_literals_to_create_immutables
 error • Unnecessary this • lib/bad_example.dart:10:11 • unnecessary_this
 error • Unnecessary new keyword • lib/bad_example.dart:13:16 • unnecessary_new
-error • Prefer using single quotes • lib/bad_example.dart:18:18 • prefer_single_quotes
-error • Prefer const with constant constructors • lib/bad_example.dart:18:12 • prefer_const_constructors
+error • The method 'openWebView' should have a return type but doesn't • lib/bad_example.dart:16:3 • always_declare_return_types
+error • Prefer using single quotes • lib/bad_example.dart:20:18 • prefer_single_quotes
+error • Prefer const with constant constructors • lib/bad_example.dart:20:12 • prefer_const_constructors
 
-6 issues found.
+7 issues found.
 
 ❌ 提交被阻止！
 ```
@@ -188,6 +252,11 @@ class GoodExample {
 
     // ✅ 不使用 new
     var list = <int>[];
+  }
+
+  // ✅ 声明返回类型
+  void openWebView() {
+    // ...
   }
 
   Widget build() {
