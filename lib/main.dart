@@ -6,6 +6,7 @@ import 'package:flutter_tem/components/BaseDoubleBackExitWrapper/index.dart';
 import 'package:flutter_tem/components/BaseUnfocusOnTap/index.dart';
 import 'package:flutter_tem/config/easyLoading/index.dart';
 import 'package:flutter_tem/config/env/index.dart';
+import 'package:flutter_tem/styles/index.dart';
 import 'package:get/get.dart';
 
 import 'routers/app_routes.dart';
@@ -32,6 +33,11 @@ class MyApp extends StatelessWidget {
         defaultTransition: Transition.cupertino,
         // 主题
         theme: ThemeData(
+          // 主色调设置
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: BaseColor.main,
+            primary: BaseColor.main,
+          ),
           appBarTheme: const AppBarTheme(
             backgroundColor: Colors.white,
             foregroundColor: Colors.black,
