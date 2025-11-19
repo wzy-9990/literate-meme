@@ -59,7 +59,7 @@ static const int unauthorizedCode = 401;
 }
 ```
 
-只需修改 `lib/api/config.dart`：
+只需修改 `lib/config/api/index.dart`：
 
 ```dart
 class ApiConfig {
@@ -108,7 +108,7 @@ static bool isSuccess(Map<String, dynamic> data);
 1. **新项目开始前，先配置 ApiConfig**
    ```dart
    // 1. 查看后端接口文档
-   // 2. 修改 lib/api/config.dart
+   // 2. 修改 lib/config/api/index.dart
    // 3. 所有接口调用都会自动适配
    ```
 
@@ -178,13 +178,13 @@ class ProjectBConfig extends ApiConfig {
 
 **A:** 只需要修改一个文件：
 ```
-lib/api/config.dart
+lib/config/api/index.dart
 ```
 
 所有使用 `ApiConfig` 的地方会自动适配新的配置。
 
 ## 相关文件
 
-- `lib/api/config.dart` - API 配置类定义
+- `lib/config/api/index.dart` - API 配置类定义
 - `lib/api/http.dart` - HTTP 服务，使用 ApiConfig 处理响应
 - `lib/utils/upload/index.dart` - 上传工具，使用 ApiConfig 处理上传响应

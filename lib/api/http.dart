@@ -5,7 +5,7 @@ import 'package:dio/io.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_tem/api/config.dart';
+import 'package:flutter_tem/config/api/index.dart';
 import 'package:flutter_tem/routers/app_routes.dart';
 import 'package:flutter_tem/utils/storage/index.dart';
 import 'package:get/get.dart' hide FormData;
