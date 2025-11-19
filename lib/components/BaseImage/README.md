@@ -9,11 +9,12 @@
 - ✅ 支持主流图片格式（JPEG、PNG、GIF、WebP 等）
 - ✅ 自定义裁剪模式（BoxFit）
 - ✅ 可配置的淡入动画
-- ✅ 加载中占位图
+- ✅ 加载中占位图（Shimmer 渐变效果）
 - ✅ 加载失败默认图
 - ✅ 圆角支持
 - ✅ 圆形图片支持
 - ✅ 自定义占位图和错误图
+- ✅ 点击预览功能（支持缩放、拖动）
 
 ## 基础用法
 
@@ -56,6 +57,26 @@ BaseImage(
   width: 200,
   height: 150,
   borderRadius: 12,
+)
+```
+
+### 5. 图片点击预览
+
+```dart
+// 默认启用预览
+BaseImage(
+  imageUrl: 'https://example.com/image.jpg',
+  width: 200,
+  height: 150,
+  enablePreview: true, // 默认值，可省略
+)
+
+// 禁用预览
+BaseImage(
+  imageUrl: 'https://example.com/image.jpg',
+  width: 200,
+  height: 150,
+  enablePreview: false,
 )
 ```
 
@@ -291,6 +312,7 @@ class ImageExampleView extends StatelessWidget {
 | `enableFadeIn` | `bool` | `true` | 是否启用淡入动画 |
 | `fadeInDuration` | `int` | `300` | 淡入动画时长（毫秒） |
 | `placeholderColor` | `Color?` | `Colors.grey[200]` | 占位图背景色 |
+| `enablePreview` | `bool` | `true` | 是否启用点击预览（支持缩放、拖动） |
 
 ## BoxFit 模式说明
 
@@ -310,10 +332,12 @@ class ImageExampleView extends StatelessWidget {
 2. **本地图片路径**：本地图片需要在 `pubspec.yaml` 中配置 assets
 3. **圆形图片**：使用 `isCircle=true` 时，建议 `width` 和 `height` 设置为相同值
 4. **性能优化**：建议根据实际显示尺寸设置 `width` 和 `height`，避免加载过大的图片
+5. **图片预览**：默认启用点击预览，支持双指缩放、拖动查看，点击右上角关闭按钮退出
 
 ## 依赖
 
 本组件依赖以下包：
-- `cached_network_image: ^3.4.1`
+- `cached_network_image: ^3.4.1` - 网络图片缓存
+- `photo_view: ^0.15.0` - 图片预览和缩放
 
-确保在 `pubspec.yaml` 中已添加此依赖。
+确保在 `pubspec.yaml` 中已添加这些依赖。

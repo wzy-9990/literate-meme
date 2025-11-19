@@ -286,6 +286,41 @@ class ImageExampleView extends StatelessWidget {
             ),
             const SizedBox(height: 30),
             _buildSection(
+              title: '图片点击预览',
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    children: [
+                      BaseImage(
+                        imageUrl: _demoImage1,
+                        width: 150,
+                        height: 100,
+                        borderRadius: 8,
+                        enablePreview: true,
+                      ),
+                      const SizedBox(height: 5),
+                      const Text('点击可预览', style: TextStyle(fontSize: 12)),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      BaseImage(
+                        imageUrl: _demoImage2,
+                        width: 150,
+                        height: 100,
+                        borderRadius: 8,
+                        enablePreview: false,
+                      ),
+                      const SizedBox(height: 5),
+                      const Text('禁用预览', style: TextStyle(fontSize: 12)),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 30),
+            _buildSection(
               title: '自定义占位图',
               child: BaseImage(
                 imageUrl: _demoImage3,

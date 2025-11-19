@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_tem/components/BaseImage/preview.dart';
 
 /// 通用图片组件
 ///
@@ -55,6 +56,9 @@ class BaseImage extends StatelessWidget {
   /// 是否是圆形图片
   final bool isCircle;
 
+  /// 是否启用点击预览
+  final bool enablePreview;
+
   const BaseImage({
     super.key,
     required this.imageUrl,
@@ -68,6 +72,7 @@ class BaseImage extends StatelessWidget {
     this.fadeInDuration = 300,
     this.placeholderColor,
     this.isCircle = false,
+    this.enablePreview = true,
   });
 
   /// 判断是否为网络图片
@@ -139,11 +144,34 @@ class BaseImage extends StatelessWidget {
     return child;
   }
 
+  /// 打开图片预览
+  void _openPreview(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ImagePreviewPage(imageUrl: imageUrl),
+      ),
+    );
+  }
+
+  /// 包装点击事件
+  Widget _wrapGesture(BuildContext context, Widget child) {
+    if (!enablePreview) {
+      return child;
+    }
+
+    return GestureDetector(
+      onTap: () => _openPreview(context),
+      child: child,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    Widget imageWidget;
+
     // 网络图片
     if (_isNetworkImage) {
-      return _wrapImage(
+      imageWidget = _wrapImage(
         CachedNetworkImage(
           imageUrl: imageUrl,
           width: width,
@@ -156,20 +184,22 @@ class BaseImage extends StatelessWidget {
           errorWidget: (context, url, error) => _buildErrorWidget(),
         ),
       );
+    } else {
+      // 本地图片
+      imageWidget = _wrapImage(
+        _LocalImage(
+          imageUrl: imageUrl,
+          width: width,
+          height: height,
+          fit: fit,
+          enableFadeIn: enableFadeIn,
+          fadeInDuration: fadeInDuration,
+          errorWidget: _buildErrorWidget(),
+        ),
+      );
     }
 
-    // 本地图片
-    return _wrapImage(
-      _LocalImage(
-        imageUrl: imageUrl,
-        width: width,
-        height: height,
-        fit: fit,
-        enableFadeIn: enableFadeIn,
-        fadeInDuration: fadeInDuration,
-        errorWidget: _buildErrorWidget(),
-      ),
-    );
+    return _wrapGesture(context, imageWidget);
   }
 }
 
