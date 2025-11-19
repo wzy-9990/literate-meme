@@ -1,10 +1,12 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:mime/mime.dart';
+import 'package:flutter_tem/utils/permission/index.dart';
 
 /// 上传文件信息
 class UploadFileInfo {
@@ -83,6 +85,23 @@ class UploadUtil {
     int imageQuality = 85,
   }) async {
     try {
+      // 权限检查
+      bool hasPermission = false;
+      if (source == ImageSourceType.camera) {
+        hasPermission = await PermissionUtil.requestCamera(
+          tip: '需要访问相机以拍摄照片',
+        );
+      } else {
+        hasPermission = await PermissionUtil.requestPhotos(
+          tip: '需要访问相册以选择照片',
+        );
+      }
+
+      if (!hasPermission) {
+        debugPrint('权限未授予');
+        return null;
+      }
+
       final ImageSource imageSource = source == ImageSourceType.camera
           ? ImageSource.camera
           : ImageSource.gallery;
@@ -117,6 +136,16 @@ class UploadUtil {
     int? limit,
   }) async {
     try {
+      // 权限检查
+      final hasPermission = await PermissionUtil.requestPhotos(
+        tip: '需要访问相册以选择照片',
+      );
+
+      if (!hasPermission) {
+        debugPrint('权限未授予');
+        return [];
+      }
+
       final List<XFile> images = await _imagePicker.pickMultiImage(
         maxWidth: maxWidth,
         maxHeight: maxHeight,
@@ -268,28 +297,35 @@ class UploadUtil {
     }
   }
 
-  /// 显示选择图片来源弹窗
+  /// 显示选择图片来源弹窗（iOS 风格）
   static Future<ImageSourceType?> showImageSourceDialog(
     BuildContext context,
   ) async {
-    return showModalBottomSheet<ImageSourceType>(
+    return showCupertinoModalPopup<ImageSourceType>(
       context: context,
-      builder: (context) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.camera_alt),
-              title: const Text('拍照'),
-              onTap: () => Navigator.pop(context, ImageSourceType.camera),
-            ),
-            ListTile(
-              leading: const Icon(Icons.photo_library),
-              title: const Text('从相册选择'),
-              onTap: () => Navigator.pop(context, ImageSourceType.gallery),
-            ),
-            const SizedBox(height: 8),
-          ],
+      builder: (BuildContext context) => CupertinoActionSheet(
+        title: const Text('选择图片'),
+        message: const Text('请选择图片来源'),
+        actions: <CupertinoActionSheetAction>[
+          CupertinoActionSheetAction(
+            onPressed: () {
+              Navigator.pop(context, ImageSourceType.camera);
+            },
+            child: const Text('拍照'),
+          ),
+          CupertinoActionSheetAction(
+            onPressed: () {
+              Navigator.pop(context, ImageSourceType.gallery);
+            },
+            child: const Text('从相册选择'),
+          ),
+        ],
+        cancelButton: CupertinoActionSheetAction(
+          isDefaultAction: true,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text('取消'),
         ),
       ),
     );
