@@ -333,6 +333,12 @@ Future<Map<Permission, bool>> requestMultiplePermissions(
 2. **iOS 14+**：相册权限可能返回 `isLimited` 状态，表示用户只授予了部分照片访问权限
 3. **永久拒绝**：Android 用户拒绝权限 2 次后会变为永久拒绝，需引导到设置页面
 4. **提示时机**：建议在用户主动触发功能时请求权限，而不是应用启动时批量请求
+5. **iOS 权限弹窗机制**：
+   - iOS 系统权限弹窗只会在**第一次请求**时自动弹出
+   - 用户拒绝后，再次调用 `request()` 可能不会弹窗，直接返回 `denied` 状态
+   - 此时状态为 `isDenied`（不是 `isPermanentlyDenied`），但需要引导用户去设置中手动开启
+   - 本工具已自动处理：当检测到 iOS 上权限请求失败时，会自动弹出引导弹窗
+6. **调试权限问题**：使用 `PermissionUtil.debugPermissionStatus()` 可以查看详细的权限状态信息
 
 ## 依赖
 

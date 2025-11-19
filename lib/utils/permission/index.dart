@@ -104,6 +104,23 @@ class PermissionUtil {
 
     if (status.isDenied) {
       final result = await permission.request();
+
+      // 如果请求后仍然被拒绝，检查是否需要引导用户去设置
+      if (!result.isGranted && !result.isLimited) {
+        // 在 iOS 上，如果用户之前拒绝过，系统可能不会再弹窗
+        // 此时需要引导用户去设置中手动开启
+        if (Platform.isIOS && showDeniedDialog) {
+          final newStatus = await permission.status;
+          // 如果状态仍然是 denied（说明系统没有弹窗或用户再次拒绝）
+          if (newStatus.isDenied || newStatus.isPermanentlyDenied) {
+            await _showPermissionDeniedDialog(
+              permissionType: getPermissionName(permission),
+            );
+          }
+        }
+        return false;
+      }
+
       return result.isGranted || result.isLimited;
     }
 
@@ -131,14 +148,19 @@ class PermissionUtil {
     }
   }
 
-  /// 权限被永久拒绝弹窗
+  /// 权限被拒绝弹窗（引导用户去设置）
   static Future<void> _showPermissionDeniedDialog({
     required String permissionType,
   }) async {
+    // 根据平台显示不同的引导文案
+    final String guidanceText = Platform.isIOS
+        ? '请在设置中启用$permissionType权限：\n设置 > Flutter Tem > $permissionType'
+        : '请在设置中启用$permissionType权限以继续使用此功能';
+
     return Get.dialog(
       AlertDialog(
-        title: Text('$permissionType权限被拒绝'),
-        content: Text('请在设置中启用$permissionType权限以继续使用此功能'),
+        title: Text('需要$permissionType权限'),
+        content: Text(guidanceText),
         actions: [
           TextButton(
             onPressed: () => Get.back(),
