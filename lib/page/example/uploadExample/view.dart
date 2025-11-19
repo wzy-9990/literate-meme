@@ -15,7 +15,7 @@ class UploadExampleView extends StatefulWidget {
 class _UploadExampleViewState extends State<UploadExampleView> {
   final List<UploadItem> _imageUploadList = [];
   final List<UploadItem> _fileUploadList = [];
-    List<Map<String, dynamic>> _uploadedData = [];
+   List<Map<String, dynamic>> _uploadedData = [];
 
   @override
   Widget build(BuildContext context) {
