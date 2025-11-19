@@ -10,4 +10,5 @@ class AppRoutes {
   static const webView = '/webView';
   static const example = '/example';
   static const imageExample = '/imageExample';
+  static const permissionExample = '/permissionExample';
 }

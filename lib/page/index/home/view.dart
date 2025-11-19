@@ -44,6 +44,12 @@ class HomeView extends StatelessWidget {
             },
             child: const Text('打开 BaseImage 组件示例'),
           ),
+          ElevatedButton(
+            onPressed: () {
+              logic.permissionExampleView();
+            },
+            child: const Text('打开权限工具示例'),
+          ),
         ],
       ),
     );

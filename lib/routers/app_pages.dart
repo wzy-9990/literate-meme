@@ -12,6 +12,7 @@ import 'package:flutter_tem/page/webview/binding.dart';
 import 'package:flutter_tem/page/webview/view.dart';
 import 'package:flutter_tem/page/example/pullToRefresh/view.dart';
 import 'package:flutter_tem/page/example/imageExample/view.dart';
+import 'package:flutter_tem/page/example/permissionExample/view.dart';
 import 'package:get/get.dart';
 
 import 'app_routes.dart';
@@ -58,6 +59,10 @@ class AppPages {
     GetPage(
       name: AppRoutes.imageExample,
       page: () => const ImageExampleView(),
+    ),
+    GetPage(
+      name: AppRoutes.permissionExample,
+      page: () => const PermissionExampleView(),
     ),
   ];
 }

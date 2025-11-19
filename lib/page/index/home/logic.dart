@@ -25,4 +25,8 @@ class HomeLogic extends GetxController {
   imageExampleView() {
     NavigationUtils.toNamed(AppRoutes.imageExample);
   }
+
+  permissionExampleView() {
+    NavigationUtils.toNamed(AppRoutes.permissionExample);
+  }
 }
