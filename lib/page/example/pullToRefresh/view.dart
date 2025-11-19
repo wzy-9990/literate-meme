@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:flutter_tem/components/BaseAppBar/index.dart';
-import 'package:flutter_tem/components/BaseSuperRefreshComponent/components/PullToRefresh/index.dart';
-import 'package:flutter_tem/components/BaseLoading/index.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'logic.dart';
+import 'package:flutter_tem/components/BaseAppBar/index.dart';
+import 'package:flutter_tem/components/BaseLoading/index.dart';
+import 'package:flutter_tem/components/BaseSuperRefreshComponent/components/PullToRefresh/index.dart';
+import 'package:flutter_tem/page/example/pullToRefresh/logic.dart';
+import 'package:get/get.dart';
 
 class PullToRefreshExampleView extends StatelessWidget {
   const PullToRefreshExampleView({super.key});
@@ -211,7 +211,7 @@ class PullToRefreshExampleView extends StatelessWidget {
                                 // 显示更详细的信息
                                 Get.dialog(
                                   AlertDialog(
-                                    title: Text('用户详情'),
+                                    title: const Text('用户详情'),
                                     content: SingleChildScrollView(
                                       child: Column(
                                         crossAxisAlignment:
@@ -242,7 +242,7 @@ class PullToRefreshExampleView extends StatelessWidget {
                                     actions: [
                                       TextButton(
                                         onPressed: () => Get.back(),
-                                        child: Text('关闭'),
+                                        child: const Text('关闭'),
                                       ),
                                     ],
                                   ),
@@ -274,7 +274,7 @@ class PullToRefreshExampleView extends StatelessWidget {
     if (value == null ||
         value.toString().isEmpty ||
         value.toString() == 'null') {
-      return SizedBox.shrink();
+      return const SizedBox.shrink();
     }
     return Padding(
       padding: EdgeInsets.only(bottom: 8.h),

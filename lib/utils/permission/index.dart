@@ -137,7 +137,7 @@ class PermissionUtil {
   }) async {
     return Get.dialog(
       AlertDialog(
-        title: Text('${permissionType}权限被拒绝'),
+        title: Text('$permissionType权限被拒绝'),
         content: Text('请在设置中启用$permissionType权限以继续使用此功能'),
         actions: [
           TextButton(
@@ -165,7 +165,7 @@ class PermissionUtil {
   ) async {
     final Map<Permission, bool> results = {};
 
-    for (var permission in permissions) {
+    for (final permission in permissions) {
       final granted = await requestPermission(permission);
       results[permission] = granted;
     }

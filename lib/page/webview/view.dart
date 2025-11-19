@@ -10,8 +10,8 @@ class WebViewPageView extends StatefulWidget {
   final String title;
 
   const WebViewPageView({
-    super.key,
     required this.url,
+    super.key,
     this.title = '网页',
   });
 

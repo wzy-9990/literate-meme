@@ -1,5 +1,5 @@
+import 'package:flutter_tem/page/webview/logic.dart';
 import 'package:get/get.dart';
-import 'logic.dart';
 
 class WebViewBinding extends Bindings {
   @override

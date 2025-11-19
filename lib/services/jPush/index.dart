@@ -50,11 +50,11 @@ class JPushServices {
         badge: true,
       ),
     );
-    
-    final rid = await jPush.getRegistrationID();
-    debugPrint("RegistrationID: $rid");
 
-    setAlias("拼卡拉司机版");
+    final rid = await jPush.getRegistrationID();
+    debugPrint('RegistrationID: $rid');
+
+    setAlias('拼卡拉司机版');
   }
 
   setAlias(String aliasStr) {

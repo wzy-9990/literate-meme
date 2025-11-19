@@ -1,4 +1,4 @@
-import '../../api/http.dart';
+import 'package:flutter_tem/api/http.dart';
 
 const getUserInfo = '/pklApi/public/user/getUserInfo';
 

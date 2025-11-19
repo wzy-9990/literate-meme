@@ -9,6 +9,6 @@ class MessageView extends StatelessWidget {
   Widget build(BuildContext context) {
     // ignore: unused_local_variable
     final logic = Get.find<MessageLogic>();
-    return const Center(child: Text("消息"));
+    return const Center(child: Text('消息'));
   }
 }

@@ -6,10 +6,9 @@ import 'package:flutter_tem/components/BaseUnfocusOnTap/index.dart';
 import 'package:flutter_tem/config/easyLoading/index.dart';
 import 'package:flutter_tem/config/env/index.dart';
 import 'package:flutter_tem/config/theme/index.dart';
+import 'package:flutter_tem/routers/app_pages.dart';
+import 'package:flutter_tem/routers/app_routes.dart';
 import 'package:get/get.dart';
-
-import 'routers/app_routes.dart';
-import 'routers/app_pages.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

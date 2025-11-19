@@ -1,4 +1,7 @@
-
+import 'package:flutter_tem/page/example/imageExample/view.dart';
+import 'package:flutter_tem/page/example/permissionExample/view.dart';
+import 'package:flutter_tem/page/example/pullToRefresh/view.dart';
+import 'package:flutter_tem/page/example/uploadExample/view.dart';
 import 'package:flutter_tem/page/guide/view.dart';
 import 'package:flutter_tem/page/index/binding.dart';
 import 'package:flutter_tem/page/index/my/setting/binding.dart';
@@ -10,13 +13,8 @@ import 'package:flutter_tem/page/user/login/binding.dart';
 import 'package:flutter_tem/page/user/login/view.dart';
 import 'package:flutter_tem/page/webview/binding.dart';
 import 'package:flutter_tem/page/webview/view.dart';
-import 'package:flutter_tem/page/example/pullToRefresh/view.dart';
-import 'package:flutter_tem/page/example/imageExample/view.dart';
-import 'package:flutter_tem/page/example/permissionExample/view.dart';
-import 'package:flutter_tem/page/example/uploadExample/view.dart';
+import 'package:flutter_tem/routers/app_routes.dart';
 import 'package:get/get.dart';
-
-import 'app_routes.dart';
 
 class AppPages {
   static final routes = [

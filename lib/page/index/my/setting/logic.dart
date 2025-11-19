@@ -43,14 +43,14 @@ class MySettingLogic extends GetxController {
   }
 
   _loadUserInfo() async {
-    dynamic storedName = await Storage.getMap(StorageKeys.userInfo);
+    final dynamic storedName = await Storage.getMap(StorageKeys.userInfo);
     userInfo.value = storedName;
   }
 
   updateUserInfo(String name) async {
-    int currentMilliseconds = DateTime.now().millisecondsSinceEpoch;
-    dynamic storedName = await Storage.getMap(StorageKeys.userInfo);
-    storedName['userName'] = '${name}$currentMilliseconds';
+    final int currentMilliseconds = DateTime.now().millisecondsSinceEpoch;
+    final dynamic storedName = await Storage.getMap(StorageKeys.userInfo);
+    storedName['userName'] = '$name$currentMilliseconds';
     await Storage.setMap(StorageKeys.userInfo, storedName);
     await initData();
     await myLogic.initData();

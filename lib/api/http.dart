@@ -49,7 +49,7 @@ class ApiService {
       connectTimeout: const Duration(milliseconds: 5000),
       receiveTimeout: const Duration(milliseconds: 3000),
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     );
 
@@ -97,7 +97,7 @@ class ApiService {
             return handler.reject(DioException(
               requestOptions: response.requestOptions,
               response: response,
-              error: "接口返回错误: $msg",
+              error: '接口返回错误: $msg',
               type: DioExceptionType.badResponse,
             ));
           }
@@ -108,23 +108,23 @@ class ApiService {
 
         // 非200的 HTTP 错误
         if (response.statusCode == ApiConfig.unauthorizedCode) {
-          EasyLoading.showToast("登录信息过期，请重新登录");
+          EasyLoading.showToast('登录信息过期，请重新登录');
           Future.delayed(const Duration(seconds: 1), () {
             Get.offAllNamed(AppRoutes.login);
           });
         } else {
-          EasyLoading.showToast("请求异常：${response.statusCode}");
+          EasyLoading.showToast('请求异常：${response.statusCode}');
         }
 
         return handler.reject(DioException(
           requestOptions: response.requestOptions,
           response: response,
-          error: "状态码异常: ${response.statusCode}",
+          error: '状态码异常: ${response.statusCode}',
           type: DioExceptionType.badResponse,
         ));
       },
       onError: (DioException e, handler) {
-        EasyLoading.showToast("网络异常，请检查网络连接");
+        EasyLoading.showToast('网络异常，请检查网络连接');
         handler.next(e);
       },
     ));

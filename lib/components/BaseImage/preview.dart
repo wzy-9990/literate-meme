@@ -11,8 +11,8 @@ class ImagePreviewPage extends StatelessWidget {
   final Color backgroundColor;
 
   const ImagePreviewPage({
-    super.key,
     required this.imageUrl,
+    super.key,
     this.backgroundColor = Colors.black,
   });
 
@@ -43,7 +43,8 @@ class ImagePreviewPage extends StatelessWidget {
                 child: CircularProgressIndicator(
                   value: event == null
                       ? 0
-                      : event.cumulativeBytesLoaded / (event.expectedTotalBytes ?? 1),
+                      : event.cumulativeBytesLoaded /
+                          (event.expectedTotalBytes ?? 1),
                   valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
                 ),
               );

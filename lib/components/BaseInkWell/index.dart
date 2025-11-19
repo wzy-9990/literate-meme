@@ -56,8 +56,8 @@ class BaseInkWell extends StatelessWidget {
   final bool expand;
 
   const BaseInkWell({
-    super.key,
     required this.child,
+    super.key,
     this.onTap,
     this.onLongPress,
     this.onDoubleTap,
@@ -73,8 +73,8 @@ class BaseInkWell extends StatelessWidget {
 
   /// 快捷构造函数 - 圆角卡片样式
   const BaseInkWell.card({
-    super.key,
     required this.child,
+    super.key,
     this.onTap,
     this.onLongPress,
     this.onDoubleTap,
@@ -89,8 +89,8 @@ class BaseInkWell extends StatelessWidget {
 
   /// 快捷构造函数 - 圆形样式
   const BaseInkWell.circle({
-    super.key,
     required this.child,
+    super.key,
     this.onTap,
     this.onLongPress,
     this.onDoubleTap,
@@ -114,8 +114,7 @@ class BaseInkWell extends StatelessWidget {
         splashColor ?? Colors.black.withOpacity(0.06);
 
     // 默认高亮颜色为透明
-    final Color effectiveHighlightColor =
-        highlightColor ?? Colors.transparent;
+    final Color effectiveHighlightColor = highlightColor ?? Colors.transparent;
 
     // 默认背景颜色为透明
     final Color effectiveBackgroundColor =
@@ -130,7 +129,8 @@ class BaseInkWell extends StatelessWidget {
         onLongPress: onLongPress,
         onDoubleTap: onDoubleTap,
         splashColor: enableRipple ? effectiveSplashColor : Colors.transparent,
-        highlightColor: enableRipple ? effectiveHighlightColor : Colors.transparent,
+        highlightColor:
+            enableRipple ? effectiveHighlightColor : Colors.transparent,
         child: Padding(
           padding: padding ?? EdgeInsets.zero,
           child: child,

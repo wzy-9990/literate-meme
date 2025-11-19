@@ -95,7 +95,7 @@ class _UploadExampleViewState extends State<UploadExampleView> {
             BaseUpload(
               maxCount: 3,
               imageOnly: false,
-              allowedExtensions: ['pdf', 'doc', 'docx'],
+              allowedExtensions: const ['pdf', 'doc', 'docx'],
               displayMode: 'list',
               customUpload: _mockUpload,
               onUploadSuccess: (item) {

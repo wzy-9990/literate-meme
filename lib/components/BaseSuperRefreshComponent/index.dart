@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tem/components/BaseSuperRefreshComponent/components/WaterDropHeader/index.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'components/WaterDropHeader/index.dart';
 
 /// 超级刷新组件，集成下拉刷新、上拉加载、空页面和加载状态处理
 class SuperRefreshComponent extends StatefulWidget {
@@ -41,9 +41,9 @@ class SuperRefreshComponent extends StatefulWidget {
   final Widget? loadingWidget;
 
   const SuperRefreshComponent({
-    super.key,
     required this.child,
     required this.refreshController,
+    super.key,
     this.onRefresh,
     this.onLoadMore,
     this.enablePullDown = true,
@@ -125,13 +125,13 @@ class _SuperRefreshComponentState extends State<SuperRefreshComponent> {
                   child: CircularProgressIndicator(strokeWidth: 2),
                 ),
                 SizedBox(width: 10),
-                Text("加载中..."),
+                Text('加载中...'),
               ],
             );
           } else if (mode == LoadStatus.failed) {
-            body = const Text("加载失败！");
+            body = const Text('加载失败！');
           } else if (mode == LoadStatus.canLoading) {
-            body = const Text("释放加载...");
+            body = const Text('释放加载...');
           } else {
             body = Text(widget.noMoreText);
           }
@@ -188,9 +188,9 @@ class SuperRefreshListComponent extends StatefulWidget {
   final ScrollController? scrollController;
 
   const SuperRefreshListComponent({
-    super.key,
     required this.children,
     required this.refreshController,
+    super.key,
     this.onRefresh,
     this.onLoadMore,
     this.enablePullDown = true,
@@ -277,13 +277,13 @@ class _SuperRefreshListComponentState extends State<SuperRefreshListComponent> {
                     child: CircularProgressIndicator(strokeWidth: 2),
                   ),
                   SizedBox(width: 10),
-                  Text("加载中..."),
+                  Text('加载中...'),
                 ],
               );
             } else if (mode == LoadStatus.failed) {
-              body = const Text("加载失败！");
+              body = const Text('加载失败！');
             } else if (mode == LoadStatus.canLoading) {
-              body = const Text("释放加载");
+              body = const Text('释放加载');
             } else {
               body = Text(widget.noMoreText);
             }
@@ -356,13 +356,13 @@ class _SuperRefreshListComponentState extends State<SuperRefreshListComponent> {
                   child: CircularProgressIndicator(strokeWidth: 2),
                 ),
                 SizedBox(width: 10),
-                Text("加载中..."),
+                Text('加载中...'),
               ],
             );
           } else if (mode == LoadStatus.failed) {
-            body = const Text("加载失败！");
+            body = const Text('加载失败！');
           } else if (mode == LoadStatus.canLoading) {
-            body = const Text("释放加载");
+            body = const Text('释放加载');
           } else {
             body = Text(widget.noMoreText);
           }

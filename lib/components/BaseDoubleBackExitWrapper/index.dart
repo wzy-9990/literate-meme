@@ -4,10 +4,11 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 // 双击退出
 class BaseDoubleBackExitWrapper extends StatefulWidget {
   final Widget child;
-  const BaseDoubleBackExitWrapper({super.key, required this.child});
+  const BaseDoubleBackExitWrapper({required this.child, super.key});
 
   @override
-  State<BaseDoubleBackExitWrapper> createState() => _DoubleBackExitWrapperState();
+  State<BaseDoubleBackExitWrapper> createState() =>
+      _DoubleBackExitWrapperState();
 }
 
 class _DoubleBackExitWrapperState extends State<BaseDoubleBackExitWrapper> {

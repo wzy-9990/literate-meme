@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class BaseLoading extends StatelessWidget {
   final String message;
 
-  const BaseLoading({super.key, this.message = "页面加载中..."});
+  const BaseLoading({super.key, this.message = '页面加载中...'});
 
   @override
   Widget build(BuildContext context) {

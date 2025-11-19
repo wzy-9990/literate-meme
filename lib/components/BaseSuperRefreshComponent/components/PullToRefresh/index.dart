@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:flutter_tem/components/BaseEmpty/index.dart';
-import '../WaterDropHeader/index.dart';
+import 'package:flutter_tem/components/BaseSuperRefreshComponent/components/WaterDropHeader/index.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class PullToRefresh extends StatefulWidget {
   final Widget child;
@@ -14,16 +14,16 @@ class PullToRefresh extends StatefulWidget {
   final String? noMoreText;
 
   const PullToRefresh({
-    Key? key,
     required this.child,
     required this.refreshController,
+    super.key,
     this.onRefresh,
     this.onLoadMore,
     this.enablePullDown = true,
     this.enablePullUp = true,
     this.noDataText = '暂无数据',
     this.noMoreText = '没有更多了～',
-  }) : super(key: key);
+  });
 
   @override
   State<PullToRefresh> createState() => _BasePullToRefreshState();
@@ -54,13 +54,13 @@ class _BasePullToRefreshState extends State<PullToRefresh> {
                   child: CircularProgressIndicator(strokeWidth: 2),
                 ),
                 SizedBox(width: 10),
-                Text("加载中..."),
+                Text('加载中...'),
               ],
             );
           } else if (mode == LoadStatus.failed) {
-            body = const Text("加载失败！");
+            body = const Text('加载失败！');
           } else if (mode == LoadStatus.canLoading) {
-            body = const Text("释放加载...");
+            body = const Text('释放加载...');
           } else {
             body = Text(widget.noMoreText!);
           }
@@ -121,9 +121,9 @@ class BasePullToRefreshList extends StatefulWidget {
   final VoidCallback? onEmptyButtonPressed;
 
   const BasePullToRefreshList({
-    Key? key,
     required this.children,
     required this.refreshController,
+    super.key,
     this.onRefresh,
     this.onLoadMore,
     this.enablePullDown = true,
@@ -146,7 +146,7 @@ class BasePullToRefreshList extends StatefulWidget {
     this.searchEmptyButtonText,
     // 按钮回调
     this.onEmptyButtonPressed,
-  }) : super(key: key);
+  });
 
   @override
   State<BasePullToRefreshList> createState() => _BasePullToRefreshListState();
@@ -202,13 +202,13 @@ class _BasePullToRefreshListState extends State<BasePullToRefreshList> {
                   child: CircularProgressIndicator(strokeWidth: 2),
                 ),
                 SizedBox(width: 10),
-                Text("加载中..."),
+                Text('加载中...'),
               ],
             );
           } else if (mode == LoadStatus.failed) {
-            body = const Text("加载失败！");
+            body = const Text('加载失败！');
           } else if (mode == LoadStatus.canLoading) {
-            body = const Text("释放加载...");
+            body = const Text('释放加载...');
           } else {
             body = Text(widget.noMoreText!);
           }

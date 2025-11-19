@@ -6,14 +6,22 @@ class ImageExampleView extends StatelessWidget {
   const ImageExampleView({super.key});
 
   // 使用稳定的图片链接
-  static const String _demoImage1 = 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300';
-  static const String _demoImage2 = 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=300';
-  static const String _demoImage3 = 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=300';
-  static const String _demoAvatar1 = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&h=200';
-  static const String _demoAvatar2 = 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200';
-  static const String _demoAvatar3 = 'https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=200&h=200';
-  static const String _demoAvatar4 = 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200';
-  static const String _demoPortrait = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=400';
+  static const String _demoImage1 =
+      'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300';
+  static const String _demoImage2 =
+      'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=300';
+  static const String _demoImage3 =
+      'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=300';
+  static const String _demoAvatar1 =
+      'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&h=200';
+  static const String _demoAvatar2 =
+      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200';
+  static const String _demoAvatar3 =
+      'https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=200&h=200';
+  static const String _demoAvatar4 =
+      'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200';
+  static const String _demoPortrait =
+      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=400';
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +36,7 @@ class ImageExampleView extends StatelessWidget {
           children: [
             _buildSection(
               title: '网络图片 - 默认效果',
-              child: BaseImage(
+              child: const BaseImage(
                 imageUrl: _demoImage1,
                 width: double.infinity,
                 height: 200,
@@ -38,7 +46,7 @@ class ImageExampleView extends StatelessWidget {
             const SizedBox(height: 30),
             _buildSection(
               title: '圆形头像',
-              child: Row(
+              child: const Row(
                 children: [
                   BaseImage(
                     imageUrl: _demoAvatar1,
@@ -46,21 +54,21 @@ class ImageExampleView extends StatelessWidget {
                     height: 60,
                     isCircle: true,
                   ),
-                  const SizedBox(width: 20),
+                  SizedBox(width: 20),
                   BaseImage(
                     imageUrl: _demoAvatar2,
                     width: 60,
                     height: 60,
                     isCircle: true,
                   ),
-                  const SizedBox(width: 20),
+                  SizedBox(width: 20),
                   BaseImage(
                     imageUrl: _demoAvatar3,
                     width: 60,
                     height: 60,
                     isCircle: true,
                   ),
-                  const SizedBox(width: 20),
+                  SizedBox(width: 20),
                   BaseImage(
                     imageUrl: _demoAvatar4,
                     width: 60,
@@ -73,7 +81,7 @@ class ImageExampleView extends StatelessWidget {
             const SizedBox(height: 30),
             _buildSection(
               title: '不同圆角大小',
-              child: Row(
+              child: const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Column(
@@ -84,8 +92,8 @@ class ImageExampleView extends StatelessWidget {
                         height: 80,
                         borderRadius: 0,
                       ),
-                      const SizedBox(height: 5),
-                      const Text('0', style: TextStyle(fontSize: 12)),
+                      SizedBox(height: 5),
+                      Text('0', style: TextStyle(fontSize: 12)),
                     ],
                   ),
                   Column(
@@ -96,8 +104,8 @@ class ImageExampleView extends StatelessWidget {
                         height: 80,
                         borderRadius: 8,
                       ),
-                      const SizedBox(height: 5),
-                      const Text('8', style: TextStyle(fontSize: 12)),
+                      SizedBox(height: 5),
+                      Text('8', style: TextStyle(fontSize: 12)),
                     ],
                   ),
                   Column(
@@ -108,8 +116,8 @@ class ImageExampleView extends StatelessWidget {
                         height: 80,
                         borderRadius: 16,
                       ),
-                      const SizedBox(height: 5),
-                      const Text('16', style: TextStyle(fontSize: 12)),
+                      SizedBox(height: 5),
+                      Text('16', style: TextStyle(fontSize: 12)),
                     ],
                   ),
                   Column(
@@ -120,8 +128,8 @@ class ImageExampleView extends StatelessWidget {
                         height: 80,
                         borderRadius: 40,
                       ),
-                      const SizedBox(height: 5),
-                      const Text('40', style: TextStyle(fontSize: 12)),
+                      SizedBox(height: 5),
+                      Text('40', style: TextStyle(fontSize: 12)),
                     ],
                   ),
                 ],
@@ -185,7 +193,7 @@ class ImageExampleView extends StatelessWidget {
             const SizedBox(height: 30),
             _buildSection(
               title: '禁用淡入动画',
-              child: Row(
+              child: const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Column(
@@ -197,8 +205,8 @@ class ImageExampleView extends StatelessWidget {
                         borderRadius: 8,
                         enableFadeIn: true,
                       ),
-                      const SizedBox(height: 5),
-                      const Text('动画开启', style: TextStyle(fontSize: 12)),
+                      SizedBox(height: 5),
+                      Text('动画开启', style: TextStyle(fontSize: 12)),
                     ],
                   ),
                   Column(
@@ -210,8 +218,8 @@ class ImageExampleView extends StatelessWidget {
                         borderRadius: 8,
                         enableFadeIn: false,
                       ),
-                      const SizedBox(height: 5),
-                      const Text('动画关闭', style: TextStyle(fontSize: 12)),
+                      SizedBox(height: 5),
+                      Text('动画关闭', style: TextStyle(fontSize: 12)),
                     ],
                   ),
                 ],
@@ -223,7 +231,7 @@ class ImageExampleView extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
+                  const Column(
                     children: [
                       BaseImage(
                         imageUrl: 'https://invalid-url.com/image.jpg',
@@ -231,8 +239,8 @@ class ImageExampleView extends StatelessWidget {
                         height: 100,
                         borderRadius: 8,
                       ),
-                      const SizedBox(height: 5),
-                      const Text('默认错误图', style: TextStyle(fontSize: 12)),
+                      SizedBox(height: 5),
+                      Text('默认错误图', style: TextStyle(fontSize: 12)),
                     ],
                   ),
                   Column(
@@ -269,7 +277,7 @@ class ImageExampleView extends StatelessWidget {
                       const Text('自定义错误图', style: TextStyle(fontSize: 12)),
                     ],
                   ),
-                  Column(
+                  const Column(
                     children: [
                       BaseImage(
                         imageUrl: 'invalid_local_path.png',
@@ -277,8 +285,8 @@ class ImageExampleView extends StatelessWidget {
                         height: 100,
                         borderRadius: 8,
                       ),
-                      const SizedBox(height: 5),
-                      const Text('本地图片错误', style: TextStyle(fontSize: 12)),
+                      SizedBox(height: 5),
+                      Text('本地图片错误', style: TextStyle(fontSize: 12)),
                     ],
                   ),
                 ],
@@ -287,7 +295,7 @@ class ImageExampleView extends StatelessWidget {
             const SizedBox(height: 30),
             _buildSection(
               title: '图片点击预览',
-              child: Row(
+              child: const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Column(
@@ -299,8 +307,8 @@ class ImageExampleView extends StatelessWidget {
                         borderRadius: 8,
                         enablePreview: true,
                       ),
-                      const SizedBox(height: 5),
-                      const Text('点击可预览', style: TextStyle(fontSize: 12)),
+                      SizedBox(height: 5),
+                      Text('点击可预览', style: TextStyle(fontSize: 12)),
                     ],
                   ),
                   Column(
@@ -312,8 +320,8 @@ class ImageExampleView extends StatelessWidget {
                         borderRadius: 8,
                         enablePreview: false,
                       ),
-                      const SizedBox(height: 5),
-                      const Text('禁用预览', style: TextStyle(fontSize: 12)),
+                      SizedBox(height: 5),
+                      Text('禁用预览', style: TextStyle(fontSize: 12)),
                     ],
                   ),
                 ],
@@ -339,7 +347,8 @@ class ImageExampleView extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.cloud_download, size: 40, color: Colors.white),
+                        Icon(Icons.cloud_download,
+                            size: 40, color: Colors.white),
                         SizedBox(height: 8),
                         Text(
                           '正在加载中...',

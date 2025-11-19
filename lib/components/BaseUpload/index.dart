@@ -60,7 +60,8 @@ class BaseUpload extends StatefulWidget {
 
   /// 上传成功的数据列表变化回调
   /// 返回所有上传成功的文件数据 [{ fileKey: "xxx", fileUrl: "xxx" }, ...]
-  final void Function(List<Map<String, dynamic>> uploadedData)? onUploadedDataChanged;
+  final void Function(List<Map<String, dynamic>> uploadedData)?
+      onUploadedDataChanged;
 
   /// 自定义上传方法（当 useDefaultUpload 为 false 时使用）
   final Future<dynamic> Function(UploadFileInfo fileInfo)? customUpload;
@@ -144,7 +145,7 @@ class _BaseUploadState extends State<BaseUpload> {
           _showMessage('最多只能上传 $remaining 张图片，已自动选择前 $remaining 张');
         }
 
-        for (var fileInfo in limitedFiles) {
+        for (final fileInfo in limitedFiles) {
           _addFile(fileInfo);
         }
       }
@@ -175,7 +176,7 @@ class _BaseUploadState extends State<BaseUpload> {
         _showMessage('最多只能上传 $remaining 个文件，已自动选择前 $remaining 个');
       }
 
-      for (var fileInfo in limitedFiles) {
+      for (final fileInfo in limitedFiles) {
         _addFile(fileInfo);
       }
     }
@@ -214,19 +215,47 @@ class _BaseUploadState extends State<BaseUpload> {
     final extension = fileName.split('.').last.toLowerCase();
 
     // 图片类型
-    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg', 'ico'];
+    const imageExtensions = [
+      'jpg',
+      'jpeg',
+      'png',
+      'gif',
+      'bmp',
+      'webp',
+      'svg',
+      'ico'
+    ];
     if (imageExtensions.contains(extension)) {
       return '图片';
     }
 
     // 视频类型
-    const videoExtensions = ['mp4', 'avi', 'mov', 'wmv', 'flv', 'mkv', 'webm', 'm4v', '3gp'];
+    const videoExtensions = [
+      'mp4',
+      'avi',
+      'mov',
+      'wmv',
+      'flv',
+      'mkv',
+      'webm',
+      'm4v',
+      '3gp'
+    ];
     if (videoExtensions.contains(extension)) {
       return '视频';
     }
 
     // 音频类型
-    const audioExtensions = ['mp3', 'wav', 'flac', 'aac', 'ogg', 'wma', 'm4a', 'ape'];
+    const audioExtensions = [
+      'mp3',
+      'wav',
+      'flac',
+      'aac',
+      'ogg',
+      'wma',
+      'm4a',
+      'ape'
+    ];
     if (audioExtensions.contains(extension)) {
       return '音频';
     }
@@ -280,7 +309,7 @@ class _BaseUploadState extends State<BaseUpload> {
 
       // 显示上传成功提示
       final fileTypeName = _getFileTypeName(item.fileInfo.fileName);
-      EasyLoading.showSuccess('${fileTypeName}上传成功');
+      EasyLoading.showSuccess('$fileTypeName上传成功');
 
       widget.onUploadSuccess?.call(item);
     } catch (e) {

@@ -1,13 +1,13 @@
 import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart' as path;
-import 'package:mime/mime.dart';
-import 'package:flutter_tem/utils/permission/index.dart';
 import 'package:flutter_tem/api/http.dart';
+import 'package:flutter_tem/utils/permission/index.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:mime/mime.dart';
+import 'package:path/path.dart' as path;
 
 /// 上传文件信息
 class UploadFileInfo {

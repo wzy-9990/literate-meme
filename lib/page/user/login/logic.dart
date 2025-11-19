@@ -11,9 +11,9 @@ class LoginLogic extends GetxController {
   }
 
   Future<void> loginButtonClick() async {
-    var params = {
-      'mobile': "17819849990",
-      'loginType': "1",
+    final params = {
+      'mobile': '17819849990',
+      'loginType': '1',
       'verificationCode': '6666',
     };
     final data = await loginApi(params);

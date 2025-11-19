@@ -11,7 +11,7 @@ class CommonDictEnum<T> {
   CommonDictEnum._(this._items) {
     // 初始化 value 映射表（value 作为唯一key，确保 value 不重复）
     _valueToItemMap = {};
-    for (var item in _items) {
+    for (final item in _items) {
       if (item.containsKey('value')) {
         final value = item['value'] as T;
         if (_valueToItemMap.containsKey(value)) {
@@ -84,9 +84,8 @@ class CommonDictEnum<T> {
   List<T> get allValues => _valueToItemMap.keys.toList();
 
   /// 8. 便捷方法：获取所有 label 列表（兼容原有用法）
-  List<String> get allLabels => _items
-      .map((e) => e['label'] as String? ?? '未知')
-      .toList();
+  List<String> get allLabels =>
+      _items.map((e) => e['label'] as String? ?? '未知').toList();
 
   /// 9. 通用方法：获取所有指定字段的列表（支持扩展字段）
   /// 示例：获取所有 item 的 desc 字段列表

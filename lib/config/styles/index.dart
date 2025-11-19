@@ -3,5 +3,5 @@
 library styles;
 
 export 'colors.dart';
-export 'spacing.dart';
 export 'radius.dart';
+export 'spacing.dart';

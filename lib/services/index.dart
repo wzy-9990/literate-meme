@@ -1,6 +1,6 @@
 import 'package:flutter_tem/api/http.dart';
-import 'baiDuMap/index.dart';
-import 'jPush/index.dart';
+import 'package:flutter_tem/services/baiDuMap/index.dart';
+import 'package:flutter_tem/services/jPush/index.dart';
 
 class Global {
   static Future<void> init() async {

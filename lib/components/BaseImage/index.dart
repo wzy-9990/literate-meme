@@ -60,8 +60,8 @@ class BaseImage extends StatelessWidget {
   final bool enablePreview;
 
   const BaseImage({
-    super.key,
     required this.imageUrl,
+    super.key,
     this.width,
     this.height,
     this.fit = BoxFit.cover,
@@ -215,12 +215,12 @@ class _LocalImage extends StatefulWidget {
 
   const _LocalImage({
     required this.imageUrl,
-    this.width,
-    this.height,
     required this.fit,
     required this.enableFadeIn,
     required this.fadeInDuration,
     required this.errorWidget,
+    this.width,
+    this.height,
   });
 
   @override
@@ -278,9 +278,9 @@ class _ShimmerPlaceholder extends StatefulWidget {
   final Color baseColor;
 
   const _ShimmerPlaceholder({
+    required this.baseColor,
     this.width,
     this.height,
-    required this.baseColor,
   });
 
   @override

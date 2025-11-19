@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:flutter_tem/utils/storage/index.dart';
+import 'package:get/get.dart';
 
 class MyLogic extends GetxController {
   RxBool isLoading = true.obs;
-  RxString avatar = "".obs;
+  RxString avatar = ''.obs;
   RxMap userInfo = RxMap();
 
   initData() async {
@@ -18,7 +18,7 @@ class MyLogic extends GetxController {
   }
 
   _loadUserInfo() async {
-    dynamic storedName = await Storage.getMap(StorageKeys.userInfo);
+    final dynamic storedName = await Storage.getMap(StorageKeys.userInfo);
     userInfo.value = storedName;
   }
 }

@@ -35,13 +35,13 @@ class ChangePasswordLogic extends GetxController {
   }
 
   _loadUserInfo() async {
-    dynamic storedName = await Storage.getMap(StorageKeys.userInfo);
+    final dynamic storedName = await Storage.getMap(StorageKeys.userInfo);
     userInfo.value = storedName;
   }
 
   void updateUserInfo(String name) async {
-    int currentMilliseconds = DateTime.now().millisecondsSinceEpoch;
-    dynamic storedName = await Storage.getMap(StorageKeys.userInfo);
+    final int currentMilliseconds = DateTime.now().millisecondsSinceEpoch;
+    final dynamic storedName = await Storage.getMap(StorageKeys.userInfo);
     storedName['userName'] = '张三$currentMilliseconds';
     await Storage.setMap(StorageKeys.userInfo, storedName);
     await initData();
