@@ -29,32 +29,14 @@ class PullToRefreshExampleLogic
     // 2️⃣ 调用你的业务接口（替换为你自己的接口）
     final response = await listPageUserByOrganizationIdApi(params);
 
-    // 3️⃣ 解析响应并返回
+    // 3️⃣ 解析响应并返回（简化版）
     if (response == null) {
-      return PaginationResponse<Map<String, dynamic>>(
-        records: [],
-        total: 0,
-        pages: 0,
-      );
+      return PaginationResponse(records: [], total: 0, pages: 0);
     }
 
-    if (response is Map) {
-      final responseMap = Map<String, dynamic>.from(response);
-      return PaginationResponse.fromMap(
-        responseMap,
-        (item) => Map<String, dynamic>.from(item),
-      );
-    } else if (response is List) {
-      return PaginationResponse.fromList(
-        response,
-        (item) => Map<String, dynamic>.from(item),
-      );
-    }
-
-    return PaginationResponse<Map<String, dynamic>>(
-      records: [],
-      total: 0,
-      pages: 0,
+    return PaginationResponse.fromMap(
+      Map<String, dynamic>.from(response),
+      (item) => Map<String, dynamic>.from(item),
     );
   }
 

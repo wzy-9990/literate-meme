@@ -49,20 +49,15 @@ class YourListLogic extends BasePaginationLogic<Map<String, dynamic>> {
     // 2️⃣ 调用你的接口（替换成你的API）
     final response = await yourApiMethod(params);
 
-    // 3️⃣ 解析并返回结果
+    // 3️⃣ 解析并返回结果（简化版）
     if (response == null) {
       return PaginationResponse(records: [], total: 0, pages: 0);
     }
 
-    if (response is Map) {
-      final responseMap = Map<String, dynamic>.from(response);
-      return PaginationResponse.fromMap(
-        responseMap,
-        (item) => Map<String, dynamic>.from(item),
-      );
-    }
-
-    return PaginationResponse(records: [], total: 0, pages: 0);
+    return PaginationResponse.fromMap(
+      Map<String, dynamic>.from(response),
+      (item) => Map<String, dynamic>.from(item),
+    );
   }
 }
 ```
