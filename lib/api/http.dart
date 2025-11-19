@@ -164,6 +164,11 @@ class ApiService {
         path,
         data: formData,
         onSendProgress: onProgress,
+        options: Options(
+          // 文件上传需要更长的超时时间
+          sendTimeout: const Duration(seconds: 60), // 发送超时 60 秒
+          receiveTimeout: const Duration(seconds: 60), // 接收超时 60 秒
+        ),
       );
 
       // 返回 data 字段

@@ -285,7 +285,13 @@ class UploadUtil {
         ),
       });
 
-      final dio = Dio();
+      final dio = Dio(
+        BaseOptions(
+          connectTimeout: const Duration(seconds: 30),
+          sendTimeout: const Duration(seconds: 60),
+          receiveTimeout: const Duration(seconds: 60),
+        ),
+      );
       final response = await dio.post(
         uploadUrl,
         data: formData,
@@ -326,7 +332,13 @@ class UploadUtil {
         fieldName: multipartFiles,
       });
 
-      final dio = Dio();
+      final dio = Dio(
+        BaseOptions(
+          connectTimeout: const Duration(seconds: 30),
+          sendTimeout: const Duration(seconds: 120), // 批量上传需要更长时间
+          receiveTimeout: const Duration(seconds: 120),
+        ),
+      );
       final response = await dio.post(
         uploadUrl,
         data: formData,
