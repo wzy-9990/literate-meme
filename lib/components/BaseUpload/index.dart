@@ -190,6 +190,8 @@ class _BaseUploadState extends State<BaseUpload> {
       return;
     }
 
+    if (!mounted) return;
+
     final item = UploadItem(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       fileInfo: fileInfo,
@@ -235,6 +237,8 @@ class _BaseUploadState extends State<BaseUpload> {
 
   /// 上传文件
   Future<void> _uploadFile(UploadItem item) async {
+    if (!mounted) return;
+
     setState(() {
       item.status = UploadStatus.uploading;
       item.progress = 0;
@@ -251,12 +255,16 @@ class _BaseUploadState extends State<BaseUpload> {
         result = await UploadUtil.uploadFileToDefault(
           fileInfo: item.fileInfo,
           onProgress: (sent, total) {
-            setState(() {
-              item.progress = sent / total;
-            });
+            if (mounted) {
+              setState(() {
+                item.progress = sent / total;
+              });
+            }
           },
         );
       }
+
+      if (!mounted) return;
 
       setState(() {
         item.status = UploadStatus.success;
@@ -276,6 +284,8 @@ class _BaseUploadState extends State<BaseUpload> {
 
       widget.onUploadSuccess?.call(item);
     } catch (e) {
+      if (!mounted) return;
+
       setState(() {
         item.status = UploadStatus.failed;
         item.errorMessage = e.toString();
@@ -288,6 +298,8 @@ class _BaseUploadState extends State<BaseUpload> {
 
   /// 删除文件
   void _removeFile(UploadItem item) {
+    if (!mounted) return;
+
     setState(() {
       // 如果文件上传成功，从上传数据列表中移除
       if (item.status == UploadStatus.success && item.result != null) {
@@ -302,6 +314,7 @@ class _BaseUploadState extends State<BaseUpload> {
 
   /// 显示提示
   void _showMessage(String message) {
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message)),
     );
@@ -339,6 +352,8 @@ class _BaseUploadState extends State<BaseUpload> {
 
   /// 打开图片预览
   void _openImagePreview(UploadItem item) {
+    if (!mounted) return;
+
     // 优先使用上传后的 fileUrl，否则使用本地路径
     String imageUrl = item.fileInfo.filePath;
 
