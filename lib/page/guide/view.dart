@@ -55,7 +55,16 @@ class _GuideViewState extends State<GuideView> {
     // 初始化全局配置
     Global.init();
 
-    // 检查登录状态
+    // 检查是否需要登录
+    final requireLogin = dotenv.env['REQUIRE_LOGIN']?.toLowerCase() == 'true';
+
+    if (!requireLogin) {
+      // 不需要登录，直接进入首页
+      Get.offAllNamed(AppRoutes.index);
+      return;
+    }
+
+    // 需要登录，检查登录状态
     final token = await Storage.getString(StorageKeys.token);
 
     if (token != null) {

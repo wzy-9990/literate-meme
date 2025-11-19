@@ -107,10 +107,17 @@ class ApiService {
 
         // 非200的 HTTP 错误
         if (response.statusCode == 401) {
-          EasyLoading.showToast("登录信息过期，请重新登录");
-          Future.delayed(const Duration(seconds: 1), () {
-            Get.offAllNamed(AppRoutes.login);
-          });
+          // 检查是否需要登录
+          final requireLogin = dotenv.env['REQUIRE_LOGIN']?.toLowerCase() == 'true';
+
+          if (requireLogin) {
+            EasyLoading.showToast("登录信息过期，请重新登录");
+            Future.delayed(const Duration(seconds: 1), () {
+              Get.offAllNamed(AppRoutes.login);
+            });
+          } else {
+            EasyLoading.showToast("请求异常：401 未授权");
+          }
         } else {
           EasyLoading.showToast("请求异常：${response.statusCode}");
         }
