@@ -79,6 +79,7 @@ dart format --set-exit-if-changed .
 - ❌ **使用 new** - 禁止使用 `new` 关键字（直接写构造函数）
 - ❌ **不必要的 this** - 禁止不必要的 `this.`
 - ❌ **缺少返回类型** - 方法必须声明返回类型（如 `void`、`String`、`int`）
+- ❌ **使用 print()** - 禁止使用 `print()`，必须使用 `debugPrint()` 或日志框架
 
 **同时检查：**
 - ✅ **类型安全** - 类型检查和转换

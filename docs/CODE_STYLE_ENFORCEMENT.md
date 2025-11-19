@@ -187,6 +187,51 @@ error • The method 'getData' should have a return type but doesn't • lib/tes
 
 ---
 
+### 6. 使用 print() 输出日志
+
+❌ **错误（会阻止提交）：**
+```dart
+void debugLog() {
+  print('Debug message');  // ❌ 禁止使用 print
+  print('User data: $userData');
+}
+
+void main() {
+  print('App started');  // ❌ 生产代码中禁止使用 print
+}
+```
+
+✅ **正确：**
+```dart
+import 'package:flutter/foundation.dart';
+
+void debugLog() {
+  debugPrint('Debug message');  // ✅ 使用 debugPrint
+  debugPrint('User data: $userData');
+}
+
+void main() {
+  debugPrint('App started');  // ✅ 使用 debugPrint 或日志框架
+}
+```
+
+**提交时错误提示：**
+```
+error • Don't invoke 'print' in production code • lib/test.dart:2:3 • avoid_print
+```
+
+**快速修复：**
+- 将所有 `print()` 替换为 `debugPrint()`
+- 或使用专业的日志框架（如 logger、dio 的日志拦截器等）
+
+**为什么禁止 print()？**
+- `print()` 在生产环境会输出所有日志，可能暴露敏感信息
+- `debugPrint()` 只在调试模式下输出，发布版本自动禁用
+- `debugPrint()` 会自动处理长文本（超过 1024 字符会分段输出）
+- 使用日志框架可以更好地控制日志级别和输出目标
+
+---
+
 ## 📋 完整示例
 
 ### 错误代码（会被阻止提交）
@@ -225,13 +270,14 @@ class BadExample {
 ```
 error • Prefer using single quotes • lib/bad_example.dart:3:20 • prefer_single_quotes
 error • Prefer const literals to create immutables • lib/bad_example.dart:6:19 • prefer_const_literals_to_create_immutables
+error • Don't invoke 'print' in production code • lib/bad_example.dart:10:5 • avoid_print
 error • Unnecessary this • lib/bad_example.dart:10:11 • unnecessary_this
 error • Unnecessary new keyword • lib/bad_example.dart:13:16 • unnecessary_new
 error • The method 'openWebView' should have a return type but doesn't • lib/bad_example.dart:16:3 • always_declare_return_types
 error • Prefer using single quotes • lib/bad_example.dart:20:18 • prefer_single_quotes
 error • Prefer const with constant constructors • lib/bad_example.dart:20:12 • prefer_const_constructors
 
-7 issues found.
+8 issues found.
 
 ❌ 提交被阻止！
 ```
@@ -248,7 +294,7 @@ class GoodExample {
 
   GoodExample() {
     // ✅ 不使用 this（非必要时）
-    print(message);
+    debugPrint(message);  // ✅ 使用 debugPrint 而非 print
 
     // ✅ 不使用 new
     var list = <int>[];
@@ -297,6 +343,8 @@ flutter analyze
 - [ ] 不可变对象添加 `const` 关键字
 - [ ] 删除所有 `new` 关键字
 - [ ] 删除不必要的 `this.`
+- [ ] 所有方法声明返回类型（`void`、`String`、`Future<void>` 等）
+- [ ] 使用 `debugPrint()` 而非 `print()`
 - [ ] 删除未使用的变量和导入
 
 ---
