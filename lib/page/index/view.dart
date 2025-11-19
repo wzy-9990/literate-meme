@@ -25,12 +25,12 @@ class IndexView extends GetView<IndexLogic> {
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: controller.currentIndex.value,
             onTap: controller.changeTab,
+            backgroundColor: Colors.white,
             items: const [
               BottomNavigationBarItem(icon: Icon(Icons.home), label: '首页'),
               BottomNavigationBarItem(icon: Icon(Icons.message), label: '消息'),
               BottomNavigationBarItem(icon: Icon(Icons.person), label: '我的'),
             ],
-            // 样式已在全局主题中配置，无需重复设置
           ),
         );
       }),
