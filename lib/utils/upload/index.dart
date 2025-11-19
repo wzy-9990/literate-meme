@@ -5,6 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_tem/api/http.dart';
 import 'package:flutter_tem/utils/permission/index.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart' as path;
@@ -100,6 +101,13 @@ class UploadUtil {
 
       if (!hasPermission) {
         debugPrint('权限未授予');
+        // 给用户显示提示
+        Get.snackbar(
+          '权限未授予',
+          source == ImageSourceType.camera ? '需要相机权限才能拍照' : '需要相册权限才能选择照片',
+          snackPosition: SnackPosition.TOP,
+          duration: const Duration(seconds: 2),
+        );
         return null;
       }
 
@@ -144,6 +152,13 @@ class UploadUtil {
 
       if (!hasPermission) {
         debugPrint('权限未授予');
+        // 给用户显示提示
+        Get.snackbar(
+          '权限未授予',
+          '需要相册权限才能选择照片',
+          snackPosition: SnackPosition.TOP,
+          duration: const Duration(seconds: 2),
+        );
         return [];
       }
 
