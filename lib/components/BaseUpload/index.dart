@@ -134,7 +134,16 @@ class _BaseUploadState extends State<BaseUpload> {
       } else {
         // 可以选多张
         final files = await UploadUtil.pickMultipleImages(limit: remaining);
-        for (var fileInfo in files) {
+
+        // 手动限制选择的数量（以防平台不支持 limit 参数）
+        final limitedFiles = files.take(remaining).toList();
+
+        // 如果用户选择的图片超过了限制，给出提示
+        if (files.length > remaining) {
+          _showMessage('最多只能上传 $remaining 张图片，已自动选择前 $remaining 张');
+        }
+
+        for (var fileInfo in limitedFiles) {
           _addFile(fileInfo);
         }
       }
@@ -156,9 +165,17 @@ class _BaseUploadState extends State<BaseUpload> {
       final files = await UploadUtil.pickMultipleFiles(
         allowedExtensions: widget.allowedExtensions,
       );
-      for (var fileInfo in files) {
+
+      // 手动限制选择的数量
+      final limitedFiles = files.take(remaining).toList();
+
+      // 如果用户选择的文件超过了限制，给出提示
+      if (files.length > remaining) {
+        _showMessage('最多只能上传 $remaining 个文件，已自动选择前 $remaining 个');
+      }
+
+      for (var fileInfo in limitedFiles) {
         _addFile(fileInfo);
-        if (_uploadItems.length >= widget.maxCount) break;
       }
     }
   }
