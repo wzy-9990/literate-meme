@@ -26,6 +26,12 @@ class IndexView extends GetView<IndexLogic> {
             currentIndex: controller.currentIndex.value,
             onTap: controller.changeTab,
             backgroundColor: Colors.white,
+            selectedItemColor: const Color(0xffFE6601),
+            unselectedItemColor: const Color(0x66000000),
+            selectedFontSize: 12,
+            unselectedFontSize: 12,
+            type: BottomNavigationBarType.fixed,
+            elevation: 0,
             items: const [
               BottomNavigationBarItem(icon: Icon(Icons.home), label: '首页'),
               BottomNavigationBarItem(icon: Icon(Icons.message), label: '消息'),
