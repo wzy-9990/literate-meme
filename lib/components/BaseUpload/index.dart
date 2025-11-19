@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_tem/components/BaseImage/preview.dart';
@@ -420,12 +421,7 @@ class _BaseUploadState extends State<BaseUpload> {
               onTap: () => _openImagePreview(item),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: Image.file(
-                  File(item.fileInfo.filePath),
-                  width: 100,
-                  height: 100,
-                  fit: BoxFit.cover,
-                ),
+                child: _buildImageWidget(item),
               ),
             )
           else
@@ -439,32 +435,59 @@ class _BaseUploadState extends State<BaseUpload> {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Center(
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    // 进度圆圈
-                    SizedBox(
-                      width: 50,
-                      height: 50,
-                      child: CircularProgressIndicator(
-                        value: item.progress,
-                        backgroundColor: Colors.white30,
-                        valueColor:
-                            const AlwaysStoppedAnimation<Color>(Colors.white),
-                        strokeWidth: 4,
+                child: item.progress >= 1.0
+                    ? // 文件已上传，等待服务器处理
+                    Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const SizedBox(
+                            width: 40,
+                            height: 40,
+                            child: CircularProgressIndicator(
+                              backgroundColor: Colors.white30,
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white),
+                              strokeWidth: 4,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            '上传中...',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      )
+                    : // 文件上传中，显示百分比
+                    Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          // 进度圆圈
+                          SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: CircularProgressIndicator(
+                              value: item.progress,
+                              backgroundColor: Colors.white30,
+                              valueColor: const AlwaysStoppedAnimation<Color>(
+                                  Colors.white),
+                              strokeWidth: 4,
+                            ),
+                          ),
+                          // 百分比文字
+                          Text(
+                            '${(item.progress * 100).toInt()}%',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    // 百分比文字
-                    Text(
-                      '${(item.progress * 100).toInt()}%',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
               ),
             ),
 
@@ -533,11 +556,10 @@ class _BaseUploadState extends State<BaseUpload> {
               onTap: () => _openImagePreview(item),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),
-                child: Image.file(
-                  File(item.fileInfo.filePath),
+                child: SizedBox(
                   width: 50,
                   height: 50,
-                  fit: BoxFit.cover,
+                  child: _buildImageWidget(item),
                 ),
               ),
             )
@@ -591,6 +613,39 @@ class _BaseUploadState extends State<BaseUpload> {
             ),
         ],
       ),
+    );
+  }
+
+  /// 构建图片组件（本地或网络）
+  Widget _buildImageWidget(UploadItem item) {
+    // 如果上传成功，优先使用服务器返回的图片URL
+    if (item.status == UploadStatus.success &&
+        item.result != null &&
+        item.result is Map<String, dynamic>) {
+      final fileUrl = (item.result as Map<String, dynamic>)['fileUrl'];
+      if (fileUrl != null && fileUrl is String && fileUrl.isNotEmpty) {
+        // 显示网络图片
+        return CachedNetworkImage(
+          imageUrl: fileUrl,
+          fit: BoxFit.cover,
+          placeholder: (context, url) => Container(
+            color: Colors.grey[200],
+            child: const Center(
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+          ),
+          errorWidget: (context, url, error) => Container(
+            color: Colors.grey[200],
+            child: Icon(Icons.error, color: Colors.grey[400]),
+          ),
+        );
+      }
+    }
+
+    // 默认显示本地图片
+    return Image.file(
+      File(item.fileInfo.filePath),
+      fit: BoxFit.cover,
     );
   }
 
