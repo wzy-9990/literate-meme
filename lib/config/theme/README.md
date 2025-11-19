@@ -74,11 +74,11 @@ scaffoldBackgroundColor: Color(0xFFF6F6F6), // 页面背景色
 
 ### 修改主色调
 
-编辑 `lib/styles/index.dart`：
+编辑 `lib/config/styles/colors.dart`：
 
 ```dart
-class BaseColor {
-  static const Color main = Color(0xFFFE6601); // 改为你的主题色
+class AppColors {
+  static const Color primary = Color(0xFFFE6601); // 改为你的主题色
 }
 ```
 
@@ -100,7 +100,7 @@ static ThemeData get lightTheme {
 
 ### Q: 如何切换主题色？
 
-**A:** 只需修改 `lib/styles/index.dart` 中的 `BaseColor.main` 即可，所有使用主题色的地方会自动更新。
+**A:** 只需修改 `lib/config/styles/colors.dart` 中的 `AppColors.primary` 即可，所有使用主题色的地方会自动更新。
 
 ### Q: 如何实现深色模式切换？
 
@@ -167,5 +167,5 @@ Obx(() => GetMaterialApp(
 ## 相关文件
 
 - `lib/config/theme/index.dart` - 主题配置类
-- `lib/styles/index.dart` - 颜色常量定义
+- `lib/config/styles/index.dart` - 样式系统（颜色、间距、圆角）
 - `lib/main.dart` - 应用主题使用

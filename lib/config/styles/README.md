@@ -7,7 +7,7 @@
 ## 文件结构
 
 ```
-lib/styles/
+lib/config/styles/
   ├── colors.dart    # 颜色常量
   ├── spacing.dart   # 间距常量
   ├── radius.dart    # 圆角常量
@@ -357,15 +357,15 @@ color: AppColors.primary
 
 如果需要添加新的样式常量：
 
-1. **添加新颜色** - 编辑 `lib/styles/colors.dart`
-2. **添加新间距** - 编辑 `lib/styles/spacing.dart`
-3. **添加新圆角** - 编辑 `lib/styles/radius.dart`
+1. **添加新颜色** - 编辑 `lib/config/styles/colors.dart`
+2. **添加新间距** - 编辑 `lib/config/styles/spacing.dart`
+3. **添加新圆角** - 编辑 `lib/config/styles/radius.dart`
 
 所有更改会自动通过 `index.dart` 导出。
 
 ## 相关文件
 
-- `lib/styles/colors.dart` - 颜色常量定义
-- `lib/styles/spacing.dart` - 间距常量定义
-- `lib/styles/radius.dart` - 圆角常量定义
+- `lib/config/styles/colors.dart` - 颜色常量定义
+- `lib/config/styles/spacing.dart` - 间距常量定义
+- `lib/config/styles/radius.dart` - 圆角常量定义
 - `lib/config/theme/index.dart` - 主题配置（使用这些常量）

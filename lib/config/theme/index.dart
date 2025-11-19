@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_tem/styles/index.dart';
+import 'package:flutter_tem/config/styles/index.dart';
 
 /// 应用主题配置
 class AppTheme {
