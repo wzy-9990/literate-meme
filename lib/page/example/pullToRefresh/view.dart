@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_tem/components/BaseSuperRefreshComponent/components/PullToRefresh/index.dart';
 import 'package:flutter_tem/components/BaseLoading/index.dart';
-import 'package:flutter_tem/components/BaseEmpty/index.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'logic.dart';
 
@@ -77,23 +76,15 @@ class PullToRefreshExampleView extends StatelessWidget {
             child: Stack(
               children: [
                 Obx(
-                  () {
-                    // 如果数据为空且不在加载中，显示空页面
-                    if (logic.items.isEmpty && !logic.isLoading.value) {
-                      return BaseEmpty(
-                        title: '暂无数据',
-                        subtitle: '当前没有找到任何用户信息',
-                        buttonText: '刷新',
-                        onButtonPressed: logic.onRefresh,
-                      );
-                    }
-
-                    // 有数据，显示列表
-                    return BasePullToRefreshList(
-                      refreshController: logic.refreshController,
-                      onRefresh: logic.onRefresh,
-                      onLoadMore: logic.onLoadMore,
-                      children: logic.items
+                  () => BasePullToRefreshList(
+                    refreshController: logic.refreshController,
+                    onRefresh: logic.onRefresh,
+                    onLoadMore: logic.onLoadMore,
+                    isLoading: logic.isLoading.value,
+                    emptyTitle: '暂无数据',
+                    emptySubtitle: '当前没有找到任何用户信息',
+                    emptyButtonText: '刷新',
+                    children: logic.items
                           .map(
                           (item) => Card(
                             margin: EdgeInsets.symmetric(
@@ -246,8 +237,7 @@ class PullToRefreshExampleView extends StatelessWidget {
                           ),
                         )
                         .toList(),
-                    );
-                  },
+                  ),
                 ),
                 Obx(
                   () {

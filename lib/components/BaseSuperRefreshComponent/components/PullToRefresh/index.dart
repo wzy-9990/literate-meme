@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:flutter_tem/components/BaseEmpty/index.dart';
 import '../WaterDropHeader/index.dart';
 
 class PullToRefresh extends StatefulWidget {
@@ -85,6 +86,25 @@ class BasePullToRefreshList extends StatefulWidget {
   final String? noMoreText;
   final ScrollController? scrollController;
 
+  // 空页面相关配置
+  /// 是否正在加载（用于判断是否显示空页面）
+  final bool isLoading;
+
+  /// 空页面图片路径
+  final String? emptyImagePath;
+
+  /// 空页面标题
+  final String? emptyTitle;
+
+  /// 空页面副标题
+  final String? emptySubtitle;
+
+  /// 空页面按钮文字
+  final String? emptyButtonText;
+
+  /// 空页面按钮点击回调（不提供则使用 onRefresh）
+  final VoidCallback? onEmptyButtonPressed;
+
   const BasePullToRefreshList({
     Key? key,
     required this.children,
@@ -96,6 +116,13 @@ class BasePullToRefreshList extends StatefulWidget {
     this.noDataText = '暂无数据',
     this.noMoreText = '没有更多了～',
     this.scrollController,
+    // 空页面配置
+    this.isLoading = false,
+    this.emptyImagePath,
+    this.emptyTitle,
+    this.emptySubtitle,
+    this.emptyButtonText,
+    this.onEmptyButtonPressed,
   }) : super(key: key);
 
   @override
@@ -105,86 +132,18 @@ class BasePullToRefreshList extends StatefulWidget {
 class _BasePullToRefreshListState extends State<BasePullToRefreshList> {
   @override
   Widget build(BuildContext context) {
-    // 如果数据为空并且有刷新回调，说明可能正在加载数据，不立即显示空页面
-    if (widget.children.isEmpty && widget.onRefresh != null) {
-      // 不显示空页面，而是显示SmartRefresher以触发加载
-      return SmartRefresher(
-        controller: widget.refreshController,
-        onRefresh: widget.onRefresh,
-        onLoading: widget.onLoadMore,
-        enablePullDown: widget.enablePullDown,
-        enablePullUp: widget.enablePullUp,
-        header: const ChineseWaterDropHeader(), // 自定义中文下拉刷新头部
-        footer: CustomFooter(
-          builder: (BuildContext context, LoadStatus? mode) {
-            Widget body;
-            if (mode == LoadStatus.idle) {
-              body = Text(widget.noMoreText!);
-            } else if (mode == LoadStatus.loading) {
-              body = const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  ),
-                  SizedBox(width: 10),
-                  Text("加载中..."),
-                ],
-              );
-            } else if (mode == LoadStatus.failed) {
-              body = const Text("加载失败！");
-            } else if (mode == LoadStatus.canLoading) {
-              body = const Text("释放加载...");
-            } else {
-              body = Text(widget.noMoreText!);
-            }
-            return SizedBox(
-              height: 55.0,
-              child: Center(child: body),
-            );
-          },
-        ),
-        child: ListView(
-          controller: widget.scrollController,
-          children: widget.children,
-        ),
+    // 如果数据为空且不在加载中，显示空页面
+    if (widget.children.isEmpty && !widget.isLoading) {
+      return BaseEmpty(
+        imagePath: widget.emptyImagePath,
+        title: widget.emptyTitle ?? widget.noDataText ?? '暂无数据',
+        subtitle: widget.emptySubtitle,
+        buttonText: widget.emptyButtonText,
+        onButtonPressed: widget.onEmptyButtonPressed ?? widget.onRefresh,
       );
     }
 
-    // 如果数据为空且没有刷新回调，或者明确需要显示空页面，则显示空页面
-    if (widget.children.isEmpty) {
-      return Container(
-        color: Colors.white,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.inbox_outlined,
-                size: 60,
-                color: Colors.grey,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                widget.noDataText!,
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey,
-                ),
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: widget.onRefresh,
-                child: const Text('重新加载'),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-
+    // 有数据或正在加载，显示列表
     return SmartRefresher(
       controller: widget.refreshController,
       onRefresh: widget.onRefresh,
