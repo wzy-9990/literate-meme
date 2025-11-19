@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tem/routers/app_routes.dart';
 import 'package:flutter_tem/routers/index.dart';
+import 'package:flutter_tem/utils/phone_call/index.dart';
 import 'package:get/get.dart';
 
 class HomeLogic extends GetxController {
@@ -35,6 +36,6 @@ class HomeLogic extends GetxController {
   }
 
   void phoneCallExampleView() {
-    NavigationUtils.toNamed(AppRoutes.uploadExample);
+    PhoneCallUtil.makePhoneCall(Get.context!, '138-1234-5678');
   }
 }
