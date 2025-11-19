@@ -12,13 +12,13 @@ pre-commit:
         dart format {staged_files}
       stage_fixed: true
 
-    # 2. 代码规范检查（未使用的变量、死代码等会阻止提交）
+    # 2. 代码规范检查（只检查修改的文件）
     analyze:
       glob: "*.dart"
       run: |
-        echo "正在检查代码规范..."
+        echo "正在检查代码规范（仅检查修改的文件）..."
         echo "检查未使用的变量、导入和死代码..."
-        flutter analyze --fatal-warnings
+        dart analyze --fatal-warnings {staged_files}
 
     # 3. 检查是否有冲突标记
     conflict-markers:

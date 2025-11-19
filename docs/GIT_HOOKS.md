@@ -65,9 +65,9 @@ dart format lib/my_file.dart
 dart format --set-exit-if-changed .
 ```
 
-### 2. 代码规范检查 (flutter analyze)
+### 2. 代码规范检查 (dart analyze)
 
-检查代码是否符合 Dart/Flutter 规范，**未使用的代码会阻止提交**：
+**只检查当前提交修改的文件**，未使用的代码会阻止提交：
 - ❌ **未使用的变量** - 定义但未使用的局部变量
 - ❌ **未使用的导入** - import 了但未使用的包
 - ❌ **未使用的私有成员** - 定义但未调用的私有方法/字段
@@ -77,12 +77,19 @@ dart format --set-exit-if-changed .
 - ✅ **最佳实践** - Flutter/Dart 推荐的编码方式
 - ✅ **潜在错误** - 可能导致运行时错误的代码
 
+**重要提示**：
+- ⚡ **提交时只检查修改的文件** - 快速高效，不会检查整个项目
+- 📁 **全量检查** - 如需检查整个项目，使用手动命令
+
 **手动运行**：
 ```bash
-# 分析所有代码
+# 只分析修改的文件（快速）
+dart analyze --fatal-warnings lib/my_file.dart
+
+# 分析整个项目（全量检查）
 flutter analyze
 
-# 将警告视为错误（与 pre-commit 相同）
+# 将警告视为错误
 flutter analyze --fatal-warnings
 
 # 自动修复部分问题（如删除未使用的导入）
@@ -91,12 +98,9 @@ dart fix --apply
 
 ### 3. 冲突标记检查
 
-检查代码中是否包含 Git 冲突标记：
-```
-<<<<<<< HEAD
-=======
->>>>>>> branch
-```
+检查代码中是否包含 Git 冲突标记（如 `<<<<<<<`、`=======`、`>>>>>>>`）。
+
+如果存在未解决的合并冲突，提交会被阻止。
 
 ## 代码规范配置
 
