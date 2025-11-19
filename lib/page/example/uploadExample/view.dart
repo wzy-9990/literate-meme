@@ -15,13 +15,12 @@ class UploadExampleView extends StatefulWidget {
 class _UploadExampleViewState extends State<UploadExampleView> {
   final List<UploadItem> _imageUploadList = [];
   final List<UploadItem> _fileUploadList = [];
-       List<Map<String, dynamic>> _uploadedData = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const BaseAppBar(
-        title: '上传组件示例111',
+        title: '上传组件示例',
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -49,9 +48,6 @@ class _UploadExampleViewState extends State<UploadExampleView> {
                 });
               },
               onUploadedDataChanged: (uploadedData) {
-                setState(() {
-                  _uploadedData = uploadedData;
-                });
                 debugPrint('已上传的文件数据: $uploadedData');
               },
             ),
