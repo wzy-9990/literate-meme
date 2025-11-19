@@ -56,6 +56,9 @@ dependencies:
   path: ^1.9.0  # 跨平台路径操作工具
   mime: ^1.0.6  # MIME 类型识别，用于判断文件类型
 
+  # URL 启动
+  url_launcher: ^6.3.1  # 启动 URL、拨打电话、发送短信等
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
