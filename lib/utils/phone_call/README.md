@@ -86,12 +86,16 @@ ContactCard(
 ### 格式化电话号码
 
 ```dart
-// 格式化显示电话号码
-final formatted = PhoneCallUtil.formatPhoneNumber('13812345678');
+// 默认不格式化，清理空格和横线
+final clean = PhoneCallUtil.formatPhoneNumber('138-1234-5678');
+// 输出: 13812345678
+
+// 需要格式化时，传入 format: true
+final formatted = PhoneCallUtil.formatPhoneNumber('13812345678', format: true);
 // 输出: 138 1234 5678
 
-final formatted2 = PhoneCallUtil.formatPhoneNumber('1234567890');
-// 输出: (123) 456-7890
+final formatted2 = PhoneCallUtil.formatPhoneNumber('1234567890', format: true);
+// 输出: (123) 456 7890
 ```
 
 ## API 文档
@@ -128,19 +132,22 @@ static Future<void> makePhoneCall(
 格式化电话号码显示
 
 ```dart
-static String formatPhoneNumber(String phoneNumber)
+static String formatPhoneNumber(String phoneNumber, {bool format = false})
 ```
 
 **参数：**
 - `phoneNumber`: 原始电话号码
+- `format`: 是否格式化，默认 `false`（不格式化）
 
 **返回：**
-- 格式化后的电话号码字符串
+- 处理后的电话号码字符串
 
-**格式化规则：**
-- 11 位：中国手机号格式 `138 1234 5678`
-- 10 位：国际格式 `(123) 456-7890`
-- 其他：保持原样
+**行为：**
+- `format = false`（默认）：清理空格、横线、括号，返回纯数字
+- `format = true`：按规则格式化
+  - 11 位：中国手机号格式 `138 1234 5678`
+  - 10 位：国际格式 `(123) 456 7890`
+  - 其他：保持纯数字
 
 ## 平台配置
 
@@ -208,9 +215,12 @@ dependencies:
 2. **电话号码格式**：支持各种格式的电话号码，工具会自动清理
 
 3. **模拟器测试**：
-   - iOS 模拟器无法拨打电话，会显示错误
-   - Android 模拟器可以测试 UI，但无法真正拨打
-   - 建议在真机上测试
+   - **iOS 模拟器无法拨打电话**：这是模拟器的限制，不是代码问题
+     - 调用 `tel:` scheme 会失败
+     - `canLaunchUrl` 会返回 `false`
+     - 控制台会输出 "拨打电话失败" 日志
+     - **必须在 iOS 真机上测试**
+   - Android 模拟器可以测试 UI 和拨号界面，但无法真正拨打
 
 4. **权限配置**：
    - Android 只需在 `AndroidManifest.xml` 中声明 `queries`

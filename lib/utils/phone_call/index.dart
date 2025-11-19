@@ -83,18 +83,28 @@ class PhoneCallUtil {
 
   /// 格式化电话号码显示
   ///
-  /// 例如：13812345678 -> 138 1234 5678
-  static String formatPhoneNumber(String phoneNumber) {
+  /// [phoneNumber] 原始电话号码
+  /// [format] 是否格式化，默认 false（不格式化，保持原样）
+  ///
+  /// 不格式化：13812345678
+  /// 格式化：138 1234 5678
+  static String formatPhoneNumber(String phoneNumber, {bool format = false}) {
     final cleanNumber = phoneNumber.replaceAll(RegExp(r'[\s-()]'), '');
 
+    // 如果不需要格式化，直接返回清理后的号码
+    if (!format) {
+      return cleanNumber;
+    }
+
+    // 格式化模式
     if (cleanNumber.length == 11) {
       // 中国手机号格式：138 1234 5678
       return '${cleanNumber.substring(0, 3)} ${cleanNumber.substring(3, 7)} ${cleanNumber.substring(7)}';
     } else if (cleanNumber.length == 10) {
-      // 其他格式：(123) 456-7890
-      return '(${cleanNumber.substring(0, 3)}) ${cleanNumber.substring(3, 6)}-${cleanNumber.substring(6)}';
+      // 其他格式：(123) 456 7890
+      return '(${cleanNumber.substring(0, 3)}) ${cleanNumber.substring(3, 6)} ${cleanNumber.substring(6)}';
     } else {
-      return phoneNumber;
+      return cleanNumber;
     }
   }
 }
