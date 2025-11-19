@@ -151,6 +151,33 @@ class ApiService {
       rethrow;
     }
   }
+
+  /// 上传文件
+  Future<Map<String, dynamic>?> uploadFile(
+    String path, {
+    required FormData formData,
+    void Function(int sent, int total)? onProgress,
+  }) async {
+    try {
+      final response = await _dio.post(
+        path,
+        data: formData,
+        onSendProgress: onProgress,
+      );
+
+      // 返回 data 字段
+      if (response.statusCode == 200 && response.data is Map) {
+        final data = response.data as Map<String, dynamic>;
+        if (data['code'] == '1' && data['data'] != null) {
+          return data['data'] as Map<String, dynamic>;
+        }
+      }
+
+      return null;
+    } on DioException {
+      rethrow;
+    }
+  }
 }
 
 class Api {

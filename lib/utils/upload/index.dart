@@ -237,23 +237,14 @@ class UploadUtil {
         ),
       });
 
-      // 使用项目的 ApiService 实例
-      final dio = Api.instance._dio;
-      final response = await dio.post(
+      // 使用项目的 ApiService 实例上传文件
+      final result = await Api.instance.uploadFile(
         '/pklApi/private/file/uploadFile',
-        data: formData,
-        onSendProgress: onProgress,
+        formData: formData,
+        onProgress: onProgress,
       );
 
-      // 返回 data 字段
-      if (response.statusCode == 200 && response.data is Map) {
-        final data = response.data as Map<String, dynamic>;
-        if (data['code'] == '1' && data['data'] != null) {
-          return data['data'] as Map<String, dynamic>;
-        }
-      }
-
-      return null;
+      return result;
     } catch (e) {
       debugPrint('上传文件失败: $e');
       rethrow;
