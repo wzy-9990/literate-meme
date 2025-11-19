@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_tem/components/BaseDoubleBackExitWrapper/index.dart';
 import 'package:flutter_tem/components/BaseUnfocusOnTap/index.dart';
 import 'package:flutter_tem/config/easyLoading/index.dart';
 import 'package:flutter_tem/config/env/index.dart';
-import 'package:flutter_tem/styles/index.dart';
+import 'package:flutter_tem/config/theme/index.dart';
 import 'package:get/get.dart';
 
 import 'routers/app_routes.dart';
@@ -32,29 +31,9 @@ class MyApp extends StatelessWidget {
         initialRoute: AppRoutes.guide,
         defaultTransition: Transition.cupertino,
         // 主题
-        theme: ThemeData(
-          // 主色调设置
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: BaseColor.main,
-            primary: BaseColor.main,
-          ),
-          appBarTheme: const AppBarTheme(
-            backgroundColor: Colors.white,
-            foregroundColor: Colors.black,
-            elevation: 0, // 阴影高度
-            surfaceTintColor: Colors.transparent, // 去除 Material 3 的 surface tint 效果
-            scrolledUnderElevation: 0, // 滚动时不改变阴影
-            centerTitle: true,
-            systemOverlayStyle: SystemUiOverlayStyle(
-              statusBarColor: Colors.transparent, // 状态栏透明
-              statusBarIconBrightness: Brightness.dark, // 状态栏图标深色
-            ),
-          ),
-          // BottomNavigationBar 主题配置较为有限，主要样式在组件中直接设置
-          splashColor: Colors.transparent, // 全局禁用水波纹
-          highlightColor: Colors.transparent, // 全局禁用高亮
-          scaffoldBackgroundColor: const Color(0xFFF6F6F6),
-        ),
+        theme: AppTheme.lightTheme,
+        // darkTheme: AppTheme.darkTheme, // 如需支持深色模式，取消此注释
+        // themeMode: ThemeMode.system, // 跟随系统主题
         builder: (context, child) {
           return BaseUnfocusOnTap(
             child: BaseDoubleBackExitWrapper(
