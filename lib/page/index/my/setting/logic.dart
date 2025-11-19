@@ -20,10 +20,10 @@ class MySettingLogic extends GetxController {
     initData();
   }
 
-  initData() {
+  void initData() {
     Future.delayed(const Duration(seconds: 1), () async {
       isLoading.value = false;
-      await _loadUserInfo();
+      _loadUserInfo();
     });
   }
 
@@ -32,28 +32,28 @@ class MySettingLogic extends GetxController {
     Get.offAllNamed(AppRoutes.login);
   }
 
-  changePassword() async {
+  void changePassword() async {
     await NavigationUtils.toNamed(
       AppRoutes.myChangePassword,
       callback: (result) async {
         isLoading.value = true;
-        await initData();
+        initData();
       },
     );
   }
 
-  _loadUserInfo() async {
+  void _loadUserInfo() async {
     final dynamic storedName = await Storage.getMap(StorageKeys.userInfo);
     userInfo.value = storedName;
   }
 
-  updateUserInfo(String name) async {
+  void updateUserInfo(String name) async {
     final int currentMilliseconds = DateTime.now().millisecondsSinceEpoch;
     final dynamic storedName = await Storage.getMap(StorageKeys.userInfo);
     storedName['userName'] = '$name$currentMilliseconds';
     await Storage.setMap(StorageKeys.userInfo, storedName);
-    await initData();
-    await myLogic.initData();
+    initData();
+    myLogic.initData();
     EasyLoading.showToast('操作成功');
   }
 

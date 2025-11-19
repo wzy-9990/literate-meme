@@ -57,7 +57,7 @@ class JPushServices {
     setAlias('拼卡拉司机版');
   }
 
-  setAlias(String aliasStr) {
+  void setAlias(String aliasStr) {
     jPush.setAlias(aliasStr);
   }
 }

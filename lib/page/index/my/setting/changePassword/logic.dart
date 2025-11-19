@@ -16,12 +16,12 @@ class ChangePasswordLogic extends GetxController {
     initData();
   }
 
-  initData() {
+  void initData() {
     debugPrint('设置页面初始化');
     isLoading.value = true;
     Future.delayed(const Duration(seconds: 1), () async {
       isLoading.value = false;
-      await _loadUserInfo();
+      _loadUserInfo();
     });
   }
 
@@ -30,11 +30,11 @@ class ChangePasswordLogic extends GetxController {
     await Get.offAllNamed(AppRoutes.login);
   }
 
-  updateLastUserInfo() {
+  void updateLastUserInfo() {
     Get.back(result: true);
   }
 
-  _loadUserInfo() async {
+  void _loadUserInfo() async {
     final dynamic storedName = await Storage.getMap(StorageKeys.userInfo);
     userInfo.value = storedName;
   }
@@ -44,8 +44,8 @@ class ChangePasswordLogic extends GetxController {
     final dynamic storedName = await Storage.getMap(StorageKeys.userInfo);
     storedName['userName'] = '张三$currentMilliseconds';
     await Storage.setMap(StorageKeys.userInfo, storedName);
-    await initData();
-    await myLogic.initData();
+    initData();
+    myLogic.initData();
     EasyLoading.showToast('操作成功');
   }
 }

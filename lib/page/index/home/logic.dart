@@ -8,29 +8,29 @@ class HomeLogic extends GetxController {
     debugPrint('首页页面初始化');
   }
 
-  openWebView() {
+  void openWebView() {
     NavigationUtils.toNamed(AppRoutes.webView, arguments: {
       'url': 'https://manager-test.pinduola.cn/manager/index.html#/login',
       'title': '看下',
     });
   }
 
-  pullToRefreshView() {
+  void pullToRefreshView() {
     NavigationUtils.toNamed(AppRoutes.example, arguments: {
       'url': 'https://manager-test.pinduola.cn/manager/index.html#/login',
       'title': '看下',
     });
   }
 
-  imageExampleView() {
+  void imageExampleView() {
     NavigationUtils.toNamed(AppRoutes.imageExample);
   }
 
-  permissionExampleView() {
+  void permissionExampleView() {
     NavigationUtils.toNamed(AppRoutes.permissionExample);
   }
 
-  uploadExampleView() {
+  void uploadExampleView() {
     NavigationUtils.toNamed(AppRoutes.uploadExample);
   }
 }
