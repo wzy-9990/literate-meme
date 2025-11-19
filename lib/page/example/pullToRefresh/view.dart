@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_tem/components/BaseSuperRefreshComponent/components/PullToRefresh/index.dart';
 import 'package:flutter_tem/components/BaseLoading/index.dart';
+import 'package:flutter_tem/components/BaseEmpty/index.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'logic.dart';
 
@@ -79,37 +80,11 @@ class PullToRefreshExampleView extends StatelessWidget {
                   () {
                     // 如果数据为空且不在加载中，显示空页面
                     if (logic.items.isEmpty && !logic.isLoading.value) {
-                      return Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.inbox_outlined,
-                              size: 80.sp,
-                              color: Colors.grey[400],
-                            ),
-                            SizedBox(height: 16.h),
-                            Text(
-                              '暂无数据',
-                              style: TextStyle(
-                                fontSize: 16.sp,
-                                color: Colors.grey[600],
-                              ),
-                            ),
-                            SizedBox(height: 24.h),
-                            ElevatedButton.icon(
-                              onPressed: logic.onRefresh,
-                              icon: const Icon(Icons.refresh),
-                              label: const Text('刷新'),
-                              style: ElevatedButton.styleFrom(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 24.w,
-                                  vertical: 12.h,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                      return BaseEmpty(
+                        title: '暂无数据',
+                        subtitle: '当前没有找到任何用户信息',
+                        buttonText: '刷新',
+                        onButtonPressed: logic.onRefresh,
                       );
                     }
 
