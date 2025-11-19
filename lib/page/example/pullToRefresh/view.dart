@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:flutter_tem/components/BaseSuperRefreshComponent/components/PullToRefresh/index.dart';
 import 'package:flutter_tem/components/BaseLoading/index.dart';
@@ -15,6 +16,13 @@ class PullToRefreshExampleView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('用户列表'),
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.transparent, // 关键：去除 Material 3 的 surface tint 效果
+        scrolledUnderElevation: 0, // 滚动时不改变阴影
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent, // 状态栏透明
+          statusBarIconBrightness: Brightness.dark, // 状态栏图标深色
+        ),
       ),
       body: Column(
         children: [
