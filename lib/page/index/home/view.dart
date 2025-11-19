@@ -62,6 +62,12 @@ class HomeView extends StatelessWidget {
             },
             child: const Text('打电话'),
           ),
+          ElevatedButton(
+            onPressed: () {
+              logic.appIconExampleView();
+            },
+            child: const Text('App 图标切换'),
+          ),
         ],
       ),
     );

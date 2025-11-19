@@ -59,6 +59,9 @@ dependencies:
   # URL 启动
   url_launcher: ^6.3.1  # 启动 URL、拨打电话、发送短信等
 
+  # 动态图标
+  flutter_dynamic_icon: ^2.1.0  # 动态切换 app 图标
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

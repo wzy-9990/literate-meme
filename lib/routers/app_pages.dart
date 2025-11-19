@@ -1,5 +1,7 @@
+import 'package:flutter_tem/page/example/appIconExample/view.dart';
 import 'package:flutter_tem/page/example/imageExample/view.dart';
 import 'package:flutter_tem/page/example/permissionExample/view.dart';
+import 'package:flutter_tem/page/example/phoneCallExample/view.dart';
 import 'package:flutter_tem/page/example/pullToRefresh/view.dart';
 import 'package:flutter_tem/page/example/uploadExample/view.dart';
 import 'package:flutter_tem/page/guide/view.dart';
@@ -66,6 +68,14 @@ class AppPages {
     GetPage(
       name: AppRoutes.uploadExample,
       page: () => const UploadExampleView(),
+    ),
+    GetPage(
+      name: AppRoutes.phoneCallExample,
+      page: () => const PhoneCallExamplePage(),
+    ),
+    GetPage(
+      name: AppRoutes.appIconExample,
+      page: () => const AppIconExamplePage(),
     ),
   ];
 }

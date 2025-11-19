@@ -64,5 +64,45 @@
 	<string>需要始终访问您的位置信息</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>需要访问您的位置信息</string>
+	<!-- 动态切换图标配置 -->
+	<key>CFBundleAlternateIcons</key>
+	<dict>
+		<key>spring_festival</key>
+		<dict>
+			<key>CFBundleIconFiles</key>
+			<array>
+				<string>spring_festival</string>
+			</array>
+			<key>UIPrerenderedIcon</key>
+			<false/>
+		</dict>
+		<key>labor_day</key>
+		<dict>
+			<key>CFBundleIconFiles</key>
+			<array>
+				<string>labor_day</string>
+			</array>
+			<key>UIPrerenderedIcon</key>
+			<false/>
+		</dict>
+		<key>national_day</key>
+		<dict>
+			<key>CFBundleIconFiles</key>
+			<array>
+				<string>national_day</string>
+			</array>
+			<key>UIPrerenderedIcon</key>
+			<false/>
+		</dict>
+		<key>christmas</key>
+		<dict>
+			<key>CFBundleIconFiles</key>
+			<array>
+				<string>christmas</string>
+			</array>
+			<key>UIPrerenderedIcon</key>
+			<false/>
+		</dict>
+	</dict>
 </dict>
 </plist>

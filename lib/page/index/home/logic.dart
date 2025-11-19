@@ -38,4 +38,8 @@ class HomeLogic extends GetxController {
   void phoneCallExampleView() {
     PhoneCallUtil.makePhoneCall(Get.context!, '138-1234-5678');
   }
+
+  void appIconExampleView() {
+    NavigationUtils.toNamed(AppRoutes.appIconExample);
+  }
 }

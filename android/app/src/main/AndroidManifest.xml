@@ -44,6 +44,58 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <!-- 动态图标 - 春节图标 -->
+        <activity-alias
+            android:name=".SpringFestivalIcon"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/spring_festival"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+
+        <!-- 动态图标 - 劳动节图标 -->
+        <activity-alias
+            android:name=".LaborDayIcon"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/labor_day"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+
+        <!-- 动态图标 - 国庆节图标 -->
+        <activity-alias
+            android:name=".NationalDayIcon"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/national_day"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+
+        <!-- 动态图标 - 圣诞节图标 -->
+        <activity-alias
+            android:name=".ChristmasIcon"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/christmas"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data
