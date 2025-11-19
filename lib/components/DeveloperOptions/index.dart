@@ -173,34 +173,34 @@ class DeveloperOptions {
               const SizedBox(height: 12),
 
               // 代理地址
-              TextField(
-                controller: proxyHostController,
-                enabled: enableProxy.value,
-                decoration: const InputDecoration(
-                  labelText: '代理地址',
-                  hintText: '例如：192.168.1.100',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.dns),
-                  isDense: true,
-                ),
-                keyboardType: TextInputType.url,
-              ),
+              Obx(() => TextField(
+                    controller: proxyHostController,
+                    enabled: enableProxy.value,
+                    decoration: const InputDecoration(
+                      labelText: '代理地址',
+                      hintText: '例如：192.168.1.100',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.dns),
+                      isDense: true,
+                    ),
+                    keyboardType: TextInputType.url,
+                  )),
 
               const SizedBox(height: 12),
 
               // 代理端口
-              TextField(
-                controller: proxyPortController,
-                enabled: enableProxy.value,
-                decoration: const InputDecoration(
-                  labelText: '代理端口',
-                  hintText: '例如：8888',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.numbers),
-                  isDense: true,
-                ),
-                keyboardType: TextInputType.number,
-              ),
+              Obx(() => TextField(
+                    controller: proxyPortController,
+                    enabled: enableProxy.value,
+                    decoration: const InputDecoration(
+                      labelText: '代理端口',
+                      hintText: '例如：8888',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.numbers),
+                      isDense: true,
+                    ),
+                    keyboardType: TextInputType.number,
+                  )),
 
               const SizedBox(height: 8),
               const Text(
