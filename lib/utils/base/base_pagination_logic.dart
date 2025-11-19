@@ -30,8 +30,21 @@ abstract class BasePaginationLogic<T> extends GetxController {
   /// 数据列表
   final RxList<T> items = <T>[].obs;
 
-  /// 加载状态
+  /// 列表加载状态（基类自动控制）
   final RxBool isLoading = false.obs;
+
+  /// 页面整体加载状态（可在子类中覆盖，用于组合多个接口的 loading）
+  ///
+  /// 默认返回列表加载状态，子类可以覆盖这个 getter 来组合多个 loading：
+  /// ```dart
+  /// class MyLogic extends BasePaginationLogic {
+  ///   final RxBool otherLoading = false.obs;
+  ///
+  ///   @override
+  ///   bool get pageLoading => isLoading.value || otherLoading.value;
+  /// }
+  /// ```
+  bool get pageLoading => isLoading.value;
 
   /// 当前页码
   int _page = 1;

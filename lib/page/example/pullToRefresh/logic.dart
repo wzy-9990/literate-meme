@@ -11,6 +11,27 @@ import 'package:flutter_tem/utils/base/base_pagination_logic.dart';
 /// 3. 自定义搜索方法（这里是 searchUser，你可以根据需要命名和实现）
 ///
 /// 💡 提示：不同页面的接口和搜索参数都可能不同，请根据实际需求修改
+///
+/// 📝 多接口场景示例（当有多个接口时）：
+/// ```dart
+/// class MyLogic extends BasePaginationLogic<Map<String, dynamic>> {
+///   final RxBool statsLoading = false.obs;  // 其他接口的 loading
+///
+///   @override
+///   bool get pageLoading => isLoading.value || statsLoading.value;
+///
+///   Future<void> loadStats() async {
+///     try {
+///       statsLoading.value = true;
+///       await statsApi();
+///     } finally {
+///       statsLoading.value = false;
+///     }
+///   }
+/// }
+///
+/// // View 中使用 logic.pageLoading 而不是 logic.isLoading.value
+/// ```
 class PullToRefreshExampleLogic
     extends BasePaginationLogic<Map<String, dynamic>> {
   // 搜索框控制器

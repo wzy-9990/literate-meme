@@ -80,6 +80,7 @@ class PullToRefreshExampleView extends StatelessWidget {
                     refreshController: logic.refreshController,
                     onRefresh: logic.onRefresh,
                     onLoadMore: logic.onLoadMore,
+                    // 💡 如果有多个接口，使用 logic.pageLoading（在 Logic 中覆盖）
                     isLoading: logic.isLoading.value,
                     isSearching: logic.isSearching,
                     // 普通空状态配置

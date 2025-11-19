@@ -219,6 +219,86 @@ print('总页数: ${logic.totalPages}');    // 36
 print('当前数据量: ${logic.items.length}'); // 15
 ```
 
+### 3. 多接口场景 - 组合多个 Loading 状态
+
+当页面有多个接口（列表 + 统计/配置等），需要等所有接口都完成后才结束 loading：
+
+```dart
+class OrderListLogic extends BasePaginationLogic<Map<String, dynamic>> {
+  // 统计数据加载状态
+  final RxBool statsLoading = false.obs;
+
+  // 配置数据加载状态
+  final RxBool configLoading = false.obs;
+
+  // 覆盖 pageLoading，组合多个 loading 状态
+  @override
+  bool get pageLoading => isLoading.value || statsLoading.value || configLoading.value;
+
+  @override
+  void onInit() {
+    super.onInit();
+    loadStats();   // 加载统计数据
+    loadConfig();  // 加载配置数据
+  }
+
+  @override
+  Future<PaginationResponse<Map<String, dynamic>>> fetchData(
+    int page,
+    int pageSize,
+    Map<String, dynamic>? searchParams,
+  ) async {
+    final response = await orderApi(page, pageSize);
+    return PaginationResponse.fromMap(response);
+  }
+
+  // 加载统计数据
+  Future<void> loadStats() async {
+    try {
+      statsLoading.value = true;
+      final stats = await statsApi();
+      // 处理统计数据...
+    } finally {
+      statsLoading.value = false;
+    }
+  }
+
+  // 加载配置数据
+  Future<void> loadConfig() async {
+    try {
+      configLoading.value = true;
+      final config = await configApi();
+      // 处理配置数据...
+    } finally {
+      configLoading.value = false;
+    }
+  }
+}
+
+// View 中使用 pageLoading
+class OrderListView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final logic = Get.put(OrderListLogic());
+
+    return Scaffold(
+      body: Obx(
+        () => BasePullToRefreshList(
+          isLoading: logic.pageLoading,  // 👈 使用组合的 loading 状态
+          // ...
+        ),
+      ),
+    );
+  }
+}
+```
+
+**工作原理**：
+- `isLoading` - 基类自动控制列表加载状态
+- `statsLoading` - 手动控制统计接口加载状态
+- `configLoading` - 手动控制配置接口加载状态
+- `pageLoading` - 组合所有 loading，任一为 true 则页面显示 loading
+
 ## 📝 完整示例
 
 ### 1. 用户列表（带搜索）
