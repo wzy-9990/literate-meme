@@ -216,19 +216,25 @@ class DeveloperOptions {
         actions: [
           TextButton(
             onPressed: () {
-              apiUrlController.dispose();
-              proxyHostController.dispose();
-              proxyPortController.dispose();
               Get.back();
+              // 对话框关闭后再 dispose，避免焦点变化时访问已销毁的 controller
+              Future.microtask(() {
+                apiUrlController.dispose();
+                proxyHostController.dispose();
+                proxyPortController.dispose();
+              });
             },
             child: const Text('取消'),
           ),
           TextButton(
             onPressed: () {
-              apiUrlController.dispose();
-              proxyHostController.dispose();
-              proxyPortController.dispose();
               _resetToDefaultConfig();
+              // 对话框关闭后再 dispose
+              Future.microtask(() {
+                apiUrlController.dispose();
+                proxyHostController.dispose();
+                proxyPortController.dispose();
+              });
             },
             child: const Text('恢复默认'),
           ),
@@ -255,15 +261,18 @@ class DeveloperOptions {
                 }
               }
 
-              apiUrlController.dispose();
               _applyConfig(
                 newApiUrl,
                 enableProxy.value,
                 proxyHostController.text.trim(),
                 proxyPortController.text.trim(),
               );
-              proxyHostController.dispose();
-              proxyPortController.dispose();
+              // 对话框关闭后再 dispose
+              Future.microtask(() {
+                apiUrlController.dispose();
+                proxyHostController.dispose();
+                proxyPortController.dispose();
+              });
             },
             child: const Text('应用配置'),
           ),
