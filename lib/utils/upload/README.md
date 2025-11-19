@@ -9,7 +9,7 @@
 - ✅ 文件选择（支持类型过滤）
 - ✅ 多文件选择
 - ✅ 文件上传（支持进度回调）
-- ✅ **全局进度显示**（带百分比的加载圆圈）
+- ✅ 上传进度可视化（CircularProgressIndicator + 百分比）
 - ✅ 批量上传
 - ✅ MIME 类型检测
 - ✅ 文件大小格式化
@@ -143,9 +143,12 @@ debugPrint('选择了 ${files.length} 个文件');
 
 ```dart
 try {
-  // 不显示全局进度
   final result = await UploadUtil.uploadFileToDefault(
     fileInfo: fileInfo,
+    onProgress: (sent, total) {
+      final progress = (sent / total * 100).toInt();
+      debugPrint('上传进度: $progress%');
+    },
   );
 
   debugPrint('文件 Key: ${result?['fileKey']}');
@@ -155,30 +158,7 @@ try {
 }
 ```
 
-#### 带全局进度提示的上传
-
-```dart
-try {
-  // 显示全局进度圆圈和百分比
-  final result = await UploadUtil.uploadFileToDefault(
-    fileInfo: fileInfo,
-    showProgress: true, // 开启全局进度显示
-    onProgress: (sent, total) {
-      // 可选：自定义进度处理
-      debugPrint('上传进度: ${(sent / total * 100).toInt()}%');
-    },
-  );
-
-  debugPrint('上传成功');
-} catch (e) {
-  debugPrint('上传失败: $e');
-}
-```
-
-**说明**：
-- `showProgress: true` 会在屏幕中央显示带进度百分比的加载圈
-- 自动显示 "上传中 XX%" 的状态文字
-- 上传完成或失败后自动关闭进度提示
+**说明**：使用 `BaseUpload` 组件时，进度会自动显示在图片缩略图上（CircularProgressIndicator + 百分比文字）
 
 #### 使用自定义接口上传
 
@@ -187,25 +167,16 @@ try {
   final response = await UploadUtil.uploadFile(
     fileInfo: fileInfo,
     uploadUrl: 'https://api.example.com/upload',
+    onProgress: (sent, total) {
+      final progress = (sent / total * 100).toInt();
+      debugPrint('上传进度: $progress%');
+    },
   );
 
   debugPrint('上传成功: ${response?.data}');
 } catch (e) {
   debugPrint('上传失败: $e');
 }
-```
-
-#### 自定义接口带进度上传
-
-```dart
-final response = await UploadUtil.uploadFile(
-  fileInfo: fileInfo,
-  uploadUrl: 'https://api.example.com/upload',
-  onProgress: (sent, total) {
-    final progress = (sent / total * 100).toInt();
-    debugPrint('上传进度: $progress%');
-  },
-);
 ```
 
 #### 上传时附加额外数据

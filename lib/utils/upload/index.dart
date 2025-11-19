@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_tem/api/http.dart';
 import 'package:flutter_tem/utils/permission/index.dart';
 import 'package:image_picker/image_picker.dart';
@@ -236,12 +235,10 @@ class UploadUtil {
   ///
   /// [fileInfo] 文件信息
   /// [onProgress] 上传进度回调
-  /// [showProgress] 是否显示全局进度提示，默认 false
   /// 返回格式: { fileKey: "xxx", fileUrl: "xxx" }
   static Future<Map<String, dynamic>?> uploadFileToDefault({
     required UploadFileInfo fileInfo,
     void Function(int sent, int total)? onProgress,
-    bool showProgress = false,
   }) async {
     try {
       final formData = FormData.fromMap({
@@ -251,44 +248,15 @@ class UploadUtil {
         ),
       });
 
-      // 如果需要显示全局进度
-      if (showProgress) {
-        EasyLoading.showProgress(0, status: '上传中...');
-      }
-
       // 使用项目的 ApiService 实例上传文件
       final result = await Api.instance.uploadFile(
         '/pklApi/private/file/uploadFile',
         formData: formData,
-        onProgress: (sent, total) {
-          // 计算进度百分比
-          final progress = sent / total;
-
-          // 更新全局进度显示
-          if (showProgress) {
-            EasyLoading.showProgress(
-              progress,
-              status: '上传中 ${(progress * 100).toStringAsFixed(0)}%',
-            );
-          }
-
-          // 调用外部回调
-          onProgress?.call(sent, total);
-        },
+        onProgress: onProgress,
       );
-
-      // 关闭进度提示
-      if (showProgress) {
-        EasyLoading.dismiss();
-      }
 
       return result;
     } catch (e) {
-      // 关闭进度提示
-      if (showProgress) {
-        EasyLoading.dismiss();
-      }
-
       debugPrint('上传文件失败: $e');
       rethrow;
     }

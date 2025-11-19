@@ -283,7 +283,6 @@ class _BaseUploadState extends State<BaseUpload> {
         // 使用项目默认上传接口
         result = await UploadUtil.uploadFileToDefault(
           fileInfo: item.fileInfo,
-          showProgress: true, // 显示全局进度
           onProgress: (sent, total) {
             if (mounted) {
               setState(() {
@@ -440,10 +439,31 @@ class _BaseUploadState extends State<BaseUpload> {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Center(
-                child: CircularProgressIndicator(
-                  value: item.progress,
-                  backgroundColor: Colors.white30,
-                  valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    // 进度圆圈
+                    SizedBox(
+                      width: 50,
+                      height: 50,
+                      child: CircularProgressIndicator(
+                        value: item.progress,
+                        backgroundColor: Colors.white30,
+                        valueColor:
+                            const AlwaysStoppedAnimation<Color>(Colors.white),
+                        strokeWidth: 4,
+                      ),
+                    ),
+                    // 百分比文字
+                    Text(
+                      '${(item.progress * 100).toInt()}%',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
