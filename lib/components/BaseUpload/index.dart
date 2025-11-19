@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_tem/components/BaseImage/preview.dart';
 import 'package:flutter_tem/utils/upload/index.dart';
 
 /// 上传状态
@@ -336,6 +337,28 @@ class _BaseUploadState extends State<BaseUpload> {
     );
   }
 
+  /// 打开图片预览
+  void _openImagePreview(UploadItem item) {
+    // 优先使用上传后的 fileUrl，否则使用本地路径
+    String imageUrl = item.fileInfo.filePath;
+
+    // 如果上传成功且有返回的 fileUrl，使用网络图片
+    if (item.status == UploadStatus.success &&
+        item.result != null &&
+        item.result is Map<String, dynamic>) {
+      final fileUrl = (item.result as Map<String, dynamic>)['fileUrl'];
+      if (fileUrl != null && fileUrl is String && fileUrl.isNotEmpty) {
+        imageUrl = fileUrl;
+      }
+    }
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ImagePreviewPage(imageUrl: imageUrl),
+      ),
+    );
+  }
+
   /// 网格项
   Widget _buildGridItem(UploadItem item) {
     return Container(
@@ -349,13 +372,16 @@ class _BaseUploadState extends State<BaseUpload> {
         children: [
           // 图片预览
           if (item.fileInfo.isImage)
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.file(
-                File(item.fileInfo.filePath),
-                width: 100,
-                height: 100,
-                fit: BoxFit.cover,
+            GestureDetector(
+              onTap: () => _openImagePreview(item),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.file(
+                  File(item.fileInfo.filePath),
+                  width: 100,
+                  height: 100,
+                  fit: BoxFit.cover,
+                ),
               ),
             )
           else
@@ -438,13 +464,16 @@ class _BaseUploadState extends State<BaseUpload> {
         children: [
           // 文件图标/缩略图
           if (item.fileInfo.isImage)
-            ClipRRect(
-              borderRadius: BorderRadius.circular(4),
-              child: Image.file(
-                File(item.fileInfo.filePath),
-                width: 50,
-                height: 50,
-                fit: BoxFit.cover,
+            GestureDetector(
+              onTap: () => _openImagePreview(item),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: Image.file(
+                  File(item.fileInfo.filePath),
+                  width: 50,
+                  height: 50,
+                  fit: BoxFit.cover,
+                ),
               ),
             )
           else
