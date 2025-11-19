@@ -140,7 +140,7 @@ class TestUnused extends StatelessWidget {
 
   void example() {
     return;
-    print('这行代码永远不会执行');  // ❌ 错误：死代码
+    debugPrint('这行代码永远不会执行');  // ❌ 错误：死代码
   }
 
   @override
@@ -191,12 +191,12 @@ class TestUnused {
 // ❌ 错误
 void example() {
   String unusedVariable = 'test';  // 删除这行
-  print('hello');
+  debugPrint('hello');
 }
 
 // ✅ 正确
 void example() {
-  print('hello');
+  debugPrint('hello');
 }
 ```
 
@@ -214,7 +214,7 @@ import 'package:get/get.dart';  // 删除这行
 // ❌ 错误
 void example() {
   return;
-  print('dead code');  // 删除这行
+  debugPrint('dead code');  // 删除这行
 }
 
 // ✅ 正确

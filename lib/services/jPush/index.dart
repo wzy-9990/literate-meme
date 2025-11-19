@@ -22,7 +22,7 @@ class JPushServices {
     );
 
     // jPush.isNotificationEnabled().then((bool value) {
-    //   print("通知授权是否打开: $value");
+    //   debugPrint("通知授权是否打开: $value");
     //   if (!value) {
     //     Get.snackbar(
     //       "提示",
@@ -34,7 +34,7 @@ class JPushServices {
     //     );
     //   }
     // }).catchError((onError) {
-    //   print("通知授权是否打开: ${onError.toString()}");
+    //   debugPrint("通知授权是否打开: ${onError.toString()}");
     // });
 
     jPush.enableAutoWakeup(enable: true);

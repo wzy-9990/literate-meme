@@ -21,10 +21,10 @@
 final granted = await PermissionUtil.requestPermission(Permission.camera);
 if (granted) {
   // 权限已授予，执行操作
-  print('相机权限已授予');
+  debugPrint('相机权限已授予');
 } else {
   // 权限被拒绝
-  print('相机权限被拒绝');
+  debugPrint('相机权限被拒绝');
 }
 ```
 
@@ -70,11 +70,11 @@ await PermissionUtil.checkAndExecute(
   Permission.camera,
   onGranted: () {
     // 权限已授予，打开相机
-    print('打开相机');
+    debugPrint('打开相机');
   },
   onDenied: () {
     // 权限被拒绝
-    print('无法打开相机');
+    debugPrint('无法打开相机');
   },
   tipMessage: '需要相机权限以扫描二维码',
 );
@@ -93,10 +93,10 @@ final results = await PermissionUtil.requestMultiplePermissions([
 
 // 检查结果
 if (results[Permission.camera] == true) {
-  print('相机权限已授予');
+  debugPrint('相机权限已授予');
 }
 if (results[Permission.photos] == true) {
-  print('相册权限已授予');
+  debugPrint('相册权限已授予');
 }
 ```
 
@@ -106,15 +106,15 @@ if (results[Permission.photos] == true) {
 final status = await PermissionUtil.checkPermission(Permission.camera);
 
 if (status.isGranted) {
-  print('权限已授予');
+  debugPrint('权限已授予');
 } else if (status.isDenied) {
-  print('权限被拒绝');
+  debugPrint('权限被拒绝');
 } else if (status.isPermanentlyDenied) {
-  print('权限被永久拒绝');
+  debugPrint('权限被永久拒绝');
 } else if (status.isRestricted) {
-  print('权限受限');
+  debugPrint('权限受限');
 } else if (status.isLimited) {
-  print('权限受限（iOS 14+）');
+  debugPrint('权限受限（iOS 14+）');
 }
 ```
 
@@ -122,7 +122,7 @@ if (status.isGranted) {
 
 ```dart
 final name = PermissionUtil.getPermissionName(Permission.camera);
-print(name); // 输出：相机
+debugPrint(name); // 输出：相机
 ```
 
 ## 完整示例
@@ -143,7 +143,7 @@ class PermissionExample extends StatelessWidget {
 
     if (granted) {
       // 打开相机拍照
-      print('打开相机');
+      debugPrint('打开相机');
     }
   }
 
@@ -155,7 +155,7 @@ class PermissionExample extends StatelessWidget {
 
     if (granted) {
       // 打开相册选择
-      print('打开相册');
+      debugPrint('打开相册');
     }
   }
 
@@ -165,10 +165,10 @@ class PermissionExample extends StatelessWidget {
       Permission.location,
       onGranted: () {
         // 获取位置信息
-        print('开始获取位置');
+        debugPrint('开始获取位置');
       },
       onDenied: () {
-        print('无法获取位置，权限被拒绝');
+        debugPrint('无法获取位置，权限被拒绝');
       },
       tipMessage: '需要位置权限以提供附近的服务',
     );
@@ -183,9 +183,9 @@ class PermissionExample extends StatelessWidget {
 
     final allGranted = results.values.every((granted) => granted);
     if (allGranted) {
-      print('所有权限已授予，开始录制视频');
+      debugPrint('所有权限已授予，开始录制视频');
     } else {
-      print('部分权限未授予');
+      debugPrint('部分权限未授予');
     }
   }
 

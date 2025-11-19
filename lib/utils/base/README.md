@@ -214,9 +214,9 @@ class UserListLogic extends BasePaginationLogic<Map<String, dynamic>> {
 ```dart
 final logic = Get.find<UserListLogic>();
 
-print('总记录数: ${logic.total}');       // 530
-print('总页数: ${logic.totalPages}');    // 36
-print('当前数据量: ${logic.items.length}'); // 15
+debugPrint('总记录数: ${logic.total}');       // 530
+debugPrint('总页数: ${logic.totalPages}');    // 36
+debugPrint('当前数据量: ${logic.items.length}'); // 15
 ```
 
 ### 3. 多接口场景 - 组合多个 Loading 状态
@@ -526,12 +526,12 @@ class CustomLogic extends BasePaginationLogic<Map<String, dynamic>> {
   @override
   Future<void> loadData() async {
     // 加载前的自定义逻辑
-    print('开始加载...');
+    debugPrint('开始加载...');
 
     await super.loadData();
 
     // 加载后的自定义逻辑
-    print('加载完成！');
+    debugPrint('加载完成！');
   }
 }
 ```

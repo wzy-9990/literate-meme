@@ -13,10 +13,10 @@ class PermissionExampleView extends StatelessWidget {
     );
 
     if (granted) {
-      print('✅ 相机权限已授予，可以打开相机');
+      debugPrint('✅ 相机权限已授予，可以打开相机');
       // TODO: 打开相机拍照
     } else {
-      print('❌ 相机权限被拒绝');
+      debugPrint('❌ 相机权限被拒绝');
     }
   }
 
@@ -27,10 +27,10 @@ class PermissionExampleView extends StatelessWidget {
     );
 
     if (granted) {
-      print('✅ 相册权限已授予，可以选择照片');
+      debugPrint('✅ 相册权限已授予，可以选择照片');
       // TODO: 打开相册选择照片
     } else {
-      print('❌ 相册权限被拒绝');
+      debugPrint('❌ 相册权限被拒绝');
     }
   }
 
@@ -39,11 +39,11 @@ class PermissionExampleView extends StatelessWidget {
     await PermissionUtil.checkAndExecute(
       Permission.location,
       onGranted: () {
-        print('✅ 位置权限已授予，开始获取位置');
+        debugPrint('✅ 位置权限已授予，开始获取位置');
         // TODO: 获取位置信息
       },
       onDenied: () {
-        print('❌ 位置权限被拒绝');
+        debugPrint('❌ 位置权限被拒绝');
       },
       tipMessage: '需要位置权限以提供附近的服务',
     );
@@ -56,10 +56,10 @@ class PermissionExampleView extends StatelessWidget {
     );
 
     if (granted) {
-      print('✅ 麦克风权限已授予，可以录音');
+      debugPrint('✅ 麦克风权限已授予，可以录音');
       // TODO: 开始录音
     } else {
-      print('❌ 麦克风权限被拒绝');
+      debugPrint('❌ 麦克风权限被拒绝');
     }
   }
 
@@ -72,13 +72,13 @@ class PermissionExampleView extends StatelessWidget {
 
     final allGranted = results.values.every((granted) => granted);
     if (allGranted) {
-      print('✅ 所有权限已授予，可以录制视频');
+      debugPrint('✅ 所有权限已授予，可以录制视频');
       // TODO: 开始录制视频
     } else {
-      print('❌ 部分权限未授予');
+      debugPrint('❌ 部分权限未授予');
       results.forEach((permission, granted) {
         final name = PermissionUtil.getPermissionName(permission);
-        print('$name: ${granted ? "已授予" : "被拒绝"}');
+        debugPrint('$name: ${granted ? "已授予" : "被拒绝"}');
       });
     }
   }
@@ -90,10 +90,10 @@ class PermissionExampleView extends StatelessWidget {
     );
 
     if (granted) {
-      print('✅ 存储权限已授予，可以保存文件');
+      debugPrint('✅ 存储权限已授予，可以保存文件');
       // TODO: 保存文件
     } else {
-      print('❌ 存储权限被拒绝');
+      debugPrint('❌ 存储权限被拒绝');
     }
   }
 
@@ -104,10 +104,10 @@ class PermissionExampleView extends StatelessWidget {
     );
 
     if (granted) {
-      print('✅ 通知权限已授予');
+      debugPrint('✅ 通知权限已授予');
       // TODO: 开启推送通知
     } else {
-      print('❌ 通知权限被拒绝');
+      debugPrint('❌ 通知权限被拒绝');
     }
   }
 
@@ -130,7 +130,7 @@ class PermissionExampleView extends StatelessWidget {
       statusText = '未知';
     }
 
-    print('📱 相机权限状态：$statusText');
+    debugPrint('📱 相机权限状态：$statusText');
   }
 
   @override

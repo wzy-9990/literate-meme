@@ -39,10 +39,10 @@ BaseUpload(
   displayMode: 'grid',
   uploadUrl: 'https://api.example.com/upload',
   onUploadSuccess: (item) {
-    print('上传成功: ${item.result}');
+    debugPrint('上传成功: ${item.result}');
   },
   onUploadFailed: (item, error) {
-    print('上传失败: $error');
+    debugPrint('上传失败: $error');
   },
 )
 ```
@@ -95,7 +95,7 @@ BaseUpload(
     return response.data;
   },
   onUploadSuccess: (item) {
-    print('上传结果: ${item.result}');
+    debugPrint('上传结果: ${item.result}');
   },
 )
 ```
@@ -107,11 +107,11 @@ BaseUpload(
   maxCount: 5,
   imageOnly: true,
   onFilesChanged: (items) {
-    print('当前已选择 ${items.length} 个文件');
+    debugPrint('当前已选择 ${items.length} 个文件');
     for (var item in items) {
-      print('文件名: ${item.fileInfo.fileName}');
-      print('状态: ${item.status}');
-      print('进度: ${item.progress}');
+      debugPrint('文件名: ${item.fileInfo.fileName}');
+      debugPrint('状态: ${item.status}');
+      debugPrint('进度: ${item.progress}');
     }
   },
 )
@@ -188,7 +188,7 @@ final fileInfo = await UploadUtil.pickImage(
 );
 
 if (fileInfo != null) {
-  print('选择的图片: ${fileInfo.fileName}');
+  debugPrint('选择的图片: ${fileInfo.fileName}');
 }
 ```
 
@@ -202,7 +202,7 @@ final files = await UploadUtil.pickMultipleImages(
   imageQuality: 85,
 );
 
-print('选择了 ${files.length} 张图片');
+debugPrint('选择了 ${files.length} 张图片');
 ```
 
 ### 选择单个文件
@@ -213,7 +213,7 @@ final fileInfo = await UploadUtil.pickFile(
 );
 
 if (fileInfo != null) {
-  print('选择的文件: ${fileInfo.fileName}');
+  debugPrint('选择的文件: ${fileInfo.fileName}');
 }
 ```
 
@@ -224,7 +224,7 @@ final files = await UploadUtil.pickMultipleFiles(
   allowedExtensions: ['pdf', 'doc', 'docx', 'xls', 'xlsx'],
 );
 
-print('选择了 ${files.length} 个文件');
+debugPrint('选择了 ${files.length} 个文件');
 ```
 
 ### 上传单个文件
@@ -239,11 +239,11 @@ final response = await UploadUtil.uploadFile(
     'category': 'document',
   },
   onProgress: (sent, total) {
-    print('上传进度: ${(sent / total * 100).toInt()}%');
+    debugPrint('上传进度: ${(sent / total * 100).toInt()}%');
   },
 );
 
-print('上传结果: ${response?.data}');
+debugPrint('上传结果: ${response?.data}');
 ```
 
 ### 批量上传文件
@@ -254,11 +254,11 @@ final results = await UploadUtil.uploadMultipleFiles(
   uploadUrl: 'https://api.example.com/upload',
   fieldName: 'file',
   onProgress: (index, sent, total) {
-    print('文件 $index 上传进度: ${(sent / total * 100).toInt()}%');
+    debugPrint('文件 $index 上传进度: ${(sent / total * 100).toInt()}%');
   },
 );
 
-print('上传了 ${results.length} 个文件');
+debugPrint('上传了 ${results.length} 个文件');
 ```
 
 ### 显示图片来源选择对话框
@@ -268,9 +268,9 @@ final source = await UploadUtil.showImageSourceDialog(context);
 
 if (source != null) {
   if (source == ImageSourceType.camera) {
-    print('用户选择拍照');
+    debugPrint('用户选择拍照');
   } else {
-    print('用户选择相册');
+    debugPrint('用户选择相册');
   }
 }
 ```

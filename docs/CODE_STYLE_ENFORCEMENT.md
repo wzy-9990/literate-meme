@@ -100,7 +100,7 @@ class MyClass {
   String name = 'test';
 
   void printName() {
-    print(this.name);  // ❌ 不必要的 this
+    debugPrint(this.name);  // ❌ 不必要的 this
   }
 }
 ```
@@ -111,7 +111,7 @@ class MyClass {
   String name = 'test';
 
   void printName() {
-    print(name);  // ✅ 直接使用
+    debugPrint(name);  // ✅ 直接使用
   }
 }
 ```
@@ -187,17 +187,17 @@ error • The method 'getData' should have a return type but doesn't • lib/tes
 
 ---
 
-### 6. 使用 print() 输出日志
+### 6. 使用 debugPrint() 输出日志
 
 ❌ **错误（会阻止提交）：**
 ```dart
 void debugLog() {
-  print('Debug message');  // ❌ 禁止使用 print
-  print('User data: $userData');
+  debugPrint('Debug message');  // ❌ 禁止使用 print
+  debugPrint('User data: $userData');
 }
 
 void main() {
-  print('App started');  // ❌ 生产代码中禁止使用 print
+  debugPrint('App started');  // ❌ 生产代码中禁止使用 print
 }
 ```
 
@@ -221,11 +221,11 @@ error • Don't invoke 'print' in production code • lib/test.dart:2:3 • avoi
 ```
 
 **快速修复：**
-- 将所有 `print()` 替换为 `debugPrint()`
+- 将所有 `debugPrint()` 替换为 `debugPrint()`
 - 或使用专业的日志框架（如 logger、dio 的日志拦截器等）
 
-**为什么禁止 print()？**
-- `print()` 在生产环境会输出所有日志，可能暴露敏感信息
+**为什么禁止 debugPrint()？**
+- `debugPrint()` 在生产环境会输出所有日志，可能暴露敏感信息
 - `debugPrint()` 只在调试模式下输出，发布版本自动禁用
 - `debugPrint()` 会自动处理长文本（超过 1024 字符会分段输出）
 - 使用日志框架可以更好地控制日志级别和输出目标
@@ -246,7 +246,7 @@ class BadExample {
 
   BadExample() {
     // ❌ 不必要的 this
-    print(this.message);
+    debugPrint(this.message);
 
     // ❌ 使用 new
     var list = new List<int>();
@@ -344,7 +344,7 @@ flutter analyze
 - [ ] 删除所有 `new` 关键字
 - [ ] 删除不必要的 `this.`
 - [ ] 所有方法声明返回类型（`void`、`String`、`Future<void>` 等）
-- [ ] 使用 `debugPrint()` 而非 `print()`
+- [ ] 使用 `debugPrint()` 而非 `debugPrint()`
 - [ ] 删除未使用的变量和导入
 
 ---

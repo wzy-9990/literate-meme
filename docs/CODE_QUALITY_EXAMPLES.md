@@ -10,7 +10,7 @@
 class BadIndentation {
 void method() {
 if (true) {
-print('bad');
+debugPrint('bad');
 }
 }
 }
@@ -22,7 +22,7 @@ print('bad');
 class BadIndentation {
   void method() {
     if (true) {
-      print('bad');
+      debugPrint('bad');
     }
   }
 }
@@ -53,7 +53,7 @@ class UnusedVariables {
     // ❌ 未使用的导入
     // import 'package:flutter/material.dart'; // 如果没用到会报错
 
-    print('hello');
+    debugPrint('hello');
   }
 
   // ❌ 未使用的私有字段
@@ -61,7 +61,7 @@ class UnusedVariables {
 
   // ❌ 未使用的私有方法
   void _unusedMethod() {
-    print('never called');
+    debugPrint('never called');
   }
 }
 ```
@@ -95,7 +95,7 @@ class GoodCode {
   void example() {
     // ✅ 只定义实际使用的变量
     String message = 'hello';
-    print(message);
+    debugPrint(message);
   }
 
   // ✅ 只保留使用的字段
@@ -105,7 +105,7 @@ class GoodCode {
 
   // ✅ 只保留被调用的方法
   void _usedMethod() {
-    print('this is called');
+    debugPrint('this is called');
   }
 
   void caller() {
@@ -124,7 +124,7 @@ import 'package:flutter/material.dart';  // 错误：未使用
 import 'package:get/get.dart';  // 错误：未使用
 
 void main() {
-  print('hello');
+  debugPrint('hello');
 }
 ```
 
@@ -132,7 +132,7 @@ void main() {
 ```dart
 // ✅ 只导入需要的
 void main() {
-  print('hello');
+  debugPrint('hello');
 }
 ```
 
@@ -141,14 +141,14 @@ void main() {
 ```dart
 void example() {
   return;
-  print('dead code');  // ❌ 错误：永远不会执行
+  debugPrint('dead code');  // ❌ 错误：永远不会执行
 }
 ```
 
 修复：
 ```dart
 void example() {
-  print('alive code');  // ✅ 正确
+  debugPrint('alive code');  // ✅ 正确
   return;
 }
 ```
@@ -160,7 +160,7 @@ class Example {
   String name = 'test';
 
   void method() {
-    print(this.name);  // ❌ 警告：不必要的 this
+    debugPrint(this.name);  // ❌ 警告：不必要的 this
   }
 }
 ```
@@ -171,7 +171,7 @@ class Example {
   String name = 'test';
 
   void method() {
-    print(name);  // ✅ 正确
+    debugPrint(name);  // ✅ 正确
   }
 }
 ```

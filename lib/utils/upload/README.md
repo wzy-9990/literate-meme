@@ -40,10 +40,10 @@ final source = await UploadUtil.showImageSourceDialog(context);
 if (source != null) {
   final fileInfo = await UploadUtil.pickImage(source: source);
   if (fileInfo != null) {
-    print('文件路径: ${fileInfo.filePath}');
-    print('文件名: ${fileInfo.fileName}');
-    print('文件大小: ${fileInfo.fileSizeFormatted}');
-    print('是否为图片: ${fileInfo.isImage}');
+    debugPrint('文件路径: ${fileInfo.filePath}');
+    debugPrint('文件名: ${fileInfo.fileName}');
+    debugPrint('文件大小: ${fileInfo.fileSizeFormatted}');
+    debugPrint('是否为图片: ${fileInfo.isImage}');
   }
 }
 ```
@@ -85,9 +85,9 @@ final files = await UploadUtil.pickMultipleImages(
   imageQuality: 85,
 );
 
-print('选择了 ${files.length} 张图片');
+debugPrint('选择了 ${files.length} 张图片');
 for (var file in files) {
-  print('${file.fileName} - ${file.fileSizeFormatted}');
+  debugPrint('${file.fileName} - ${file.fileSizeFormatted}');
 }
 ```
 
@@ -98,8 +98,8 @@ for (var file in files) {
 ```dart
 final fileInfo = await UploadUtil.pickFile();
 if (fileInfo != null) {
-  print('选择的文件: ${fileInfo.fileName}');
-  print('MIME类型: ${fileInfo.mimeType}');
+  debugPrint('选择的文件: ${fileInfo.fileName}');
+  debugPrint('MIME类型: ${fileInfo.mimeType}');
 }
 ```
 
@@ -133,7 +133,7 @@ final files = await UploadUtil.pickMultipleFiles(
   allowedExtensions: ['pdf', 'doc', 'docx', 'xls', 'xlsx'],
 );
 
-print('选择了 ${files.length} 个文件');
+debugPrint('选择了 ${files.length} 个文件');
 ```
 
 ### 5. 上传文件
@@ -147,9 +147,9 @@ try {
     uploadUrl: 'https://api.example.com/upload',
   );
 
-  print('上传成功: ${response?.data}');
+  debugPrint('上传成功: ${response?.data}');
 } catch (e) {
-  print('上传失败: $e');
+  debugPrint('上传失败: $e');
 }
 ```
 
@@ -161,7 +161,7 @@ final response = await UploadUtil.uploadFile(
   uploadUrl: 'https://api.example.com/upload',
   onProgress: (sent, total) {
     final progress = (sent / total * 100).toInt();
-    print('上传进度: $progress%');
+    debugPrint('上传进度: $progress%');
   },
 );
 ```
@@ -192,13 +192,13 @@ try {
     uploadUrl: 'https://api.example.com/upload',
     onProgress: (index, sent, total) {
       final progress = (sent / total * 100).toInt();
-      print('文件 ${index + 1} 上传进度: $progress%');
+      debugPrint('文件 ${index + 1} 上传进度: $progress%');
     },
   );
 
-  print('成功上传 ${results.length} 个文件');
+  debugPrint('成功上传 ${results.length} 个文件');
 } catch (e) {
-  print('上传失败: $e');
+  debugPrint('上传失败: $e');
 }
 ```
 
@@ -432,7 +432,7 @@ class UploadDemo extends StatelessWidget {
                   );
 
                   EasyLoading.showSuccess('上传成功');
-                  print('结果: ${response?.data}');
+                  debugPrint('结果: ${response?.data}');
                 } catch (e) {
                   EasyLoading.showError('上传失败: $e');
                 }
@@ -535,10 +535,10 @@ if (source != null) {
   final fileInfo = await UploadUtil.pickImage(source: source);
   if (fileInfo != null) {
     // 权限已授予，成功选择了图片
-    print('选择的图片: ${fileInfo.fileName}');
+    debugPrint('选择的图片: ${fileInfo.fileName}');
   } else {
     // 用户取消选择或权限被拒绝
-    print('未选择图片');
+    debugPrint('未选择图片');
   }
 }
 ```

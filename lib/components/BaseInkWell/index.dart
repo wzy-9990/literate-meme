@@ -8,7 +8,7 @@ import 'package:flutter_tem/config/styles/index.dart';
 /// 使用示例：
 /// ```dart
 /// BaseInkWell(
-///   onTap: () => print('点击'),
+///   onTap: () => debugPrint('点击'),
 ///   child: Text('点我有水波纹'),
 /// )
 /// ```
