@@ -81,9 +81,17 @@ class PullToRefreshExampleView extends StatelessWidget {
                     onRefresh: logic.onRefresh,
                     onLoadMore: logic.onLoadMore,
                     isLoading: logic.isLoading.value,
-                    emptyTitle: '暂无数据',
-                    emptySubtitle: '当前没有找到任何用户信息',
+                    isSearching: logic.isSearching,
+                    // 普通空状态配置
+                    emptyTitle: '暂无用户',
+                    emptySubtitle: '当前组织下还没有任何用户',
                     emptyButtonText: '刷新',
+                    // 搜索空状态配置
+                    searchEmptyTitle: '未找到相关用户',
+                    searchEmptySubtitle: '试试其他关键词吧',
+                    searchEmptyButtonText: '清空搜索',
+                    // 按钮回调：搜索时点击清空，普通空时点击刷新
+                    onEmptyButtonPressed: logic.isSearching ? logic.clearSearch : logic.onRefresh,
                     children: logic.items
                           .map(
                           (item) => Card(

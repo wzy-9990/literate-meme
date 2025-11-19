@@ -53,6 +53,12 @@ class PullToRefreshExampleLogic
     search(params); // 调用基类的 search 方法
   }
 
+  /// 清空搜索
+  void clearSearch() {
+    searchController.clear();
+    search(null); // 传 null 清空搜索参数
+  }
+
   // 💡 你还可以添加更多自定义搜索方法，例如：
   //
   // void searchByPhone(String phone) {

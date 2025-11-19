@@ -50,6 +50,9 @@ abstract class BasePaginationLogic<T> extends GetxController {
   /// 搜索参数（可选）
   Map<String, dynamic>? _searchParams;
 
+  /// 是否处于搜索状态
+  bool get isSearching => _searchParams != null && _searchParams!.isNotEmpty;
+
   @override
   void onInit() {
     super.onInit();
