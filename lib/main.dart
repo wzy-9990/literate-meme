@@ -44,6 +44,19 @@ class MyApp extends StatelessWidget {
               statusBarIconBrightness: Brightness.dark, // 状态栏图标深色
             ),
           ),
+          bottomNavigationBarTheme: const BottomNavigationBarTheme(
+            backgroundColor: Colors.white,
+            selectedItemColor: Color(0xffFE6601), // 选中颜色
+            unselectedItemColor: Color(0x66000000), // 未选中颜色
+            selectedLabelStyle: TextStyle(fontSize: 12),
+            unselectedLabelStyle: TextStyle(fontSize: 12),
+            // 禁用水波纹效果
+            showSelectedLabels: true,
+            showUnselectedLabels: true,
+            type: BottomNavigationBarType.fixed,
+          ),
+          splashColor: Colors.transparent, // 全局禁用水波纹
+          highlightColor: Colors.transparent, // 全局禁用高亮
           scaffoldBackgroundColor: const Color(0xFFF6F6F6),
         ),
         builder: (context, child) {

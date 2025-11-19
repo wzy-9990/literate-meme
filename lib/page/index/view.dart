@@ -23,12 +23,6 @@ class IndexView extends GetView<IndexLogic> {
             ],
           ),
           bottomNavigationBar: BottomNavigationBar(
-            backgroundColor: Colors.white,
-            selectedItemColor: const Color(0xffFE6601), // 选中颜色
-            unselectedItemColor:
-                const Color(0xFF000000).withOpacity(0.65), // 未选中颜色
-            selectedFontSize: 12,
-
             currentIndex: controller.currentIndex.value,
             onTap: controller.changeTab,
             items: const [
@@ -36,6 +30,7 @@ class IndexView extends GetView<IndexLogic> {
               BottomNavigationBarItem(icon: Icon(Icons.message), label: '消息'),
               BottomNavigationBarItem(icon: Icon(Icons.person), label: '我的'),
             ],
+            // 样式已在全局主题中配置，无需重复设置
           ),
         );
       }),
