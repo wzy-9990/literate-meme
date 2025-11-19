@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tem/components/BaseAppBar/index.dart';
-import 'package:flutter_tem/theme/app_icons.dart';
+import 'package:flutter_tem/config/styles/app_icons.dart';
 import 'package:flutter_tem/utils/app_icon_manager/index.dart';
 
 /// App 图标切换示例页面
@@ -135,9 +135,7 @@ class _AppIconExamplePageState extends State<AppIconExamplePage> {
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              _isSupported
-                                  ? '支持动态图标切换'
-                                  : '不支持动态图标切换',
+                              _isSupported ? '支持动态图标切换' : '不支持动态图标切换',
                               style: TextStyle(
                                 color: _isSupported ? Colors.green : Colors.red,
                               ),
@@ -207,7 +205,8 @@ class _AppIconExamplePageState extends State<AppIconExamplePage> {
 
                 ...AppIconConfig.availableIcons.map((iconName) {
                   final isActive = _currentIcon == iconName;
-                  final displayName = AppIconConfig.iconNames[iconName] ?? iconName;
+                  final displayName =
+                      AppIconConfig.iconNames[iconName] ?? iconName;
 
                   // 获取该图标的日期范围
                   final dateRule = AppIconConfig.dateRules.firstWhere(
@@ -228,13 +227,16 @@ class _AppIconExamplePageState extends State<AppIconExamplePage> {
                       color: isActive ? Colors.blue.shade50 : null,
                       child: ListTile(
                         leading: Icon(
-                          isActive ? Icons.radio_button_checked : Icons.circle_outlined,
+                          isActive
+                              ? Icons.radio_button_checked
+                              : Icons.circle_outlined,
                           color: isActive ? Colors.blue : Colors.grey,
                         ),
                         title: Text(
                           displayName,
                           style: TextStyle(
-                            fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+                            fontWeight:
+                                isActive ? FontWeight.bold : FontWeight.normal,
                           ),
                         ),
                         subtitle: dateInfo.isNotEmpty

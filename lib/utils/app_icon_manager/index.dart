@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dynamic_icon/flutter_dynamic_icon.dart';
-import 'package:flutter_tem/theme/app_icons.dart';
+import 'package:flutter_tem/config/styles/app_icons.dart';
 
 /// App 图标管理工具
 class AppIconManager {
@@ -23,12 +23,14 @@ class AppIconManager {
 
       if (Platform.isAndroid) {
         // Android 使用自定义 MethodChannel
-        await _androidChannel.invokeMethod('changeIcon', {'iconName': iconName});
+        await _androidChannel
+            .invokeMethod('changeIcon', {'iconName': iconName});
         debugPrint('Android 图标已切换: $iconName');
         return true;
       } else if (Platform.isIOS) {
         // iOS 使用 flutter_dynamic_icon 插件
-        final iconToSet = iconName == AppIconConfig.defaultIcon ? null : iconName;
+        final iconToSet =
+            iconName == AppIconConfig.defaultIcon ? null : iconName;
         await FlutterDynamicIcon.setAlternateIconName(iconToSet);
         debugPrint('iOS 图标已切换: $iconName');
         return true;
@@ -53,7 +55,8 @@ class AppIconManager {
     try {
       if (Platform.isAndroid) {
         // Android 使用自定义 MethodChannel
-        final iconName = await _androidChannel.invokeMethod<String>('getCurrentIcon');
+        final iconName =
+            await _androidChannel.invokeMethod<String>('getCurrentIcon');
         return iconName ?? AppIconConfig.defaultIcon;
       } else if (Platform.isIOS) {
         // iOS 使用 flutter_dynamic_icon 插件
@@ -72,11 +75,12 @@ class AppIconManager {
     try {
       if (Platform.isAndroid) {
         // Android 使用自定义 MethodChannel
-        final supported = await _androidChannel.invokeMethod<bool>('isSupported');
+        final supported =
+            await _androidChannel.invokeMethod<bool>('isSupported');
         return supported ?? false;
       } else if (Platform.isIOS) {
         // iOS 使用 flutter_dynamic_icon 插件
-        return await FlutterDynamicIcon.supportsAlternateIcons ?? false;
+        return await FlutterDynamicIcon.supportsAlternateIcons;
       }
       return false;
     } catch (e) {

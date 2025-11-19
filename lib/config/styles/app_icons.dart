@@ -38,7 +38,7 @@ class AppIconConfig {
   /// 图标对应的日期范围配置
   static final List<IconDateRule> dateRules = [
     // 春节（农历正月初一前后，这里简化为公历1-2月）
-    IconDateRule(
+    const IconDateRule(
       iconName: springFestival,
       startMonth: 1,
       startDay: 1,
@@ -46,7 +46,7 @@ class AppIconConfig {
       endDay: 28,
     ),
     // 劳动节
-    IconDateRule(
+    const IconDateRule(
       iconName: laborDay,
       startMonth: 5,
       startDay: 1,
@@ -54,7 +54,7 @@ class AppIconConfig {
       endDay: 3,
     ),
     // 国庆节
-    IconDateRule(
+    const IconDateRule(
       iconName: nationalDay,
       startMonth: 10,
       startDay: 1,
@@ -62,7 +62,7 @@ class AppIconConfig {
       endDay: 7,
     ),
     // 圣诞节
-    IconDateRule(
+    const IconDateRule(
       iconName: christmas,
       startMonth: 12,
       startDay: 24,
