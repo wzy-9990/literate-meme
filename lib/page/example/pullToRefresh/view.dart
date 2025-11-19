@@ -5,22 +5,8 @@ import 'package:flutter_tem/components/BaseLoading/index.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'logic.dart';
 
-class PullToRefreshExampleView extends StatefulWidget {
+class PullToRefreshExampleView extends StatelessWidget {
   const PullToRefreshExampleView({super.key});
-
-  @override
-  State<PullToRefreshExampleView> createState() =>
-      _PullToRefreshExampleViewState();
-}
-
-class _PullToRefreshExampleViewState extends State<PullToRefreshExampleView> {
-  final TextEditingController _searchController = TextEditingController();
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +26,7 @@ class _PullToRefreshExampleViewState extends State<PullToRefreshExampleView> {
               children: [
                 Expanded(
                   child: TextField(
-                    controller: _searchController,
+                    controller: logic.searchController,
                     decoration: InputDecoration(
                       hintText: '请输入用户名搜索',
                       prefixIcon: const Icon(Icons.search),
@@ -70,7 +56,7 @@ class _PullToRefreshExampleViewState extends State<PullToRefreshExampleView> {
                 SizedBox(width: 8.w),
                 ElevatedButton(
                   onPressed: () {
-                    logic.searchUser(_searchController.text);
+                    logic.searchUser(logic.searchController.text);
                   },
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(

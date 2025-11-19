@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_tem/api/modules/my.dart';
 import 'package:flutter_tem/utils/base/base_pagination_logic.dart';
 
@@ -12,6 +13,8 @@ import 'package:flutter_tem/utils/base/base_pagination_logic.dart';
 /// 💡 提示：不同页面的接口和搜索参数都可能不同，请根据实际需求修改
 class PullToRefreshExampleLogic
     extends BasePaginationLogic<Map<String, dynamic>> {
+  // 搜索框控制器
+  final TextEditingController searchController = TextEditingController();
   @override
   Future<PaginationResponse<Map<String, dynamic>>> fetchData(
     int page,
@@ -66,4 +69,10 @@ class PullToRefreshExampleLogic
   //     'status': status,
   //   });
   // }
+
+  @override
+  void onClose() {
+    searchController.dispose();
+    super.onClose();
+  }
 }
