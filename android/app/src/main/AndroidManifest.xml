@@ -51,7 +51,7 @@
             android:enabled="false"
             android:exported="true"
             android:icon="@mipmap/spring_festival"
-            android:label="@string/app_name"
+            android:label="flutter_tem"
             android:targetActivity=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -65,7 +65,7 @@
             android:enabled="false"
             android:exported="true"
             android:icon="@mipmap/labor_day"
-            android:label="@string/app_name"
+            android:label="flutter_tem"
             android:targetActivity=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -79,7 +79,7 @@
             android:enabled="false"
             android:exported="true"
             android:icon="@mipmap/national_day"
-            android:label="@string/app_name"
+            android:label="flutter_tem"
             android:targetActivity=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -93,7 +93,7 @@
             android:enabled="false"
             android:exported="true"
             android:icon="@mipmap/christmas"
-            android:label="@string/app_name"
+            android:label="flutter_tem"
             android:targetActivity=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
