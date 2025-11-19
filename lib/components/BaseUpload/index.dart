@@ -264,8 +264,7 @@ class _BaseUploadState extends State<BaseUpload> {
     return Column(
       children: [
         ..._uploadItems.map((item) => _buildListItem(item)),
-        if (_uploadItems.length < widget.maxCount)
-          _buildAddButtonList(),
+        if (_uploadItems.length < widget.maxCount) _buildAddButtonList(),
       ],
     );
   }
@@ -487,7 +486,8 @@ class _BaseUploadState extends State<BaseUpload> {
         width: 100,
         height: 100,
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey[300]!, style: BorderStyle.solid),
+          border:
+              Border.all(color: Colors.grey[300]!, style: BorderStyle.solid),
           borderRadius: BorderRadius.circular(8),
           color: Colors.grey[50],
         ),
@@ -513,7 +513,7 @@ class _BaseUploadState extends State<BaseUpload> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey[300]!, style: BorderStyle.dashed),
+          border: Border.all(color: Colors.grey[300]!),
           borderRadius: BorderRadius.circular(8),
           color: Colors.grey[50],
         ),
