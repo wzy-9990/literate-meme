@@ -1,0 +1,50 @@
+# Lefthook 配置文件
+# 用于管理 Git hooks，自动进行代码格式化和规范检查
+
+pre-commit:
+  parallel: false  # 顺序执行，先格式化再检查
+  commands:
+    # 1. 代码格式化
+    format:
+      glob: "*.dart"
+      run: dart format {staged_files}
+      stage_fixed: true
+
+    # 2. 代码规范检查（只检查修改的文件）
+    analyze:
+      glob: "*.dart"
+      run: |
+        echo "正在检查代码规范..."
+        dart analyze {staged_files} 2>/dev/null || flutter analyze --no-fatal-infos
+
+    # 3. 检查是否有冲突标记
+    conflict-markers:
+      glob: "*.{dart,yaml,json,md}"
+      run: |
+        conflicts=$(echo "{staged_files}" | xargs grep -l "^<<<<<<< " 2>/dev/null || true)
+        if [ -n "$conflicts" ]; then
+          echo "❌ 检测到冲突标记，请解决冲突后再提交:"
+          echo "$conflicts"
+          exit 1
+        fi
+
+# commit-msg:
+#   commands:
+#     # 提交信息规范检查（可选）
+#     commitlint:
+#       run: |
+#         msg=$(cat {1})
+#         if ! echo "$msg" | grep -qE "^(feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\(.+\))?: .+"; then
+#           echo "提交信息格式错误！"
+#           echo "格式: <type>(<scope>): <subject>"
+#           echo "示例: feat(login): 添加用户登录功能"
+#           echo ""
+#           echo "type 可选值: feat, fix, docs, style, refactor, test, chore, perf, ci, build, revert"
+#           exit 1
+#         fi
+
+# pre-push:
+#   commands:
+#     # 推送前运行测试（可选）
+#     tests:
+#       run: flutter test
