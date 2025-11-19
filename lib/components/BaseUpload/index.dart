@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_tem/components/BaseImage/preview.dart';
@@ -421,7 +420,12 @@ class _BaseUploadState extends State<BaseUpload> {
               onTap: () => _openImagePreview(item),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: _buildImageWidget(item),
+                child: Image.file(
+                  File(item.fileInfo.filePath),
+                  width: 100,
+                  height: 100,
+                  fit: BoxFit.cover,
+                ),
               ),
             )
           else
@@ -556,10 +560,11 @@ class _BaseUploadState extends State<BaseUpload> {
               onTap: () => _openImagePreview(item),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),
-                child: SizedBox(
+                child: Image.file(
+                  File(item.fileInfo.filePath),
                   width: 50,
                   height: 50,
-                  child: _buildImageWidget(item),
+                  fit: BoxFit.cover,
                 ),
               ),
             )
@@ -613,39 +618,6 @@ class _BaseUploadState extends State<BaseUpload> {
             ),
         ],
       ),
-    );
-  }
-
-  /// 构建图片组件（本地或网络）
-  Widget _buildImageWidget(UploadItem item) {
-    // 如果上传成功，优先使用服务器返回的图片URL
-    if (item.status == UploadStatus.success &&
-        item.result != null &&
-        item.result is Map<String, dynamic>) {
-      final fileUrl = (item.result as Map<String, dynamic>)['fileUrl'];
-      if (fileUrl != null && fileUrl is String && fileUrl.isNotEmpty) {
-        // 显示网络图片
-        return CachedNetworkImage(
-          imageUrl: fileUrl,
-          fit: BoxFit.cover,
-          placeholder: (context, url) => Container(
-            color: Colors.grey[200],
-            child: const Center(
-              child: CircularProgressIndicator(strokeWidth: 2),
-            ),
-          ),
-          errorWidget: (context, url, error) => Container(
-            color: Colors.grey[200],
-            child: Icon(Icons.error, color: Colors.grey[400]),
-          ),
-        );
-      }
-    }
-
-    // 默认显示本地图片
-    return Image.file(
-      File(item.fileInfo.filePath),
-      fit: BoxFit.cover,
     );
   }
 
