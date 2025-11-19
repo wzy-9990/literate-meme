@@ -15,6 +15,7 @@ class UploadExampleView extends StatefulWidget {
 class _UploadExampleViewState extends State<UploadExampleView> {
   final List<UploadItem> _imageUploadList = [];
   final List<UploadItem> _fileUploadList = [];
+  List<Map<String, dynamic>> _uploadedData = [];
 
   @override
   Widget build(BuildContext context) {
@@ -27,11 +28,11 @@ class _UploadExampleViewState extends State<UploadExampleView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 示例1：图片上传（网格模式）
-            _buildSectionTitle('示例1：图片上传（网格模式）'),
+            // 示例1：图片上传（网格模式 - 使用默认上传接口）
+            _buildSectionTitle('示例1：图片上传（使用默认接口）'),
             const SizedBox(height: 8),
             const Text(
-              '最多上传3张图片，单张不超过5MB',
+              '最多上传3张图片，单张不超过5MB\n使用默认上传接口：/pklApi/private/file/uploadFile',
               style: TextStyle(fontSize: 12, color: Colors.grey),
             ),
             const SizedBox(height: 12),
@@ -40,8 +41,7 @@ class _UploadExampleViewState extends State<UploadExampleView> {
               imageOnly: true,
               maxFileSize: 5 * 1024 * 1024, // 5MB
               displayMode: 'grid',
-              // 使用自定义上传方法模拟上传
-              customUpload: _mockUpload,
+              useDefaultUpload: true, // 使用默认上传接口
               onUploadSuccess: (item) {
                 EasyLoading.showSuccess('图片上传成功');
               },
@@ -54,9 +54,17 @@ class _UploadExampleViewState extends State<UploadExampleView> {
                   _imageUploadList.addAll(items);
                 });
               },
+              onUploadedDataChanged: (uploadedData) {
+                setState(() {
+                  _uploadedData = uploadedData;
+                });
+                debugPrint('已上传的文件数据: $uploadedData');
+              },
             ),
             const SizedBox(height: 12),
             _buildUploadInfo(_imageUploadList),
+            const SizedBox(height: 12),
+            _buildUploadedDataInfo(),
 
             const SizedBox(height: 32),
 
@@ -211,6 +219,69 @@ class _UploadExampleViewState extends State<UploadExampleView> {
                       fontSize: 12,
                       color: statusColor,
                       fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }),
+        ],
+      ),
+    );
+  }
+
+  /// 构建上传成功的数据信息
+  Widget _buildUploadedDataInfo() {
+    if (_uploadedData.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.green[50],
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.green[200]!),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '已上传成功 ${_uploadedData.length} 个文件（父组件可获取）',
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.green,
+            ),
+          ),
+          const SizedBox(height: 8),
+          ..._uploadedData.map((data) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(Icons.check_circle, color: Colors.green, size: 16),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          'fileKey: ${data['fileKey'] ?? 'N/A'}',
+                          style: const TextStyle(fontSize: 11),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 2),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20),
+                    child: Text(
+                      'fileUrl: ${data['fileUrl'] ?? 'N/A'}',
+                      style: TextStyle(fontSize: 10, color: Colors.grey[700]),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],

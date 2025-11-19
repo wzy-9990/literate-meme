@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:mime/mime.dart';
 import 'package:flutter_tem/utils/permission/index.dart';
+import 'package:flutter_tem/api/http.dart';
 
 /// 上传文件信息
 class UploadFileInfo {
@@ -219,7 +220,47 @@ class UploadUtil {
     }
   }
 
-  /// 上传文件到服务器
+  /// 使用项目默认上传接口上传文件
+  ///
+  /// [fileInfo] 文件信息
+  /// [onProgress] 上传进度回调
+  /// 返回格式: { fileKey: "xxx", fileUrl: "xxx" }
+  static Future<Map<String, dynamic>?> uploadFileToDefault({
+    required UploadFileInfo fileInfo,
+    void Function(int sent, int total)? onProgress,
+  }) async {
+    try {
+      final formData = FormData.fromMap({
+        'file': await MultipartFile.fromFile(
+          fileInfo.filePath,
+          filename: fileInfo.fileName,
+        ),
+      });
+
+      // 使用项目的 ApiService 实例
+      final dio = Api.instance._dio;
+      final response = await dio.post(
+        '/pklApi/private/file/uploadFile',
+        data: formData,
+        onSendProgress: onProgress,
+      );
+
+      // 返回 data 字段
+      if (response.statusCode == 200 && response.data is Map) {
+        final data = response.data as Map<String, dynamic>;
+        if (data['code'] == '1' && data['data'] != null) {
+          return data['data'] as Map<String, dynamic>;
+        }
+      }
+
+      return null;
+    } catch (e) {
+      debugPrint('上传文件失败: $e');
+      rethrow;
+    }
+  }
+
+  /// 上传文件到服务器（通用方法）
   ///
   /// [fileInfo] 文件信息
   /// [uploadUrl] 上传地址

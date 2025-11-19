@@ -43,14 +43,9 @@ class BaseUpload extends StatefulWidget {
   /// 单个文件最大大小（字节），默认 10MB
   final int maxFileSize;
 
-  /// 上传地址
-  final String? uploadUrl;
-
-  /// 上传字段名
-  final String fieldName;
-
-  /// 额外的表单数据
-  final Map<String, dynamic>? formData;
+  /// 是否使用默认上传接口（/pklApi/private/file/uploadFile）
+  /// 默认为 true，设为 false 时需要提供 customUpload
+  final bool useDefaultUpload;
 
   /// 上传成功回调
   final void Function(UploadItem item)? onUploadSuccess;
@@ -61,7 +56,11 @@ class BaseUpload extends StatefulWidget {
   /// 文件列表变化回调
   final void Function(List<UploadItem> items)? onFilesChanged;
 
-  /// 自定义上传方法
+  /// 上传成功的数据列表变化回调
+  /// 返回所有上传成功的文件数据 [{ fileKey: "xxx", fileUrl: "xxx" }, ...]
+  final void Function(List<Map<String, dynamic>> uploadedData)? onUploadedDataChanged;
+
+  /// 自定义上传方法（当 useDefaultUpload 为 false 时使用）
   final Future<dynamic> Function(UploadFileInfo fileInfo)? customUpload;
 
   /// 显示删除按钮
@@ -76,12 +75,11 @@ class BaseUpload extends StatefulWidget {
     this.imageOnly = false,
     this.allowedExtensions,
     this.maxFileSize = 10 * 1024 * 1024, // 10MB
-    this.uploadUrl,
-    this.fieldName = 'file',
-    this.formData,
+    this.useDefaultUpload = true,
     this.onUploadSuccess,
     this.onUploadFailed,
     this.onFilesChanged,
+    this.onUploadedDataChanged,
     this.customUpload,
     this.showDelete = true,
     this.displayMode = 'grid',
@@ -93,6 +91,7 @@ class BaseUpload extends StatefulWidget {
 
 class _BaseUploadState extends State<BaseUpload> {
   final List<UploadItem> _uploadItems = [];
+  final List<Map<String, dynamic>> _uploadedDataList = [];
 
   /// 选择并添加文件
   Future<void> _pickFiles() async {
@@ -183,8 +182,8 @@ class _BaseUploadState extends State<BaseUpload> {
 
     widget.onFilesChanged?.call(_uploadItems);
 
-    // 自动上传
-    if (widget.uploadUrl != null || widget.customUpload != null) {
+    // 自动上传（默认使用项目上传接口或自定义上传）
+    if (widget.useDefaultUpload || widget.customUpload != null) {
       _uploadFile(item);
     }
   }
@@ -202,20 +201,16 @@ class _BaseUploadState extends State<BaseUpload> {
       if (widget.customUpload != null) {
         // 使用自定义上传方法
         result = await widget.customUpload!(item.fileInfo);
-      } else if (widget.uploadUrl != null) {
-        // 使用默认上传方法
-        final response = await UploadUtil.uploadFile(
+      } else if (widget.useDefaultUpload) {
+        // 使用项目默认上传接口
+        result = await UploadUtil.uploadFileToDefault(
           fileInfo: item.fileInfo,
-          uploadUrl: widget.uploadUrl!,
-          fieldName: widget.fieldName,
-          data: widget.formData,
           onProgress: (sent, total) {
             setState(() {
               item.progress = sent / total;
             });
           },
         );
-        result = response?.data;
       }
 
       setState(() {
@@ -223,6 +218,12 @@ class _BaseUploadState extends State<BaseUpload> {
         item.progress = 1.0;
         item.result = result;
       });
+
+      // 添加到上传成功的数据列表
+      if (result != null && result is Map<String, dynamic>) {
+        _uploadedDataList.add(result);
+        widget.onUploadedDataChanged?.call(_uploadedDataList);
+      }
 
       widget.onUploadSuccess?.call(item);
     } catch (e) {
@@ -238,6 +239,12 @@ class _BaseUploadState extends State<BaseUpload> {
   /// 删除文件
   void _removeFile(UploadItem item) {
     setState(() {
+      // 如果文件上传成功，从上传数据列表中移除
+      if (item.status == UploadStatus.success && item.result != null) {
+        _uploadedDataList.remove(item.result);
+        widget.onUploadedDataChanged?.call(_uploadedDataList);
+      }
+
       _uploadItems.remove(item);
     });
     widget.onFilesChanged?.call(_uploadItems);
