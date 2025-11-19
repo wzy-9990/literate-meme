@@ -280,10 +280,7 @@ class _BaseUploadState extends State<BaseUpload> {
         item.errorMessage = e.toString();
       });
 
-      // 显示上传失败提示
-      final fileTypeName = _getFileTypeName(item.fileInfo.fileName);
-      EasyLoading.showError('${fileTypeName}上传失败');
-
+      // 错误提示已在 uploadFile 方法中处理（显示 returnMsg）
       widget.onUploadFailed?.call(item, e.toString());
     }
   }

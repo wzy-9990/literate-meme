@@ -170,30 +170,34 @@ class ApiService {
         final data = response.data as Map<String, dynamic>;
         if (data['code'] == '1' && data['data'] != null) {
           return data['data'] as Map<String, dynamic>;
+        } else {
+          // code 不为 '1' 时，显示 returnMsg 并抛出异常
+          final returnMsg = data['returnMsg'];
+          if (returnMsg != null && returnMsg is String) {
+            EasyLoading.showToast(returnMsg);
+          } else {
+            EasyLoading.showToast('上传失败');
+          }
+          throw Exception(returnMsg ?? '上传失败');
         }
       }
 
       return null;
     } on DioException catch (e) {
-      // 显示错误提示
-      String errorMessage = '上传失败';
-
-      if (e.type == DioExceptionType.cancel) {
-        errorMessage = '上传已取消';
-      } else if (e.type == DioExceptionType.connectionTimeout ||
-          e.type == DioExceptionType.receiveTimeout ||
-          e.type == DioExceptionType.sendTimeout) {
-        errorMessage = '上传超时，请重试';
-      } else if (e.type == DioExceptionType.badResponse) {
-        errorMessage = '服务器错误：${e.response?.statusCode ?? "未知"}';
-      } else if (e.message?.contains('interrupted') == true) {
-        errorMessage = '上传被中断';
+      // 优先显示响应数据中的 returnMsg
+      String? returnMsg;
+      if (e.response?.data is Map) {
+        final data = e.response!.data as Map<String, dynamic>;
+        returnMsg = data['returnMsg'];
       }
 
-      EasyLoading.showToast(errorMessage);
+      if (returnMsg != null && returnMsg is String) {
+        EasyLoading.showToast(returnMsg);
+      }
+
       rethrow;
     } catch (e) {
-      EasyLoading.showToast('上传失败：${e.toString()}');
+      // 如果不是 DioException，则不显示 toast（因为可能已经在上面显示过了）
       rethrow;
     }
   }
