@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_tem/components/BaseAppBar/index.dart';
 import 'package:get/get.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -78,8 +79,8 @@ class _WebViewPageState extends State<WebViewPageView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_title),
+      appBar: BaseAppBar(
+        titleWidget: Text(_title),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),

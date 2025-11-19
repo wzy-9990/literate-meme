@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tem/components/BaseAppBar/index.dart';
 import 'package:flutter_tem/components/BaseLoading/index.dart';
 import 'package:flutter_tem/page/index/my/setting/changePassword/logic.dart';
 import 'package:get/get.dart';
@@ -11,7 +12,7 @@ class ChangePasswordView extends StatelessWidget {
     // ignore: unused_local_variable
     final logic = Get.find<ChangePasswordLogic>();
     return Scaffold(
-      appBar: AppBar(title: const Text('修改密码')),
+      appBar: const BaseAppBar(title: '修改密码'),
       body: Stack(
         children: [
           const Text('修改密码'),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter_tem/components/BaseAppBar/index.dart';
 import 'package:flutter_tem/components/BaseSuperRefreshComponent/components/PullToRefresh/index.dart';
 import 'package:flutter_tem/components/BaseLoading/index.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -13,9 +14,8 @@ class PullToRefreshExampleView extends StatelessWidget {
     final logic = Get.put(PullToRefreshExampleLogic());
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('用户列表'),
-        // 全局主题已配置，无需重复设置
+      appBar: const BaseAppBar(
+        title: '用户列表',
       ),
       body: Column(
         children: [

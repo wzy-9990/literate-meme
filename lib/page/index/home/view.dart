@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tem/components/BaseAppBar/index.dart';
 import 'package:flutter_tem/page/index/home/logic.dart';
 import 'package:flutter_tem/utils/dict/home.dart';
 import 'package:get/get.dart';
@@ -11,8 +12,8 @@ class HomeView extends StatelessWidget {
     // ignore: unused_local_variable
     final logic = Get.find<HomeLogic>();
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('首页'),
+      appBar: const BaseAppBar(
+        title: '首页',
       ),
       body: Column(
         children: [

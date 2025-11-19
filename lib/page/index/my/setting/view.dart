@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tem/components/BaseAppBar/index.dart';
 import 'package:flutter_tem/components/BaseLoading/index.dart';
 import 'package:flutter_tem/page/index/my/setting/logic.dart';
 import 'package:get/get.dart';
@@ -11,7 +12,7 @@ class MySettingView extends StatelessWidget {
     // ignore: unused_local_variable
     final logic = Get.find<MySettingLogic>();
     return Scaffold(
-      appBar: AppBar(title: const Text('设置')),
+      appBar: const BaseAppBar(title: '设置'),
       body: Stack(
         children: [
           Column(
