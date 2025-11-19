@@ -49,8 +49,9 @@ class YourListLogic extends BasePaginationLogic<Map<String, dynamic>> {
     // 2️⃣ 调用你的接口（替换成你的API）
     final response = await yourApiMethod(params);
 
-    // 3️⃣ 一行代码搞定（自动处理 null 和类型转换）
-    return PaginationResponse.fromMap(response, (item) => Map<String, dynamic>.from(item));
+    // 3️⃣ 一行代码搞定！
+    return PaginationResponse.fromMap(response);
+    // 👆 自动处理：null 判断、类型转换、Map 转换
   }
 }
 ```
@@ -395,9 +396,25 @@ class ProductListLogic extends BasePaginationLogic<Map<String, dynamic>> {
 
 ## 🎓 进阶用法
 
-### 1. 使用 Model 类
+### 1. 默认用法（Map<String, dynamic>）
 
 ```dart
+// ✅ 最简单的用法（推荐）
+class UserListLogic extends BasePaginationLogic<Map<String, dynamic>> {
+  @override
+  Future<PaginationResponse<Map<String, dynamic>>> fetchData(...) async {
+    final response = await yourApi(params);
+
+    // 自动处理所有转换
+    return PaginationResponse.fromMap(response);
+  }
+}
+```
+
+### 2. 使用 Model 类（自定义转换）
+
+```dart
+// 定义 Model 类
 class User {
   final String id;
   final String name;
@@ -407,20 +424,22 @@ class User {
       name = json['name'];
 }
 
+// 使用自定义转换
 class UserListLogic extends BasePaginationLogic<User> {
   @override
   Future<PaginationResponse<User>> fetchData(...) async {
     final response = await yourApi(params);
 
+    // 提供 mapper 转换为 Model
     return PaginationResponse.fromMap(
       response,
-      (item) => User.fromJson(item),  // 转换为 Model
+      (item) => User.fromJson(item),  // 👈 自定义转换
     );
   }
 }
 ```
 
-### 2. 自定义加载逻辑
+### 3. 自定义加载逻辑
 
 ```dart
 class CustomLogic extends BasePaginationLogic<Map<String, dynamic>> {

@@ -29,8 +29,8 @@ class PullToRefreshExampleLogic
     // 2️⃣ 调用你的业务接口（替换为你自己的接口）
     final response = await listPageUserByOrganizationIdApi(params);
 
-    // 3️⃣ 一行代码解析并返回（自动处理 null 和类型转换）
-    return PaginationResponse.fromMap(response, (item) => Map<String, dynamic>.from(item));
+    // 3️⃣ 一行代码搞定（自动处理所有转换）
+    return PaginationResponse.fromMap(response);
   }
 
   // 💡 自定义搜索方法示例

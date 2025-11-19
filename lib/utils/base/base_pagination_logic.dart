@@ -177,11 +177,14 @@ class PaginationResponse<T> {
 
   /// 从 Map 创建（适配不同的 API 响应格式）
   ///
-  /// 内部会自动处理 null 和类型转换
+  /// [response] API 响应数据（自动处理 null 和类型转换）
+  /// [itemMapper] 可选的数据转换函数
+  ///   - 不提供时：自动将 Map 转换为 Map<String, dynamic>
+  ///   - 提供时：使用自定义转换（如转换为 Model 类）
   factory PaginationResponse.fromMap(
-    dynamic response,  // 👈 改为 dynamic，内部处理 null 和类型转换
-    T Function(Map<String, dynamic>) itemMapper,
-  ) {
+    dynamic response, [
+    T Function(dynamic)? itemMapper,  // 👈 改为可选参数
+  ]) {
     // 处理 null
     if (response == null) {
       return PaginationResponse<T>(records: [], total: 0, pages: 0);
@@ -196,17 +199,24 @@ class PaginationResponse<T> {
     final map = Map<String, dynamic>.from(response);
     List<T>? records;
 
+    // 默认的转换函数：将 Map 转换为 Map<String, dynamic>
+    T defaultMapper(dynamic item) {
+      if (item is Map) {
+        return Map<String, dynamic>.from(item) as T;
+      }
+      return item as T;
+    }
+
+    // 使用提供的 mapper 或默认 mapper
+    final mapper = itemMapper ?? defaultMapper;
+
     // 尝试从 records 字段获取
     if (map['records'] != null) {
-      records = (map['records'] as List)
-          .map((item) => itemMapper(item as Map<String, dynamic>))
-          .toList();
+      records = (map['records'] as List).map((item) => mapper(item)).toList();
     }
     // 兼容 list 字段
     else if (map['list'] != null) {
-      records = (map['list'] as List)
-          .map((item) => itemMapper(item as Map<String, dynamic>))
-          .toList();
+      records = (map['list'] as List).map((item) => mapper(item)).toList();
     }
 
     return PaginationResponse<T>(
