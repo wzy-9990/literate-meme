@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -9,12 +12,28 @@ import 'package:get/get.dart';
 class ApiService {
   late Dio _dio;
   static String? _customBaseUrl; // 自定义的 API 地址
+  static bool _proxyEnabled = false; // 是否启用代理
+  static String? _proxyHost; // 代理地址
+  static int? _proxyPort; // 代理端口
 
-  /// 在应用启动时调用，用于设置自定义 API 地址
+  /// 在应用启动时调用，用于设置自定义 API 地址和代理配置
   static Future<void> init() async {
     _customBaseUrl = await Storage.getString('custom_api_url');
     if (_customBaseUrl != null) {
       debugPrint('🔧 检测到自定义 API 地址: $_customBaseUrl');
+    }
+
+    // 生产环境不允许使用代理
+    const env = String.fromEnvironment('ENV', defaultValue: 'development');
+    if (env != 'production') {
+      _proxyEnabled = await Storage.getBool('proxy_enabled') ?? false;
+      if (_proxyEnabled) {
+        _proxyHost = await Storage.getString('proxy_host');
+        _proxyPort = await Storage.getInt('proxy_port');
+        debugPrint('🔧 检测到代理配置: $_proxyHost:$_proxyPort');
+      }
+    } else {
+      debugPrint('🔒 生产环境：代理功能已禁用');
     }
   }
 
@@ -24,14 +43,30 @@ class ApiService {
 
     debugPrint('🌐 API Base URL: $baseUrl');
 
-    _dio = Dio(BaseOptions(
+    final baseOptions = BaseOptions(
       baseUrl: baseUrl,
       connectTimeout: const Duration(milliseconds: 5000),
       receiveTimeout: const Duration(milliseconds: 3000),
       headers: {
         "Content-Type": "application/json",
       },
-    ));
+    );
+
+    _dio = Dio(baseOptions);
+
+    // 配置代理（仅非生产环境）
+    if (_proxyEnabled && _proxyHost != null && _proxyPort != null) {
+      (_dio.httpClientAdapter as IOHttpClientAdapter).createHttpClient = () {
+        final client = HttpClient();
+        client.findProxy = (uri) {
+          return 'PROXY $_proxyHost:$_proxyPort';
+        };
+        // 抓包时忽略证书验证
+        client.badCertificateCallback = (cert, host, port) => true;
+        debugPrint('✅ 代理已启用: $_proxyHost:$_proxyPort');
+        return client;
+      };
+    }
 
     _dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) async {
