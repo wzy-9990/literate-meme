@@ -61,10 +61,6 @@ class _UploadExampleViewState extends State<UploadExampleView> {
                 debugPrint('已上传的文件数据: $uploadedData');
               },
             ),
-            const SizedBox(height: 12),
-            _buildUploadInfo(_imageUploadList),
-            const SizedBox(height: 12),
-            _buildUploadedDataInfo(),
 
             const SizedBox(height: 32),
 
@@ -95,8 +91,6 @@ class _UploadExampleViewState extends State<UploadExampleView> {
                 });
               },
             ),
-            const SizedBox(height: 12),
-            _buildUploadInfo(_fileUploadList),
 
             const SizedBox(height: 32),
 
@@ -149,146 +143,6 @@ class _UploadExampleViewState extends State<UploadExampleView> {
       style: const TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.bold,
-      ),
-    );
-  }
-
-  /// 构建上传信息
-  Widget _buildUploadInfo(List<UploadItem> items) {
-    if (items.isEmpty) {
-      return const SizedBox.shrink();
-    }
-
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.blue[50],
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.blue[200]!),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '已选择 ${items.length} 个文件',
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.blue,
-            ),
-          ),
-          const SizedBox(height: 8),
-          ...items.map((item) {
-            String statusText = '';
-            Color statusColor = Colors.grey;
-
-            switch (item.status) {
-              case UploadStatus.ready:
-                statusText = '准备上传';
-                statusColor = Colors.orange;
-                break;
-              case UploadStatus.uploading:
-                statusText = '上传中 ${(item.progress * 100).toInt()}%';
-                statusColor = Colors.blue;
-                break;
-              case UploadStatus.success:
-                statusText = '上传成功';
-                statusColor = Colors.green;
-                break;
-              case UploadStatus.failed:
-                statusText = '上传失败';
-                statusColor = Colors.red;
-                break;
-            }
-
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 4),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      item.fileInfo.fileName,
-                      style: const TextStyle(fontSize: 12),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    statusText,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: statusColor,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }),
-        ],
-      ),
-    );
-  }
-
-  /// 构建上传成功的数据信息
-  Widget _buildUploadedDataInfo() {
-    if (_uploadedData.isEmpty) {
-      return const SizedBox.shrink();
-    }
-
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.green[50],
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.green[200]!),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '已上传成功 ${_uploadedData.length} 个文件（父组件可获取）',
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.green,
-            ),
-          ),
-          const SizedBox(height: 8),
-          ..._uploadedData.map((data) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Icon(Icons.check_circle, color: Colors.green, size: 16),
-                      const SizedBox(width: 4),
-                      Expanded(
-                        child: Text(
-                          'fileKey: ${data['fileKey'] ?? 'N/A'}',
-                          style: const TextStyle(fontSize: 11),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 2),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20),
-                    child: Text(
-                      'fileUrl: ${data['fileUrl'] ?? 'N/A'}',
-                      style: TextStyle(fontSize: 10, color: Colors.grey[700]),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }),
-        ],
       ),
     );
   }

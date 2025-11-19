@@ -174,7 +174,26 @@ class ApiService {
       }
 
       return null;
-    } on DioException {
+    } on DioException catch (e) {
+      // 显示错误提示
+      String errorMessage = '上传失败';
+
+      if (e.type == DioExceptionType.cancel) {
+        errorMessage = '上传已取消';
+      } else if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout ||
+          e.type == DioExceptionType.sendTimeout) {
+        errorMessage = '上传超时，请重试';
+      } else if (e.type == DioExceptionType.badResponse) {
+        errorMessage = '服务器错误：${e.response?.statusCode ?? "未知"}';
+      } else if (e.message?.contains('interrupted') == true) {
+        errorMessage = '上传被中断';
+      }
+
+      EasyLoading.showToast(errorMessage);
+      rethrow;
+    } catch (e) {
+      EasyLoading.showToast('上传失败：${e.toString()}');
       rethrow;
     }
   }
