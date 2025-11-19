@@ -242,4 +242,20 @@ class PermissionUtil {
       tipMessage: tip ?? '需要通知权限以接收消息提醒',
     );
   }
+
+  /// 调试权限状态（用于排查问题）
+  static Future<void> debugPermissionStatus(Permission permission) async {
+    final status = await permission.status;
+    final permissionName = getPermissionName(permission);
+
+    debugPrint('========== 权限调试信息 ==========');
+    debugPrint('权限类型: $permissionName');
+    debugPrint('当前状态: $status');
+    debugPrint('isGranted: ${status.isGranted}');
+    debugPrint('isDenied: ${status.isDenied}');
+    debugPrint('isPermanentlyDenied: ${status.isPermanentlyDenied}');
+    debugPrint('isLimited: ${status.isLimited}');
+    debugPrint('isRestricted: ${status.isRestricted}');
+    debugPrint('===============================');
+  }
 }

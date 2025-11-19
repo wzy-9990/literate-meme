@@ -5,8 +5,8 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_tem/api/http.dart';
 import 'package:flutter_tem/utils/permission/index.dart';
-import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart' as path;
 
@@ -90,24 +90,27 @@ class UploadUtil {
       // 权限检查
       bool hasPermission = false;
       if (source == ImageSourceType.camera) {
+        // 调试：打印权限状态
+        await PermissionUtil.debugPermissionStatus(Permission.camera);
+
         hasPermission = await PermissionUtil.requestCamera(
           tip: '需要访问相机以拍摄照片',
         );
+
+        debugPrint('相机权限请求结果: $hasPermission');
       } else {
+        // 调试：打印权限状态
+        await PermissionUtil.debugPermissionStatus(Permission.photos);
+
         hasPermission = await PermissionUtil.requestPhotos(
           tip: '需要访问相册以选择照片',
         );
+
+        debugPrint('相册权限请求结果: $hasPermission');
       }
 
       if (!hasPermission) {
         debugPrint('权限未授予');
-        // 给用户显示提示
-        Get.snackbar(
-          '权限未授予',
-          source == ImageSourceType.camera ? '需要相机权限才能拍照' : '需要相册权限才能选择照片',
-          snackPosition: SnackPosition.TOP,
-          duration: const Duration(seconds: 2),
-        );
         return null;
       }
 
@@ -152,13 +155,6 @@ class UploadUtil {
 
       if (!hasPermission) {
         debugPrint('权限未授予');
-        // 给用户显示提示
-        Get.snackbar(
-          '权限未授予',
-          '需要相册权限才能选择照片',
-          snackPosition: SnackPosition.TOP,
-          duration: const Duration(seconds: 2),
-        );
         return [];
       }
 
