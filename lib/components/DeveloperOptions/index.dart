@@ -216,9 +216,11 @@ class DeveloperOptions {
         actions: [
           TextButton(
             onPressed: () {
-              Get.back();
-              // 对话框关闭后再 dispose，避免焦点变化时访问已销毁的 controller
-              Future.microtask(() {
+              // 先移除焦点，避免关闭时访问已销毁的 controller
+              FocusManager.instance.primaryFocus?.unfocus();
+              // 延迟关闭，确保焦点完全释放
+              Future.delayed(const Duration(milliseconds: 100), () {
+                Get.back();
                 apiUrlController.dispose();
                 proxyHostController.dispose();
                 proxyPortController.dispose();
@@ -228,9 +230,10 @@ class DeveloperOptions {
           ),
           TextButton(
             onPressed: () {
-              _resetToDefaultConfig();
-              // 对话框关闭后再 dispose
-              Future.microtask(() {
+              // 先移除焦点
+              FocusManager.instance.primaryFocus?.unfocus();
+              Future.delayed(const Duration(milliseconds: 100), () {
+                _resetToDefaultConfig();
                 apiUrlController.dispose();
                 proxyHostController.dispose();
                 proxyPortController.dispose();
@@ -261,14 +264,15 @@ class DeveloperOptions {
                 }
               }
 
-              _applyConfig(
-                newApiUrl,
-                enableProxy.value,
-                proxyHostController.text.trim(),
-                proxyPortController.text.trim(),
-              );
-              // 对话框关闭后再 dispose
-              Future.microtask(() {
+              // 先移除焦点
+              FocusManager.instance.primaryFocus?.unfocus();
+              Future.delayed(const Duration(milliseconds: 100), () {
+                _applyConfig(
+                  newApiUrl,
+                  enableProxy.value,
+                  proxyHostController.text.trim(),
+                  proxyPortController.text.trim(),
+                );
                 apiUrlController.dispose();
                 proxyHostController.dispose();
                 proxyPortController.dispose();
