@@ -249,6 +249,8 @@ class _UploadExampleViewState extends State<UploadExampleView> {
           _buildFeatureItem('✅ 自定义上传方法'),
           _buildFeatureItem('✅ 上传成功/失败回调'),
           _buildFeatureItem('✅ 可选的删除功能'),
+          _buildFeatureItem('✅ iOS 风格的来源选择弹窗'),
+          _buildFeatureItem('✅ 自动权限检查和申请'),
         ],
       ),
     );

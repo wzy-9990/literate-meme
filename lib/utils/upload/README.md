@@ -13,6 +13,8 @@
 - ✅ MIME 类型检测
 - ✅ 文件大小格式化
 - ✅ 图片质量和尺寸控制
+- ✅ iOS 风格的图片来源选择弹窗
+- ✅ 自动权限检查和申请（集成 PermissionUtil）
 
 ## 依赖
 
@@ -29,10 +31,11 @@ dependencies:
 
 ### 1. 选择图片
 
-#### 选择单张图片（弹窗选择来源）
+#### 选择单张图片（iOS 风格弹窗选择来源）
 
 ```dart
-// 显示对话框让用户选择相机或相册
+// 显示 iOS 风格的弹窗让用户选择相机或相册
+// 会自动检查和申请相应权限（相机权限或相册权限）
 final source = await UploadUtil.showImageSourceDialog(context);
 if (source != null) {
   final fileInfo = await UploadUtil.pickImage(source: source);
@@ -44,6 +47,11 @@ if (source != null) {
   }
 }
 ```
+
+**注意**：`pickImage` 方法会自动进行权限检查：
+- 选择相机时，自动申请相机权限
+- 选择相册时，自动申请相册权限
+- 如果权限被拒绝，会自动显示引导弹窗
 
 #### 直接从相册选择
 
@@ -324,7 +332,7 @@ static Future<List<Response?>> uploadMultipleFiles({
 
 ### showImageSourceDialog
 
-显示图片来源选择对话框
+显示 iOS 风格的图片来源选择对话框
 
 ```dart
 static Future<ImageSourceType?> showImageSourceDialog(BuildContext context)
@@ -335,6 +343,11 @@ static Future<ImageSourceType?> showImageSourceDialog(BuildContext context)
 
 **返回：**
 - `ImageSourceType?`: 用户选择的来源，取消时返回 null
+
+**特点：**
+- 使用 `CupertinoActionSheet` 显示 iOS 风格弹窗
+- 从底部弹出，包含"拍照"、"从相册选择"和"取消"选项
+- 无论在 iOS 还是 Android 平台都显示统一的 iOS 风格
 
 ## 数据结构
 
@@ -489,9 +502,50 @@ class UploadDemo extends StatelessWidget {
 <uses-permission android:name="android.permission.CAMERA"/>
 ```
 
+## 权限处理
+
+上传工具类已经集成了 [PermissionUtil](../permission/README.md)，会自动处理权限申请：
+
+### 自动权限检查流程
+
+1. **选择图片时**：
+   - 调用 `pickImage` 或 `pickMultipleImages` 时会自动检查权限
+   - 相机来源：自动申请相机权限
+   - 相册来源：自动申请相册权限
+   - 权限被拒绝时：显示权限说明弹窗
+   - 权限被永久拒绝时：引导用户前往设置页面
+
+2. **权限提示**：
+   - 相机权限提示："需要访问相机以拍摄照片"
+   - 相册权限提示："需要访问相册以选择照片"
+   - 用户可以选择授予权限或取消操作
+
+3. **无需手动处理**：
+   - 无需在调用前手动检查权限
+   - 无需手动显示权限申请对话框
+   - 所有权限逻辑已内置处理
+
+### 示例
+
+```dart
+// 直接调用即可，内部会自动处理权限
+final source = await UploadUtil.showImageSourceDialog(context);
+if (source != null) {
+  // pickImage 内部会自动检查和申请权限
+  final fileInfo = await UploadUtil.pickImage(source: source);
+  if (fileInfo != null) {
+    // 权限已授予，成功选择了图片
+    print('选择的图片: ${fileInfo.fileName}');
+  } else {
+    // 用户取消选择或权限被拒绝
+    print('未选择图片');
+  }
+}
+```
+
 ## 注意事项
 
-1. **权限处理**：使用前需要先获取相应的权限，建议配合 [PermissionUtil](../permission/README.md) 使用
+1. **权限配置**：需要在 `AndroidManifest.xml` 和 `Info.plist` 中配置权限声明（详见下方配置说明）
 
 2. **图片质量**：`imageQuality` 参数只对 JPEG 格式有效，PNG 格式会忽略此参数
 
