@@ -283,6 +283,7 @@ class _BaseUploadState extends State<BaseUpload> {
         // 使用项目默认上传接口
         result = await UploadUtil.uploadFileToDefault(
           fileInfo: item.fileInfo,
+          showProgress: true, // 显示全局进度
           onProgress: (sent, total) {
             if (mounted) {
               setState(() {

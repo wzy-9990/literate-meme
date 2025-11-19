@@ -9,6 +9,7 @@
 - ✅ 文件选择（支持类型过滤）
 - ✅ 多文件选择
 - ✅ 文件上传（支持进度回调）
+- ✅ **全局进度显示**（带百分比的加载圆圈）
 - ✅ 批量上传
 - ✅ MIME 类型检测
 - ✅ 文件大小格式化
@@ -138,7 +139,48 @@ debugPrint('选择了 ${files.length} 个文件');
 
 ### 5. 上传文件
 
-#### 基础上传
+#### 使用项目默认上传接口（推荐）
+
+```dart
+try {
+  // 不显示全局进度
+  final result = await UploadUtil.uploadFileToDefault(
+    fileInfo: fileInfo,
+  );
+
+  debugPrint('文件 Key: ${result?['fileKey']}');
+  debugPrint('文件 URL: ${result?['fileUrl']}');
+} catch (e) {
+  debugPrint('上传失败: $e');
+}
+```
+
+#### 带全局进度提示的上传
+
+```dart
+try {
+  // 显示全局进度圆圈和百分比
+  final result = await UploadUtil.uploadFileToDefault(
+    fileInfo: fileInfo,
+    showProgress: true, // 开启全局进度显示
+    onProgress: (sent, total) {
+      // 可选：自定义进度处理
+      debugPrint('上传进度: ${(sent / total * 100).toInt()}%');
+    },
+  );
+
+  debugPrint('上传成功');
+} catch (e) {
+  debugPrint('上传失败: $e');
+}
+```
+
+**说明**：
+- `showProgress: true` 会在屏幕中央显示带进度百分比的加载圈
+- 自动显示 "上传中 XX%" 的状态文字
+- 上传完成或失败后自动关闭进度提示
+
+#### 使用自定义接口上传
 
 ```dart
 try {
@@ -153,7 +195,7 @@ try {
 }
 ```
 
-#### 带进度的上传
+#### 自定义接口带进度上传
 
 ```dart
 final response = await UploadUtil.uploadFile(
