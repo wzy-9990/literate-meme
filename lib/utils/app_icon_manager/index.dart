@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dynamic_icon/flutter_dynamic_icon.dart';
-import 'package:flutter_tem/config/app_icons.dart';
+import 'package:flutter_tem/theme/app_icons.dart';
 
 /// App 图标管理工具
 class AppIconManager {

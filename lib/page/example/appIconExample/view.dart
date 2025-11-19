@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tem/components/BaseAppBar/index.dart';
-import 'package:flutter_tem/config/app_icons.dart';
+import 'package:flutter_tem/theme/app_icons.dart';
 import 'package:flutter_tem/utils/app_icon_manager/index.dart';
 
 /// App 图标切换示例页面

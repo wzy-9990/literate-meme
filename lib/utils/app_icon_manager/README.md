@@ -98,7 +98,7 @@ print('当前图标: $currentIcon');
 
 ### 统一配置文件
 
-所有图标和日期规则在 `lib/config/app_icons.dart` 中统一管理：
+所有图标和日期规则在 `lib/theme/app_icons.dart` 中统一管理：
 
 ```dart
 class AppIconConfig {
@@ -143,7 +143,7 @@ class AppIconConfig {
 
 ### 添加新图标
 
-1. **更新配置文件** (`lib/config/app_icons.dart`)：
+1. **更新配置文件** (`lib/theme/app_icons.dart`)：
 
 ```dart
 class AppIconConfig {
