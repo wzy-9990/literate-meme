@@ -1,0 +1,248 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+
+/// 通用图片组件
+///
+/// 支持加载静态图片和网络图片，提供加载动画、错误处理等功能
+///
+/// 使用示例：
+/// ```dart
+/// // 加载网络图片
+/// BaseImage(
+///   imageUrl: 'https://example.com/image.jpg',
+///   width: 100,
+///   height: 100,
+/// )
+///
+/// // 加载本地图片
+/// BaseImage(
+///   imageUrl: 'assets/images/logo.png',
+///   width: 100,
+///   height: 100,
+/// )
+/// ```
+class BaseImage extends StatelessWidget {
+  /// 图片地址（支持网络地址和本地 assets 路径）
+  final String imageUrl;
+
+  /// 宽度
+  final double? width;
+
+  /// 高度
+  final double? height;
+
+  /// 图片裁剪模式
+  final BoxFit fit;
+
+  /// 圆角
+  final double borderRadius;
+
+  /// 占位图（加载中显示）
+  final Widget? placeholder;
+
+  /// 错误时显示的图片
+  final Widget? errorWidget;
+
+  /// 是否启用淡入动画
+  final bool enableFadeIn;
+
+  /// 淡入动画时长（毫秒）
+  final int fadeInDuration;
+
+  /// 占位图背景色
+  final Color? placeholderColor;
+
+  /// 是否是圆形图片
+  final bool isCircle;
+
+  const BaseImage({
+    super.key,
+    required this.imageUrl,
+    this.width,
+    this.height,
+    this.fit = BoxFit.cover,
+    this.borderRadius = 0,
+    this.placeholder,
+    this.errorWidget,
+    this.enableFadeIn = true,
+    this.fadeInDuration = 300,
+    this.placeholderColor,
+    this.isCircle = false,
+  });
+
+  /// 判断是否为网络图片
+  bool get _isNetworkImage {
+    return imageUrl.startsWith('http://') || imageUrl.startsWith('https://');
+  }
+
+  /// 构建占位图
+  Widget _buildPlaceholder() {
+    if (placeholder != null) {
+      return placeholder!;
+    }
+
+    return Container(
+      width: width,
+      height: height,
+      color: placeholderColor ?? Colors.grey[200],
+      child: Center(
+        child: CircularProgressIndicator(
+          strokeWidth: 2,
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.grey[400]!),
+        ),
+      ),
+    );
+  }
+
+  /// 构建错误图
+  Widget _buildErrorWidget() {
+    if (errorWidget != null) {
+      return errorWidget!;
+    }
+
+    return Container(
+      width: width,
+      height: height,
+      color: placeholderColor ?? Colors.grey[200],
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.broken_image_outlined,
+            size: (width != null && height != null)
+                ? (width! < height! ? width! * 0.4 : height! * 0.4)
+                : 40,
+            color: Colors.grey[400],
+          ),
+          const SizedBox(height: 4),
+          Text(
+            '加载失败',
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.grey[500],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 包装图片（添加圆角或圆形）
+  Widget _wrapImage(Widget child) {
+    if (isCircle) {
+      return ClipOval(
+        child: child,
+      );
+    }
+
+    if (borderRadius > 0) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(borderRadius),
+        child: child,
+      );
+    }
+
+    return child;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // 网络图片
+    if (_isNetworkImage) {
+      return _wrapImage(
+        CachedNetworkImage(
+          imageUrl: imageUrl,
+          width: width,
+          height: height,
+          fit: fit,
+          fadeInDuration: enableFadeIn
+              ? Duration(milliseconds: fadeInDuration)
+              : Duration.zero,
+          placeholder: (context, url) => _buildPlaceholder(),
+          errorWidget: (context, url, error) => _buildErrorWidget(),
+        ),
+      );
+    }
+
+    // 本地图片
+    return _wrapImage(
+      _LocalImage(
+        imageUrl: imageUrl,
+        width: width,
+        height: height,
+        fit: fit,
+        enableFadeIn: enableFadeIn,
+        fadeInDuration: fadeInDuration,
+        errorWidget: _buildErrorWidget(),
+      ),
+    );
+  }
+}
+
+/// 本地图片组件（内部使用）
+class _LocalImage extends StatefulWidget {
+  final String imageUrl;
+  final double? width;
+  final double? height;
+  final BoxFit fit;
+  final bool enableFadeIn;
+  final int fadeInDuration;
+  final Widget errorWidget;
+
+  const _LocalImage({
+    required this.imageUrl,
+    this.width,
+    this.height,
+    required this.fit,
+    required this.enableFadeIn,
+    required this.fadeInDuration,
+    required this.errorWidget,
+  });
+
+  @override
+  State<_LocalImage> createState() => _LocalImageState();
+}
+
+class _LocalImageState extends State<_LocalImage> {
+  bool _hasError = false;
+
+  @override
+  Widget build(BuildContext context) {
+    if (_hasError) {
+      return widget.errorWidget;
+    }
+
+    if (widget.enableFadeIn) {
+      return AnimatedOpacity(
+        opacity: 1.0,
+        duration: Duration(milliseconds: widget.fadeInDuration),
+        child: Image.asset(
+          widget.imageUrl,
+          width: widget.width,
+          height: widget.height,
+          fit: widget.fit,
+          errorBuilder: (context, error, stackTrace) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) {
+                setState(() {
+                  _hasError = true;
+                });
+              }
+            });
+            return widget.errorWidget;
+          },
+        ),
+      );
+    }
+
+    return Image.asset(
+      widget.imageUrl,
+      width: widget.width,
+      height: widget.height,
+      fit: widget.fit,
+      errorBuilder: (context, error, stackTrace) {
+        return widget.errorWidget;
+      },
+    );
+  }
+}

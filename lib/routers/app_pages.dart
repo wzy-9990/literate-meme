@@ -11,6 +11,7 @@ import 'package:flutter_tem/page/user/login/view.dart';
 import 'package:flutter_tem/page/webview/binding.dart';
 import 'package:flutter_tem/page/webview/view.dart';
 import 'package:flutter_tem/page/example/pullToRefresh/view.dart';
+import 'package:flutter_tem/page/example/imageExample/view.dart';
 import 'package:get/get.dart';
 
 import 'app_routes.dart';
@@ -53,6 +54,10 @@ class AppPages {
     GetPage(
       name: AppRoutes.example,
       page: () => const PullToRefreshExampleView(),
+    ),
+    GetPage(
+      name: AppRoutes.imageExample,
+      page: () => const ImageExampleView(),
     ),
   ];
 }

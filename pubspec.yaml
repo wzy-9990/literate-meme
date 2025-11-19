@@ -22,6 +22,7 @@ dependencies:
   jpush_flutter: 3.2.0 #推送
   webview_flutter: ^4.10.0
   pull_to_refresh: ^2.0.0
+  cached_network_image: ^3.4.1
 
 dev_dependencies:
   flutter_test:

@@ -9,4 +9,5 @@ class AppRoutes {
   static const myChangePassword = '$my/changePassword';
   static const webView = '/webView';
   static const example = '/example';
+  static const imageExample = '/imageExample';
 }

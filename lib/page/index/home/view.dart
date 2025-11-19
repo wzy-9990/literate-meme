@@ -38,6 +38,12 @@ class HomeView extends StatelessWidget {
             },
             child: const Text('打开下拉刷新上拉加载'),
           ),
+          ElevatedButton(
+            onPressed: () {
+              logic.imageExampleView();
+            },
+            child: const Text('打开 BaseImage 组件示例'),
+          ),
         ],
       ),
     );

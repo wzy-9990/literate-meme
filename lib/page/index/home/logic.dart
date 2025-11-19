@@ -14,10 +14,15 @@ class HomeLogic extends GetxController {
       'title': '看下',
     });
   }
-   pullToRefreshView() {
+
+  pullToRefreshView() {
     NavigationUtils.toNamed(AppRoutes.example, arguments: {
       'url': 'https://manager-test.pinduola.cn/manager/index.html#/login',
       'title': '看下',
     });
+  }
+
+  imageExampleView() {
+    NavigationUtils.toNamed(AppRoutes.imageExample);
   }
 }
