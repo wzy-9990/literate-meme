@@ -27,6 +27,14 @@ analyzer:
     unused_shown_name: error
     dead_code: error
 
+    # 代码风格强制要求（提升为错误，阻止提交）
+    prefer_single_quotes: error  # 强制使用单引号
+    prefer_const_constructors: error  # 强制使用 const 构造函数
+    prefer_const_literals_to_create_immutables: error  # 强制使用 const 字面量
+    prefer_const_declarations: error  # 强制使用 const 声明
+    unnecessary_new: error  # 禁止使用 new 关键字
+    unnecessary_this: error  # 禁止不必要的 this
+
   strong-mode:
     implicit-casts: false
     implicit-dynamic: false
