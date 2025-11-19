@@ -5,6 +5,7 @@ import 'package:dio/io.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_tem/api/config.dart';
 import 'package:flutter_tem/routers/app_routes.dart';
 import 'package:flutter_tem/utils/storage/index.dart';
 import 'package:get/get.dart' hide FormData;
@@ -89,10 +90,10 @@ class ApiService {
         debugPrint('✅ 响应数据: ${response.data}');
         if (response.statusCode == 200) {
           final data = response.data;
-          // 如果不是 code == 1，说明业务失败
-          if (data is Map && data['code'] != '1') {
-            final msg = data['returnMsg'] ?? '接口返回异常';
-            EasyLoading.showToast(msg.toString());
+          // 如果不是成功状态码，说明业务失败
+          if (data is Map<String, dynamic> && !ApiConfig.isSuccess(data)) {
+            final msg = ApiConfig.getMessage(data) ?? '接口返回异常';
+            EasyLoading.showToast(msg);
             return handler.reject(DioException(
               requestOptions: response.requestOptions,
               response: response,
@@ -106,7 +107,7 @@ class ApiService {
         }
 
         // 非200的 HTTP 错误
-        if (response.statusCode == 401) {
+        if (response.statusCode == ApiConfig.unauthorizedCode) {
           EasyLoading.showToast("登录信息过期，请重新登录");
           Future.delayed(const Duration(seconds: 1), () {
             Get.offAllNamed(AppRoutes.login);
@@ -132,7 +133,7 @@ class ApiService {
   Future<dynamic> get(String path, {Map<String, dynamic>? params}) async {
     try {
       final response = await _dio.get(path, queryParameters: params);
-      return response.data['data'];
+      return ApiConfig.getData(response.data);
     } on DioException {
       rethrow;
     }
@@ -146,7 +147,7 @@ class ApiService {
     try {
       final response =
           await _dio.post(path, data: data, queryParameters: query);
-      return response.data['data']; // 只返回 data 字段
+      return ApiConfig.getData(response.data); // 只返回 data 字段
     } on DioException {
       rethrow;
     }
@@ -168,12 +169,12 @@ class ApiService {
       // 返回 data 字段
       if (response.statusCode == 200 && response.data is Map) {
         final data = response.data as Map<String, dynamic>;
-        if (data['code'] == '1' && data['data'] != null) {
-          return data['data'] as Map<String, dynamic>;
+        if (ApiConfig.isSuccess(data) && ApiConfig.getData(data) != null) {
+          return ApiConfig.getData(data) as Map<String, dynamic>;
         } else {
-          // code 不为 '1' 时，显示 returnMsg 并抛出异常
-          final returnMsg = data['returnMsg'];
-          if (returnMsg != null && returnMsg is String) {
+          // code 不为成功状态时，显示 returnMsg 并抛出异常
+          final returnMsg = ApiConfig.getMessage(data);
+          if (returnMsg != null && returnMsg.isNotEmpty) {
             EasyLoading.showToast(returnMsg);
           } else {
             EasyLoading.showToast('上传失败');
@@ -186,12 +187,12 @@ class ApiService {
     } on DioException catch (e) {
       // 优先显示响应数据中的 returnMsg
       String? returnMsg;
-      if (e.response?.data is Map) {
+      if (e.response?.data is Map<String, dynamic>) {
         final data = e.response!.data as Map<String, dynamic>;
-        returnMsg = data['returnMsg'];
+        returnMsg = ApiConfig.getMessage(data);
       }
 
-      if (returnMsg != null && returnMsg is String) {
+      if (returnMsg != null && returnMsg.isNotEmpty) {
         EasyLoading.showToast(returnMsg);
       }
 
