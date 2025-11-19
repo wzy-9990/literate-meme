@@ -74,7 +74,6 @@ linter:
     # 未使用的代码检测（会在提交时阻止）
     # 注意：这些规则配合 analyzer.errors 中的 error 设置
     # 未使用的局部变量、字段、导入等都会导致提交失败
-    unnecessary_import: true
     unnecessary_new: true
     unnecessary_null_in_if_null_operators: true
     unnecessary_overrides: true
