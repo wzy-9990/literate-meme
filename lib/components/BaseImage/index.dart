@@ -81,16 +81,10 @@ class BaseImage extends StatelessWidget {
       return placeholder!;
     }
 
-    return Container(
+    return _ShimmerPlaceholder(
       width: width,
       height: height,
-      color: placeholderColor ?? Colors.grey[200],
-      child: Center(
-        child: CircularProgressIndicator(
-          strokeWidth: 2,
-          valueColor: AlwaysStoppedAnimation<Color>(Colors.grey[400]!),
-        ),
-      ),
+      baseColor: placeholderColor ?? Colors.grey[200]!,
     );
   }
 
@@ -242,6 +236,77 @@ class _LocalImageState extends State<_LocalImage> {
       fit: widget.fit,
       errorBuilder: (context, error, stackTrace) {
         return widget.errorWidget;
+      },
+    );
+  }
+}
+
+/// Shimmer 占位图组件（内部使用）
+class _ShimmerPlaceholder extends StatefulWidget {
+  final double? width;
+  final double? height;
+  final Color baseColor;
+
+  const _ShimmerPlaceholder({
+    this.width,
+    this.height,
+    required this.baseColor,
+  });
+
+  @override
+  State<_ShimmerPlaceholder> createState() => _ShimmerPlaceholderState();
+}
+
+class _ShimmerPlaceholderState extends State<_ShimmerPlaceholder>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    );
+
+    _animation = Tween<double>(begin: 0.3, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeInOut,
+      ),
+    );
+
+    _controller.repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _animation,
+      builder: (context, child) {
+        return Container(
+          width: widget.width,
+          height: widget.height,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                widget.baseColor,
+                widget.baseColor.withOpacity(_animation.value),
+                widget.baseColor,
+              ],
+              stops: const [0.0, 0.5, 1.0],
+            ),
+          ),
+        );
       },
     );
   }

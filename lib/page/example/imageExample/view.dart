@@ -5,6 +5,16 @@ import 'package:flutter_tem/components/BaseImage/index.dart';
 class ImageExampleView extends StatelessWidget {
   const ImageExampleView({super.key});
 
+  // 使用稳定的图片链接
+  static const String _demoImage1 = 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300';
+  static const String _demoImage2 = 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=300';
+  static const String _demoImage3 = 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=300';
+  static const String _demoAvatar1 = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&h=200';
+  static const String _demoAvatar2 = 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200';
+  static const String _demoAvatar3 = 'https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=200&h=200';
+  static const String _demoAvatar4 = 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200';
+  static const String _demoPortrait = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=400';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,7 +29,7 @@ class ImageExampleView extends StatelessWidget {
             _buildSection(
               title: '网络图片 - 默认效果',
               child: BaseImage(
-                imageUrl: 'https://picsum.photos/400/300',
+                imageUrl: _demoImage1,
                 width: double.infinity,
                 height: 200,
                 borderRadius: 12,
@@ -31,28 +41,28 @@ class ImageExampleView extends StatelessWidget {
               child: Row(
                 children: [
                   BaseImage(
-                    imageUrl: 'https://picsum.photos/200',
+                    imageUrl: _demoAvatar1,
                     width: 60,
                     height: 60,
                     isCircle: true,
                   ),
                   const SizedBox(width: 20),
                   BaseImage(
-                    imageUrl: 'https://picsum.photos/201',
+                    imageUrl: _demoAvatar2,
                     width: 60,
                     height: 60,
                     isCircle: true,
                   ),
                   const SizedBox(width: 20),
                   BaseImage(
-                    imageUrl: 'https://picsum.photos/202',
+                    imageUrl: _demoAvatar3,
                     width: 60,
                     height: 60,
                     isCircle: true,
                   ),
                   const SizedBox(width: 20),
                   BaseImage(
-                    imageUrl: 'https://picsum.photos/203',
+                    imageUrl: _demoAvatar4,
                     width: 60,
                     height: 60,
                     isCircle: true,
@@ -69,7 +79,7 @@ class ImageExampleView extends StatelessWidget {
                   Column(
                     children: [
                       BaseImage(
-                        imageUrl: 'https://picsum.photos/300/400',
+                        imageUrl: _demoImage2,
                         width: 80,
                         height: 80,
                         borderRadius: 0,
@@ -81,7 +91,7 @@ class ImageExampleView extends StatelessWidget {
                   Column(
                     children: [
                       BaseImage(
-                        imageUrl: 'https://picsum.photos/301/401',
+                        imageUrl: _demoImage2,
                         width: 80,
                         height: 80,
                         borderRadius: 8,
@@ -93,7 +103,7 @@ class ImageExampleView extends StatelessWidget {
                   Column(
                     children: [
                       BaseImage(
-                        imageUrl: 'https://picsum.photos/302/402',
+                        imageUrl: _demoImage2,
                         width: 80,
                         height: 80,
                         borderRadius: 16,
@@ -105,7 +115,7 @@ class ImageExampleView extends StatelessWidget {
                   Column(
                     children: [
                       BaseImage(
-                        imageUrl: 'https://picsum.photos/303/403',
+                        imageUrl: _demoImage2,
                         width: 80,
                         height: 80,
                         borderRadius: 40,
@@ -149,21 +159,21 @@ class ImageExampleView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   BaseImage(
-                    imageUrl: 'https://httpstat.us/200?sleep=2000',
+                    imageUrl: _demoImage3,
                     width: 100,
                     height: 100,
                     borderRadius: 8,
                     placeholderColor: Colors.blue[50],
                   ),
                   BaseImage(
-                    imageUrl: 'https://httpstat.us/200?sleep=2000',
+                    imageUrl: _demoImage1,
                     width: 100,
                     height: 100,
                     borderRadius: 8,
                     placeholderColor: Colors.green[50],
                   ),
                   BaseImage(
-                    imageUrl: 'https://httpstat.us/200?sleep=2000',
+                    imageUrl: _demoImage2,
                     width: 100,
                     height: 100,
                     borderRadius: 8,
@@ -181,7 +191,7 @@ class ImageExampleView extends StatelessWidget {
                   Column(
                     children: [
                       BaseImage(
-                        imageUrl: 'https://picsum.photos/400',
+                        imageUrl: _demoImage1,
                         width: 150,
                         height: 100,
                         borderRadius: 8,
@@ -194,7 +204,7 @@ class ImageExampleView extends StatelessWidget {
                   Column(
                     children: [
                       BaseImage(
-                        imageUrl: 'https://picsum.photos/401',
+                        imageUrl: _demoImage2,
                         width: 150,
                         height: 100,
                         borderRadius: 8,
@@ -278,7 +288,7 @@ class ImageExampleView extends StatelessWidget {
             _buildSection(
               title: '自定义占位图',
               child: BaseImage(
-                imageUrl: 'https://httpstat.us/200?sleep=3000',
+                imageUrl: _demoImage3,
                 width: double.infinity,
                 height: 150,
                 borderRadius: 12,
@@ -339,7 +349,7 @@ class ImageExampleView extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
           ),
           child: BaseImage(
-            imageUrl: 'https://picsum.photos/300/400',
+            imageUrl: _demoPortrait,
             width: 100,
             height: 100,
             fit: fit,
