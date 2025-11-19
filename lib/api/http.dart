@@ -18,7 +18,7 @@ class ApiService {
 
   /// 在应用启动时调用，用于设置自定义 API 地址和代理配置
   static Future<void> init() async {
-    _customBaseUrl = await Storage.getString('custom_api_url');
+    _customBaseUrl = await Storage.getString(StorageKeys.customApiUrl);
     if (_customBaseUrl != null) {
       debugPrint('🔧 检测到自定义 API 地址: $_customBaseUrl');
     }
@@ -26,10 +26,10 @@ class ApiService {
     // 生产环境不允许使用代理
     const env = String.fromEnvironment('ENV', defaultValue: 'development');
     if (env != 'production') {
-      _proxyEnabled = await Storage.getBool('proxy_enabled') ?? false;
+      _proxyEnabled = await Storage.getBool(StorageKeys.proxyEnabled) ?? false;
       if (_proxyEnabled) {
-        _proxyHost = await Storage.getString('proxy_host');
-        _proxyPort = await Storage.getInt('proxy_port');
+        _proxyHost = await Storage.getString(StorageKeys.proxyHost);
+        _proxyPort = await Storage.getInt(StorageKeys.proxyPort);
         debugPrint('🔧 检测到代理配置: $_proxyHost:$_proxyPort');
       }
     } else {

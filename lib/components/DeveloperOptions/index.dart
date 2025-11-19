@@ -275,9 +275,9 @@ class DeveloperOptions {
 
   /// 加载代理配置
   Future<Map<String, dynamic>> _loadProxyConfig() async {
-    final enabled = await Storage.getBool('proxy_enabled') ?? false;
-    final host = await Storage.getString('proxy_host');
-    final port = await Storage.getInt('proxy_port');
+    final enabled = await Storage.getBool(StorageKeys.proxyEnabled) ?? false;
+    final host = await Storage.getString(StorageKeys.proxyHost);
+    final port = await Storage.getInt(StorageKeys.proxyPort);
 
     return {
       'enabled': enabled,
@@ -296,16 +296,16 @@ class DeveloperOptions {
     Get.back(); // 关闭弹窗
 
     // 保存 API 地址
-    await Storage.setString('custom_api_url', apiUrl);
+    await Storage.setString(StorageKeys.customApiUrl, apiUrl);
 
     // 保存代理配置
-    await Storage.setBool('proxy_enabled', enableProxy);
+    await Storage.setBool(StorageKeys.proxyEnabled, enableProxy);
     if (enableProxy) {
-      await Storage.setString('proxy_host', proxyHost);
-      await Storage.setInt('proxy_port', int.parse(proxyPort));
+      await Storage.setString(StorageKeys.proxyHost, proxyHost);
+      await Storage.setInt(StorageKeys.proxyPort, int.parse(proxyPort));
     } else {
-      await Storage.remove('proxy_host');
-      await Storage.remove('proxy_port');
+      await Storage.remove(StorageKeys.proxyHost);
+      await Storage.remove(StorageKeys.proxyPort);
     }
 
     EasyLoading.showToast('配置已保存，正在退出登录...');
@@ -325,10 +325,10 @@ class DeveloperOptions {
     Get.back(); // 关闭弹窗
 
     // 删除自定义配置
-    await Storage.remove('custom_api_url');
-    await Storage.remove('proxy_enabled');
-    await Storage.remove('proxy_host');
-    await Storage.remove('proxy_port');
+    await Storage.remove(StorageKeys.customApiUrl);
+    await Storage.remove(StorageKeys.proxyEnabled);
+    await Storage.remove(StorageKeys.proxyHost);
+    await Storage.remove(StorageKeys.proxyPort);
 
     EasyLoading.showToast('已恢复默认配置，正在退出登录...');
 

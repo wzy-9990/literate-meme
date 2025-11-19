@@ -6,6 +6,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 class StorageKeys {
   static const String token = 'token';
   static const String userInfo = 'userInfo';
+  static const String customApiUrl = 'custom_api_url';
+  static const String proxyEnabled = 'proxy_enabled';
+  static const String proxyHost = 'proxy_host';
+  static const String proxyPort = 'proxy_port';
 }
 
 class Storage {

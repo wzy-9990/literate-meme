@@ -56,7 +56,7 @@ class _GuideViewState extends State<GuideView> {
     Global.init();
 
     // 检查登录状态
-    final token = await Storage.getString('token');
+    final token = await Storage.getString(StorageKeys.token);
 
     if (token != null) {
       // 已登录，跳转到首页
