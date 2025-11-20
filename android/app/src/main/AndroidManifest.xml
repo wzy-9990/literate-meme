@@ -20,7 +20,7 @@
     <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
 
     <application
-        android:label="flutter_tem"
+        android:label="flutter安卓"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
@@ -51,7 +51,7 @@
             android:enabled="false"
             android:exported="true"
             android:icon="@mipmap/spring_festival"
-            android:label="flutter_tem"
+            android:label="flutter安卓"
             android:targetActivity=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -65,7 +65,7 @@
             android:enabled="false"
             android:exported="true"
             android:icon="@mipmap/labor_day"
-            android:label="flutter_tem"
+            android:label="flutter安卓"
             android:targetActivity=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -79,7 +79,7 @@
             android:enabled="false"
             android:exported="true"
             android:icon="@mipmap/national_day"
-            android:label="flutter_tem"
+            android:label="flutter安卓"
             android:targetActivity=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -93,7 +93,7 @@
             android:enabled="false"
             android:exported="true"
             android:icon="@mipmap/christmas"
-            android:label="flutter_tem"
+            android:label="flutter安卓"
             android:targetActivity=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
