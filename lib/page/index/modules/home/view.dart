@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tem/components/BaseAppBar/index.dart';
-import 'package:flutter_tem/page/index/home/logic.dart';
-import 'package:flutter_tem/utils/dict/home.dart';
+import 'package:flutter_tem/page/index/modules/home/logic.dart';
+import 'package:flutter_tem/utils/modules/dict/home.dart';
 import 'package:get/get.dart';
 
 class HomeView extends StatelessWidget {

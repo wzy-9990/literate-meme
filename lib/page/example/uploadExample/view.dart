@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_tem/components/BaseAppBar/index.dart';
 import 'package:flutter_tem/components/BaseUpload/index.dart';
-import 'package:flutter_tem/utils/base/upload.dart';
 
 /// 上传组件示例页面
 class UploadExampleView extends StatefulWidget {

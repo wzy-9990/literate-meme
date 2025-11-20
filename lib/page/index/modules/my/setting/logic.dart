@@ -1,15 +1,19 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_tem/page/index/my/logic.dart';
+import 'package:flutter_tem/components/BaseDeveloperOptions/index.dart';
+import 'package:flutter_tem/page/index/modules/my/logic.dart';
 import 'package:flutter_tem/routers/app_routes.dart';
+import 'package:flutter_tem/routers/index.dart';
 import 'package:flutter_tem/utils/storage/index.dart';
 import 'package:get/get.dart';
 
-class ChangePasswordLogic extends GetxController {
+class MySettingLogic extends GetxController {
   final myLogic = Get.find<MyLogic>();
-
-  RxBool isLoading = false.obs;
+  RxBool isLoading = true.obs;
   RxMap userInfo = RxMap();
+
+  // 开发者选项
+  final developerOptions = BaseDeveloperOptions();
+
   @override
   void onInit() {
     super.onInit();
@@ -17,8 +21,6 @@ class ChangePasswordLogic extends GetxController {
   }
 
   void initData() {
-    debugPrint('设置页面初始化');
-    isLoading.value = true;
     Future.delayed(const Duration(seconds: 1), () async {
       isLoading.value = false;
       _loadUserInfo();
@@ -27,11 +29,17 @@ class ChangePasswordLogic extends GetxController {
 
   void logout() async {
     await Storage.clear();
-    await Get.offAllNamed(AppRoutes.login);
+    Get.toNamed(AppRoutes.login);
   }
 
-  void updateLastUserInfo() {
-    Get.back(result: true);
+  void changePassword() async {
+    await NavigationUtils.toNamed(
+      AppRoutes.myChangePassword,
+      callback: (result) async {
+        isLoading.value = true;
+        initData();
+      },
+    );
   }
 
   void _loadUserInfo() async {
@@ -42,10 +50,15 @@ class ChangePasswordLogic extends GetxController {
   void updateUserInfo(String name) async {
     final int currentMilliseconds = DateTime.now().millisecondsSinceEpoch;
     final dynamic storedName = await Storage.getMap(StorageKeys.userInfo);
-    storedName['userName'] = '张三$currentMilliseconds';
+    storedName['userName'] = '$name$currentMilliseconds';
     await Storage.setMap(StorageKeys.userInfo, storedName);
     initData();
     myLogic.initData();
     EasyLoading.showToast('操作成功');
+  }
+
+  /// 处理版本号点击（开发者选项入口）
+  void onVersionTap() {
+    developerOptions.onTap();
   }
 }

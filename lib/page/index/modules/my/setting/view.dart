@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tem/components/BaseAppBar/index.dart';
 import 'package:flutter_tem/components/BaseLoading/index.dart';
-import 'package:flutter_tem/page/index/my/setting/logic.dart';
+import 'package:flutter_tem/page/index/modules/my/setting/logic.dart';
 import 'package:get/get.dart';
 
 class MySettingView extends StatelessWidget {

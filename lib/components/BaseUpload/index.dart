@@ -1,8 +1,78 @@
 import 'dart:io';
+
+import 'package:dio/dio.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_tem/api/http.dart';
 import 'package:flutter_tem/components/BaseImage/preview.dart';
-import 'package:flutter_tem/utils/base/upload.dart';
+import 'package:flutter_tem/config/api/index.dart';
+import 'package:flutter_tem/utils/permission/index.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:mime/mime.dart';
+import 'package:path/path.dart' as path;
+import 'package:permission_handler/permission_handler.dart';
+
+/// 上传文件信息
+class BaseUploadFileInfo {
+  /// 文件路径
+  final String filePath;
+
+  /// 文件名
+  final String fileName;
+
+  /// 文件大小（字节）
+  final int fileSize;
+
+  /// MIME 类型
+  final String? mimeType;
+
+  /// 是否是图片
+  bool get isImage {
+    if (mimeType == null) return false;
+    return mimeType!.startsWith('image/');
+  }
+
+  /// 格式化文件大小
+  String get fileSizeFormatted {
+    if (fileSize < 1024) {
+      return '$fileSize B';
+    } else if (fileSize < 1024 * 1024) {
+      return '${(fileSize / 1024).toStringAsFixed(1)} KB';
+    } else if (fileSize < 1024 * 1024 * 1024) {
+      return '${(fileSize / (1024 * 1024)).toStringAsFixed(1)} MB';
+    } else {
+      return '${(fileSize / (1024 * 1024 * 1024)).toStringAsFixed(1)} GB';
+    }
+  }
+
+  BaseUploadFileInfo({
+    required this.filePath,
+    required this.fileName,
+    required this.fileSize,
+    this.mimeType,
+  });
+
+  factory BaseUploadFileInfo.fromFile(File file) {
+    final fileName = path.basename(file.path);
+    final fileSize = file.lengthSync();
+    final mimeType = lookupMimeType(file.path);
+
+    return BaseUploadFileInfo(
+      filePath: file.path,
+      fileName: fileName,
+      fileSize: fileSize,
+      mimeType: mimeType,
+    );
+  }
+}
+
+/// 图片来源
+enum BaseImageSourceType {
+  camera, // 相机
+  gallery, // 相册
+}
 
 /// 上传状态
 enum UploadStatus {
@@ -90,6 +160,351 @@ class BaseUpload extends StatefulWidget {
 
   @override
   State<BaseUpload> createState() => _BaseUploadState();
+}
+
+/// 上传组件内部工具类
+class BaseUploadUtil {
+  static final ImagePicker _imagePicker = ImagePicker();
+
+  /// 选择图片（单张）
+  ///
+  /// [source] 图片来源（相机/相册）
+  /// [maxWidth] 最大宽度
+  /// [maxHeight] 最大高度
+  /// [imageQuality] 图片质量 0-100
+  static Future<BaseUploadFileInfo?> pickImage({
+    BaseImageSourceType source = BaseImageSourceType.gallery,
+    double? maxWidth,
+    double? maxHeight,
+    int imageQuality = 85,
+  }) async {
+    try {
+      // 权限检查
+      bool hasPermission = false;
+      if (source == BaseImageSourceType.camera) {
+        // 调试：打印权限状态
+        await PermissionUtil.debugPermissionStatus(Permission.camera);
+
+        hasPermission = await PermissionUtil.requestCamera(
+          tip: '需要访问相机以拍摄照片',
+        );
+
+        debugPrint('相机权限请求结果: $hasPermission');
+      } else {
+        // 调试：打印权限状态
+        await PermissionUtil.debugPermissionStatus(Permission.photos);
+
+        hasPermission = await PermissionUtil.requestPhotos(
+          tip: '需要访问相册以选择照片',
+        );
+
+        debugPrint('相册权限请求结果: $hasPermission');
+      }
+
+      if (!hasPermission) {
+        debugPrint('权限未授予');
+        return null;
+      }
+
+      final ImageSource imageSource = source == BaseImageSourceType.camera
+          ? ImageSource.camera
+          : ImageSource.gallery;
+
+      final XFile? image = await _imagePicker.pickImage(
+        source: imageSource,
+        maxWidth: maxWidth,
+        maxHeight: maxHeight,
+        imageQuality: imageQuality,
+      );
+
+      if (image == null) return null;
+
+      final file = File(image.path);
+      return BaseUploadFileInfo.fromFile(file);
+    } catch (e) {
+      debugPrint('选择图片失败: $e');
+      return null;
+    }
+  }
+
+  /// 选择多张图片
+  ///
+  /// [maxWidth] 最大宽度
+  /// [maxHeight] 最大高度
+  /// [imageQuality] 图片质量 0-100
+  /// [limit] 最多选择数量
+  static Future<List<BaseUploadFileInfo>> pickMultipleImages({
+    double? maxWidth,
+    double? maxHeight,
+    int imageQuality = 85,
+    int? limit,
+  }) async {
+    try {
+      // 权限检查
+      final hasPermission = await PermissionUtil.requestPhotos(
+        tip: '需要访问相册以选择照片',
+      );
+
+      if (!hasPermission) {
+        debugPrint('权限未授予');
+        return [];
+      }
+
+      final List<XFile> images = await _imagePicker.pickMultiImage(
+        maxWidth: maxWidth,
+        maxHeight: maxHeight,
+        imageQuality: imageQuality,
+        limit: limit,
+      );
+
+      return images.map((xFile) {
+        final file = File(xFile.path);
+        return BaseUploadFileInfo.fromFile(file);
+      }).toList();
+    } catch (e) {
+      debugPrint('选择多张图片失败: $e');
+      return [];
+    }
+  }
+
+  /// 选择文件（单个）
+  ///
+  /// [allowedExtensions] 允许的文件扩展名，例如：['pdf', 'doc', 'docx']
+  /// [type] 文件类型
+  static Future<BaseUploadFileInfo?> pickFile({
+    List<String>? allowedExtensions,
+    FileType type = FileType.any,
+  }) async {
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: type,
+        allowedExtensions: allowedExtensions,
+      );
+
+      if (result == null || result.files.isEmpty) return null;
+
+      final platformFile = result.files.first;
+      if (platformFile.path == null) return null;
+
+      final file = File(platformFile.path!);
+      return BaseUploadFileInfo.fromFile(file);
+    } catch (e) {
+      debugPrint('选择文件失败: $e');
+      return null;
+    }
+  }
+
+  /// 选择多个文件
+  ///
+  /// [allowedExtensions] 允许的文件扩展名
+  /// [type] 文件类型
+  static Future<List<BaseUploadFileInfo>> pickMultipleFiles({
+    List<String>? allowedExtensions,
+    FileType type = FileType.any,
+  }) async {
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: type,
+        allowedExtensions: allowedExtensions,
+        allowMultiple: true,
+      );
+
+      if (result == null || result.files.isEmpty) return [];
+
+      return result.files
+          .where((file) => file.path != null)
+          .map((platformFile) {
+        final file = File(platformFile.path!);
+        return BaseUploadFileInfo.fromFile(file);
+      }).toList();
+    } catch (e) {
+      debugPrint('选择多个文件失败: $e');
+      return [];
+    }
+  }
+
+  /// 使用项目默认上传接口上传文件
+  ///
+  /// [fileInfo] 文件信息
+  /// [onProgress] 上传进度回调
+  /// 返回格式: { fileKey: "xxx", fileUrl: "xxx" }
+  static Future<Map<String, dynamic>?> uploadFileToDefault({
+    required BaseUploadFileInfo fileInfo,
+    void Function(int sent, int total)? onProgress,
+  }) async {
+    try {
+      FormData formData = FormData.fromMap({
+        'file': await MultipartFile.fromFile(
+          fileInfo.filePath,
+          filename: fileInfo.fileName,
+        ),
+      });
+
+      // 使用项目的 ApiService 实例上传文件
+      final result = await Api.instance.uploadFile(
+        '/pklApi/private/file/uploadFile',
+        formData: formData,
+        onProgress: onProgress,
+      );
+
+      return result;
+    } on DioException catch (e) {
+      // 如果是认证错误，尝试重新上传
+      if (e.response?.statusCode == ApiConfig.unauthorizedCode ||
+          e.error ==
+              'Login required for FormData request, please re-initiate the upload') {
+        try {
+          // 重新创建FormData并上传
+          FormData formData = FormData.fromMap({
+            'file': await MultipartFile.fromFile(
+              fileInfo.filePath,
+              filename: fileInfo.fileName,
+            ),
+          });
+
+          final result = await Api.instance.uploadFile(
+            '/pklApi/private/file/uploadFile',
+            formData: formData,
+            onProgress: onProgress,
+          );
+
+          return result;
+        } catch (retryError) {
+          debugPrint('重新上传文件失败: $retryError');
+          rethrow;
+        }
+      }
+      debugPrint('上传文件失败: $e');
+      rethrow;
+    } catch (e) {
+      debugPrint('上传文件失败: $e');
+      rethrow;
+    }
+  }
+
+  /// 上传文件到服务器（通用方法）
+  ///
+  /// [fileInfo] 文件信息
+  /// [uploadUrl] 上传地址
+  /// [fieldName] 字段名，默认 'file'
+  /// [data] 额外的表单数据
+  /// [onProgress] 上传进度回调
+  static Future<Response?> uploadFile({
+    required BaseUploadFileInfo fileInfo,
+    required String uploadUrl,
+    String fieldName = 'file',
+    Map<String, dynamic>? data,
+    void Function(int sent, int total)? onProgress,
+  }) async {
+    try {
+      final formData = FormData.fromMap({
+        if (data != null) ...data,
+        fieldName: await MultipartFile.fromFile(
+          fileInfo.filePath,
+          filename: fileInfo.fileName,
+        ),
+      });
+
+      final dio = Dio(
+        BaseOptions(
+          connectTimeout: const Duration(seconds: 30),
+          sendTimeout: const Duration(seconds: 60),
+          receiveTimeout: const Duration(seconds: 60),
+        ),
+      );
+      final response = await dio.post(
+        uploadUrl,
+        data: formData,
+        onSendProgress: onProgress,
+      );
+
+      return response;
+    } catch (e) {
+      debugPrint('上传文件失败: $e');
+      return null;
+    }
+  }
+
+  /// 批量上传文件
+  ///
+  /// [files] 文件列表
+  /// [uploadUrl] 上传地址
+  /// [fieldName] 字段名，默认 'files'
+  /// [data] 额外的表单数据
+  /// [onProgress] 上传进度回调
+  static Future<Response?> uploadMultipleFiles({
+    required List<BaseUploadFileInfo> files,
+    required String uploadUrl,
+    String fieldName = 'files',
+    Map<String, dynamic>? data,
+    void Function(int sent, int total)? onProgress,
+  }) async {
+    try {
+      final multipartFiles = await Future.wait(
+        files.map((fileInfo) => MultipartFile.fromFile(
+              fileInfo.filePath,
+              filename: fileInfo.fileName,
+            )),
+      );
+
+      final formData = FormData.fromMap({
+        if (data != null) ...data,
+        fieldName: multipartFiles,
+      });
+
+      final dio = Dio(
+        BaseOptions(
+          connectTimeout: const Duration(seconds: 30),
+          sendTimeout: const Duration(seconds: 120), // 批量上传需要更长时间
+          receiveTimeout: const Duration(seconds: 120),
+        ),
+      );
+      final response = await dio.post(
+        uploadUrl,
+        data: formData,
+        onSendProgress: onProgress,
+      );
+
+      return response;
+    } catch (e) {
+      debugPrint('批量上传文件失败: $e');
+      return null;
+    }
+  }
+
+  /// 显示选择图片来源弹窗（iOS 风格）
+  static Future<BaseImageSourceType?> showImageSourceDialog(
+    BuildContext context,
+  ) async {
+    return showCupertinoModalPopup<BaseImageSourceType>(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+        title: const Text('选择图片'),
+        message: const Text('请选择图片来源'),
+        actions: <CupertinoActionSheetAction>[
+          CupertinoActionSheetAction(
+            onPressed: () {
+              Navigator.pop(context, BaseImageSourceType.camera);
+            },
+            child: const Text('拍照'),
+          ),
+          CupertinoActionSheetAction(
+            onPressed: () {
+              Navigator.pop(context, BaseImageSourceType.gallery);
+            },
+            child: const Text('从相册选择'),
+          ),
+        ],
+        cancelButton: CupertinoActionSheetAction(
+          isDefaultAction: true,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text('取消'),
+        ),
+      ),
+    );
+  }
 }
 
 class _BaseUploadState extends State<BaseUpload> {

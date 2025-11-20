@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tem/page/index/home/logic.dart';
-import 'package:flutter_tem/page/index/message/logic.dart';
-import 'package:flutter_tem/page/index/my/logic.dart';
+import 'package:flutter_tem/page/index/modules/home/logic.dart';
+import 'package:flutter_tem/page/index/modules/message/logic.dart';
+import 'package:flutter_tem/page/index/modules/my/logic.dart';
 import 'package:get/get.dart';
 
 class IndexLogic extends GetxController {

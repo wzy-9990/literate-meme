@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tem/components/BaseAppBar/index.dart';
 import 'package:flutter_tem/components/BaseLoading/index.dart';
-import 'package:flutter_tem/page/index/my/setting/changePassword/logic.dart';
+import 'package:flutter_tem/page/index/modules/my/setting/changePassword/logic.dart';
 import 'package:get/get.dart';
 
 class ChangePasswordView extends StatelessWidget {
@@ -17,11 +17,11 @@ class ChangePasswordView extends StatelessWidget {
         children: [
           const Text('修改密码'),
           ElevatedButton(
-                onPressed: () {
-                  logic.updateLastUserInfo();
-                },
-                child: const Text('刷新上级数据'),
-              ),
+            onPressed: () {
+              logic.updateLastUserInfo();
+            },
+            child: const Text('刷新上级数据'),
+          ),
           Obx(
             () {
               return logic.isLoading.value

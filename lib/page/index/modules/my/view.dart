@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tem/components/BaseLoading/index.dart';
-import 'package:flutter_tem/page/index/my/logic.dart';
+import 'package:flutter_tem/page/index/modules/my/logic.dart';
 import 'package:flutter_tem/routers/app_routes.dart';
 import 'package:get/get.dart';
 
