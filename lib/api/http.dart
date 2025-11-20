@@ -6,11 +6,9 @@ import 'package:dio/io.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_tem/components/BaseAuthDialog/index.dart';
 import 'package:flutter_tem/config/api/index.dart';
-import 'package:flutter_tem/routers/app_routes.dart';
-import 'package:flutter_tem/routers/index.dart';
 import 'package:flutter_tem/utils/storage/index.dart';
-import 'package:get/get.dart' hide FormData, Response;
 
 class ApiService {
   late Dio _dio;
@@ -18,62 +16,6 @@ class ApiService {
   static bool _proxyEnabled = false;
   static String? _proxyHost;
   static int? _proxyPort;
-  static bool _isShowingAuthDialog = false;
-
-  // -------------------- 登录弹窗 --------------------
-  static Future<Map<String, dynamic>?> _showAuthDialog() async {
-    if (_isShowingAuthDialog) return null;
-    _isShowingAuthDialog = true;
-
-    final token = await Storage.getString(StorageKeys.token);
-    final bool isExpired = token != null && token.isNotEmpty;
-
-    final completer = Completer<Map<String, dynamic>?>();
-
-    showCupertinoDialog(
-      context: Get.context!,
-      builder: (_) {
-        return CupertinoAlertDialog(
-          title: Text(isExpired ? '登录已过期' : '未登录'),
-          content: Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: Text(
-              isExpired ? '您的登录身份已过期，请重新登录。' : '您还未登录，请先登录。',
-            ),
-          ),
-          actions: [
-            if (!isExpired)
-              CupertinoDialogAction(
-                child: const Text('取消'),
-                onPressed: () {
-                  Navigator.pop(Get.context!);
-                  _isShowingAuthDialog = false;
-                  completer.complete(null);
-                },
-              ),
-            CupertinoDialogAction(
-              isDefaultAction: true,
-              child: const Text('去登录'),
-              onPressed: () async {
-                Navigator.pop(Get.context!);
-                _isShowingAuthDialog = false;
-
-                // 跳转登录页并等待返回结果
-                final res = await NavigationUtils.toNamed(AppRoutes.login);
-                if (res != null && res is Map<String, dynamic>) {
-                  completer.complete(res);
-                } else {
-                  completer.complete(null);
-                }
-              },
-            ),
-          ],
-        );
-      },
-    );
-
-    return completer.future;
-  }
 
   // -------------------- 初始化配置 --------------------
   static Future<void> init() async {
@@ -143,7 +85,7 @@ class ApiService {
             final data = response.data;
 
             if (ApiConfig.getCode(data) == ApiConfig.unauthorizedCode) {
-              final loginResult = await _showAuthDialog();
+              final loginResult = await BaseAuthDialog.showAuthDialog();
               final msg = ApiConfig.getMessage(data) ?? '接口返回异常';
 
               if (loginResult != null && loginResult['login'] == true) {
@@ -209,7 +151,7 @@ class ApiService {
           }
 
           if (response.statusCode == ApiConfig.unauthorizedCode) {
-            await _showAuthDialog();
+            await BaseAuthDialog.showAuthDialog();
           } else {
             EasyLoading.showToast('请求异常：${response.statusCode}');
           }
