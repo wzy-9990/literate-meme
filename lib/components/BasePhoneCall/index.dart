@@ -1,9 +1,76 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-/// 打电话工具类
-class PhoneCallUtil {
+/// 电话拨打组件
+class BasePhoneCall extends StatelessWidget {
+  /// 电话号码
+  final String phoneNumber;
+
+  /// 显示的文本
+  final String? text;
+
+  /// 文本样式
+  final TextStyle? style;
+
+  /// 按钮类型 (图标或文本)
+  final BasePhoneCallType type;
+
+  /// 图标
+  final IconData? icon;
+
+  /// 图标大小
+  final double? iconSize;
+
+  const BasePhoneCall({
+    super.key,
+    required this.phoneNumber,
+    this.text,
+    this.style,
+    this.type = BasePhoneCallType.text,
+    this.icon = Icons.phone,
+    this.iconSize,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cleanNumber = phoneNumber.replaceAll(RegExp(r'[\s-()]'), '');
+    final displayText = text ?? formatPhoneNumber(cleanNumber);
+
+    switch (type) {
+      case BasePhoneCallType.icon:
+        return IconButton(
+          icon: Icon(icon, size: iconSize),
+          onPressed: () => _makePhoneCall(context, cleanNumber),
+        );
+      case BasePhoneCallType.text:
+        return GestureDetector(
+          onTap: () => _makePhoneCall(context, cleanNumber),
+          child: Text(
+            displayText,
+            style: style ??
+                const TextStyle(
+                  color: Colors.blue,
+                  decoration: TextDecoration.underline,
+                ),
+          ),
+        );
+      case BasePhoneCallType.button:
+        return ElevatedButton(
+          onPressed: () => _makePhoneCall(context, cleanNumber),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: iconSize),
+              const SizedBox(width: 8),
+              Text(displayText),
+            ],
+          ),
+        );
+    }
+  }
+
   /// 拨打电话
   ///
   /// [context] 上下文
@@ -11,7 +78,7 @@ class PhoneCallUtil {
   ///
   /// iOS: 直接拨打电话
   /// Android: 显示底部弹窗，二次确认后拨打
-  static Future<void> makePhoneCall(
+  static Future<void> _makePhoneCall(
     BuildContext context,
     String phoneNumber,
   ) async {
@@ -81,6 +148,20 @@ class PhoneCallUtil {
     }
   }
 
+  /// 拨打电话
+  ///
+  /// [context] 上下文
+  /// [phoneNumber] 电话号码
+  ///
+  /// iOS: 直接拨打电话
+  /// Android: 显示底部弹窗，二次确认后拨打
+  static Future<void> makePhoneCall(
+    BuildContext context,
+    String phoneNumber,
+  ) async {
+    _makePhoneCall(context, phoneNumber);
+  }
+
   /// 格式化电话号码显示
   ///
   /// [phoneNumber] 原始电话号码
@@ -107,4 +188,16 @@ class PhoneCallUtil {
       return cleanNumber;
     }
   }
+}
+
+/// 电话拨打组件类型
+enum BasePhoneCallType {
+  /// 文本类型
+  text,
+
+  /// 图标类型
+  icon,
+
+  /// 按钮类型
+  button,
 }

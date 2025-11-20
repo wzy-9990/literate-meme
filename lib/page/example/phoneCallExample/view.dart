@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tem/components/BaseAppBar/index.dart';
-import 'package:flutter_tem/utils/phone_call/index.dart';
+import 'package:flutter_tem/components/BasePhoneCall/index.dart';
 
 /// 打电话示例页面
 class PhoneCallExamplePage extends StatelessWidget {
@@ -96,7 +96,7 @@ class PhoneCallExamplePage extends StatelessWidget {
           // 自定义拨号按钮
           ElevatedButton.icon(
             onPressed: () {
-              PhoneCallUtil.makePhoneCall(context, '10086');
+              BasePhoneCall.makePhoneCall(context, '10086');
             },
             icon: const Icon(Icons.phone),
             label: const Text('拨打客服电话 10086'),
@@ -109,7 +109,7 @@ class PhoneCallExamplePage extends StatelessWidget {
           // 紧急电话
           ElevatedButton.icon(
             onPressed: () {
-              PhoneCallUtil.makePhoneCall(context, '110');
+              BasePhoneCall.makePhoneCall(context, '110');
             },
             icon: const Icon(Icons.emergency),
             label: const Text('拨打紧急电话 110'),
@@ -175,7 +175,7 @@ class PhoneCallExamplePage extends StatelessWidget {
           style: const TextStyle(fontWeight: FontWeight.w600),
         ),
         subtitle: Text(
-          PhoneCallUtil.formatPhoneNumber(phone),
+          BasePhoneCall.formatPhoneNumber(phone),
           style: TextStyle(color: Colors.grey[600]),
         ),
         trailing: IconButton(
@@ -183,7 +183,7 @@ class PhoneCallExamplePage extends StatelessWidget {
           color: Colors.green,
           iconSize: 28,
           onPressed: () {
-            PhoneCallUtil.makePhoneCall(context, phone);
+            BasePhoneCall.makePhoneCall(context, phone);
           },
         ),
       ),

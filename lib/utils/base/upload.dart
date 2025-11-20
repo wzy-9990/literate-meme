@@ -12,7 +12,7 @@ import 'package:path/path.dart' as path;
 import 'package:permission_handler/permission_handler.dart';
 
 /// 上传文件信息
-class UploadFileInfo {
+class BaseUploadFileInfo {
   /// 文件路径
   final String filePath;
 
@@ -44,19 +44,19 @@ class UploadFileInfo {
     }
   }
 
-  UploadFileInfo({
+  BaseUploadFileInfo({
     required this.filePath,
     required this.fileName,
     required this.fileSize,
     this.mimeType,
   });
 
-  factory UploadFileInfo.fromFile(File file) {
+  factory BaseUploadFileInfo.fromFile(File file) {
     final fileName = path.basename(file.path);
     final fileSize = file.lengthSync();
     final mimeType = lookupMimeType(file.path);
 
-    return UploadFileInfo(
+    return BaseUploadFileInfo(
       filePath: file.path,
       fileName: fileName,
       fileSize: fileSize,
@@ -66,13 +66,13 @@ class UploadFileInfo {
 }
 
 /// 图片来源
-enum ImageSourceType {
+enum BaseImageSourceType {
   camera, // 相机
   gallery, // 相册
 }
 
 /// 上传工具类
-class UploadUtil {
+class BaseUploadUtil {
   static final ImagePicker _imagePicker = ImagePicker();
 
   /// 选择图片（单张）
@@ -81,8 +81,8 @@ class UploadUtil {
   /// [maxWidth] 最大宽度
   /// [maxHeight] 最大高度
   /// [imageQuality] 图片质量 0-100
-  static Future<UploadFileInfo?> pickImage({
-    ImageSourceType source = ImageSourceType.gallery,
+  static Future<BaseUploadFileInfo?> pickImage({
+    BaseImageSourceType source = BaseImageSourceType.gallery,
     double? maxWidth,
     double? maxHeight,
     int imageQuality = 85,
@@ -90,7 +90,7 @@ class UploadUtil {
     try {
       // 权限检查
       bool hasPermission = false;
-      if (source == ImageSourceType.camera) {
+      if (source == BaseImageSourceType.camera) {
         // 调试：打印权限状态
         await PermissionUtil.debugPermissionStatus(Permission.camera);
 
@@ -115,7 +115,7 @@ class UploadUtil {
         return null;
       }
 
-      final ImageSource imageSource = source == ImageSourceType.camera
+      final ImageSource imageSource = source == BaseImageSourceType.camera
           ? ImageSource.camera
           : ImageSource.gallery;
 
@@ -129,7 +129,7 @@ class UploadUtil {
       if (image == null) return null;
 
       final file = File(image.path);
-      return UploadFileInfo.fromFile(file);
+      return BaseUploadFileInfo.fromFile(file);
     } catch (e) {
       debugPrint('选择图片失败: $e');
       return null;
@@ -142,7 +142,7 @@ class UploadUtil {
   /// [maxHeight] 最大高度
   /// [imageQuality] 图片质量 0-100
   /// [limit] 最多选择数量
-  static Future<List<UploadFileInfo>> pickMultipleImages({
+  static Future<List<BaseUploadFileInfo>> pickMultipleImages({
     double? maxWidth,
     double? maxHeight,
     int imageQuality = 85,
@@ -168,7 +168,7 @@ class UploadUtil {
 
       return images.map((xFile) {
         final file = File(xFile.path);
-        return UploadFileInfo.fromFile(file);
+        return BaseUploadFileInfo.fromFile(file);
       }).toList();
     } catch (e) {
       debugPrint('选择多张图片失败: $e');
@@ -180,7 +180,7 @@ class UploadUtil {
   ///
   /// [allowedExtensions] 允许的文件扩展名，例如：['pdf', 'doc', 'docx']
   /// [type] 文件类型
-  static Future<UploadFileInfo?> pickFile({
+  static Future<BaseUploadFileInfo?> pickFile({
     List<String>? allowedExtensions,
     FileType type = FileType.any,
   }) async {
@@ -196,7 +196,7 @@ class UploadUtil {
       if (platformFile.path == null) return null;
 
       final file = File(platformFile.path!);
-      return UploadFileInfo.fromFile(file);
+      return BaseUploadFileInfo.fromFile(file);
     } catch (e) {
       debugPrint('选择文件失败: $e');
       return null;
@@ -207,7 +207,7 @@ class UploadUtil {
   ///
   /// [allowedExtensions] 允许的文件扩展名
   /// [type] 文件类型
-  static Future<List<UploadFileInfo>> pickMultipleFiles({
+  static Future<List<BaseUploadFileInfo>> pickMultipleFiles({
     List<String>? allowedExtensions,
     FileType type = FileType.any,
   }) async {
@@ -224,7 +224,7 @@ class UploadUtil {
           .where((file) => file.path != null)
           .map((platformFile) {
         final file = File(platformFile.path!);
-        return UploadFileInfo.fromFile(file);
+        return BaseUploadFileInfo.fromFile(file);
       }).toList();
     } catch (e) {
       debugPrint('选择多个文件失败: $e');
@@ -238,7 +238,7 @@ class UploadUtil {
   /// [onProgress] 上传进度回调
   /// 返回格式: { fileKey: "xxx", fileUrl: "xxx" }
   static Future<Map<String, dynamic>?> uploadFileToDefault({
-    required UploadFileInfo fileInfo,
+    required BaseUploadFileInfo fileInfo,
     void Function(int sent, int total)? onProgress,
   }) async {
     try {
@@ -299,7 +299,7 @@ class UploadUtil {
   /// [data] 额外的表单数据
   /// [onProgress] 上传进度回调
   static Future<Response?> uploadFile({
-    required UploadFileInfo fileInfo,
+    required BaseUploadFileInfo fileInfo,
     required String uploadUrl,
     String fieldName = 'file',
     Map<String, dynamic>? data,
@@ -342,7 +342,7 @@ class UploadUtil {
   /// [data] 额外的表单数据
   /// [onProgress] 上传进度回调
   static Future<Response?> uploadMultipleFiles({
-    required List<UploadFileInfo> files,
+    required List<BaseUploadFileInfo> files,
     required String uploadUrl,
     String fieldName = 'files',
     Map<String, dynamic>? data,
@@ -382,10 +382,10 @@ class UploadUtil {
   }
 
   /// 显示选择图片来源弹窗（iOS 风格）
-  static Future<ImageSourceType?> showImageSourceDialog(
+  static Future<BaseImageSourceType?> showImageSourceDialog(
     BuildContext context,
   ) async {
-    return showCupertinoModalPopup<ImageSourceType>(
+    return showCupertinoModalPopup<BaseImageSourceType>(
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
         title: const Text('选择图片'),
@@ -393,13 +393,13 @@ class UploadUtil {
         actions: <CupertinoActionSheetAction>[
           CupertinoActionSheetAction(
             onPressed: () {
-              Navigator.pop(context, ImageSourceType.camera);
+              Navigator.pop(context, BaseImageSourceType.camera);
             },
             child: const Text('拍照'),
           ),
           CupertinoActionSheetAction(
             onPressed: () {
-              Navigator.pop(context, ImageSourceType.gallery);
+              Navigator.pop(context, BaseImageSourceType.gallery);
             },
             child: const Text('从相册选择'),
           ),

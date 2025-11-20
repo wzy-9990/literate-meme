@@ -1,5 +1,5 @@
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_tem/components/DeveloperOptions/index.dart';
+import 'package:flutter_tem/components/BaseDeveloperOptions/index.dart';
 import 'package:flutter_tem/page/index/my/logic.dart';
 import 'package:flutter_tem/routers/app_routes.dart';
 import 'package:flutter_tem/routers/index.dart';
@@ -12,7 +12,7 @@ class MySettingLogic extends GetxController {
   RxMap userInfo = RxMap();
 
   // 开发者选项
-  final developerOptions = DeveloperOptions();
+  final developerOptions = BaseDeveloperOptions();
 
   @override
   void onInit() {

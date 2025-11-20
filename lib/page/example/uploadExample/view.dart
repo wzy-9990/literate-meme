@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_tem/components/BaseAppBar/index.dart';
 import 'package:flutter_tem/components/BaseUpload/index.dart';
-import 'package:flutter_tem/utils/upload/index.dart';
+import 'package:flutter_tem/utils/base/upload.dart';
 
 /// 上传组件示例页面
 class UploadExampleView extends StatefulWidget {
@@ -183,7 +183,7 @@ class _UploadExampleViewState extends State<UploadExampleView> {
 
   /// 模拟上传（用于演示）
   /// 实际使用时应该调用真实的上传接口
-  Future<dynamic> _mockUpload(UploadFileInfo fileInfo) async {
+  Future<dynamic> _mockUpload(BaseUploadFileInfo fileInfo) async {
     // 模拟网络延迟
     await Future.delayed(const Duration(seconds: 2));
 

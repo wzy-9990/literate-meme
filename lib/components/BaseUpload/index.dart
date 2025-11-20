@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_tem/components/BaseImage/preview.dart';
-import 'package:flutter_tem/utils/upload/index.dart';
+import 'package:flutter_tem/utils/base/upload.dart';
 
 /// 上传状态
 enum UploadStatus {
@@ -15,7 +15,7 @@ enum UploadStatus {
 /// 上传项数据
 class UploadItem {
   final String id;
-  final UploadFileInfo fileInfo;
+  final BaseUploadFileInfo fileInfo;
   UploadStatus status;
   double progress;
   String? errorMessage;
@@ -64,7 +64,7 @@ class BaseUpload extends StatefulWidget {
       onUploadedDataChanged;
 
   /// 自定义上传方法（当 useDefaultUpload 为 false 时使用）
-  final Future<dynamic> Function(UploadFileInfo fileInfo)? customUpload;
+  final Future<dynamic> Function(BaseUploadFileInfo fileInfo)? customUpload;
 
   /// 显示删除按钮
   final bool showDelete;
@@ -115,13 +115,13 @@ class _BaseUploadState extends State<BaseUpload> {
     final remaining = widget.maxCount - _uploadItems.length;
 
     // 先弹出弹窗让用户选择来源
-    final source = await UploadUtil.showImageSourceDialog(context);
+    final source = await BaseUploadUtil.showImageSourceDialog(context);
     if (source == null) return;
 
     // 根据来源选择
-    if (source == ImageSourceType.camera) {
+    if (source == BaseImageSourceType.camera) {
       // 相机只能拍一张
-      final fileInfo = await UploadUtil.pickImage(source: source);
+      final fileInfo = await BaseUploadUtil.pickImage(source: source);
       if (fileInfo != null) {
         _addFile(fileInfo);
       }
@@ -129,13 +129,13 @@ class _BaseUploadState extends State<BaseUpload> {
       // 相册可以选多张
       if (remaining == 1) {
         // 只能选一张
-        final fileInfo = await UploadUtil.pickImage(source: source);
+        final fileInfo = await BaseUploadUtil.pickImage(source: source);
         if (fileInfo != null) {
           _addFile(fileInfo);
         }
       } else {
         // 可以选多张
-        final files = await UploadUtil.pickMultipleImages(limit: remaining);
+        final files = await BaseUploadUtil.pickMultipleImages(limit: remaining);
 
         // 手动限制选择的数量（以防平台不支持 limit 参数）
         final limitedFiles = files.take(remaining).toList();
@@ -157,14 +157,14 @@ class _BaseUploadState extends State<BaseUpload> {
     final remaining = widget.maxCount - _uploadItems.length;
 
     if (remaining == 1) {
-      final fileInfo = await UploadUtil.pickFile(
+      final fileInfo = await BaseUploadUtil.pickFile(
         allowedExtensions: widget.allowedExtensions,
       );
       if (fileInfo != null) {
         _addFile(fileInfo);
       }
     } else {
-      final files = await UploadUtil.pickMultipleFiles(
+      final files = await BaseUploadUtil.pickMultipleFiles(
         allowedExtensions: widget.allowedExtensions,
       );
 
@@ -183,7 +183,7 @@ class _BaseUploadState extends State<BaseUpload> {
   }
 
   /// 添加文件并上传
-  void _addFile(UploadFileInfo fileInfo) {
+  void _addFile(BaseUploadFileInfo fileInfo) {
     // 检查文件大小
     if (fileInfo.fileSize > widget.maxFileSize) {
       final maxSizeMB = (widget.maxFileSize / (1024 * 1024)).toStringAsFixed(0);
@@ -281,7 +281,7 @@ class _BaseUploadState extends State<BaseUpload> {
         result = await widget.customUpload!(item.fileInfo);
       } else if (widget.useDefaultUpload) {
         // 使用项目默认上传接口
-        result = await UploadUtil.uploadFileToDefault(
+        result = await BaseUploadUtil.uploadFileToDefault(
           fileInfo: item.fileInfo,
           onProgress: (sent, total) {
             if (mounted) {
@@ -640,7 +640,7 @@ class _BaseUploadState extends State<BaseUpload> {
   }
 
   /// 文件图标
-  Widget _buildFileIcon(UploadFileInfo fileInfo) {
+  Widget _buildFileIcon(BaseUploadFileInfo fileInfo) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey[100],

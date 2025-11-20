@@ -10,7 +10,7 @@ import 'package:get/get.dart';
 /// 提供连续点击进入开发者选项的功能
 /// 支持修改 API 地址和配置抓包代理
 /// 生产环境自动禁用
-class DeveloperOptions {
+class BaseDeveloperOptions {
   // 连续点击计数器
   int _clickCount = 0;
   DateTime? _lastClickTime;
@@ -18,7 +18,8 @@ class DeveloperOptions {
   static const Duration _clickInterval = Duration(seconds: 2); // 2秒内点击有效
 
   /// 当前环境
-  static const String _env = String.fromEnvironment('ENV', defaultValue: 'development');
+  static const String _env =
+      String.fromEnvironment('ENV', defaultValue: 'development');
 
   /// 是否为生产环境
   static bool get isProduction => _env == 'production';
@@ -288,7 +289,9 @@ class DeveloperOptions {
 
   /// 加载代理配置
   Future<Map<String, dynamic>> _loadProxyConfig() async {
-    final enabled = await Storage.getBool(StorageKeys.proxyEnabled) ?? false;
+    final enabled = await Storage.getString(StorageKeys.proxyEnabled) != null
+        ? await Storage.getBool(StorageKeys.proxyEnabled)
+        : false;
     final host = await Storage.getString(StorageKeys.proxyHost);
     final port = await Storage.getInt(StorageKeys.proxyPort);
 
