@@ -2,11 +2,12 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_tem/config/api/index.dart';
 import 'package:flutter_tem/routers/app_routes.dart';
+import 'package:flutter_tem/routers/index.dart';
 import 'package:flutter_tem/utils/storage/index.dart';
 import 'package:get/get.dart' hide FormData, Response;
 
@@ -16,15 +17,62 @@ class ApiService {
   static bool _proxyEnabled = false; // 是否启用代理
   static String? _proxyHost; // 代理地址
   static int? _proxyPort; // 代理端口
+  static bool _isShowingAuthDialog = false;
 
-  /// 在应用启动时调用，用于设置自定义 API 地址和代理配置
+  // -------------------- 登录弹窗 --------------------
+  static Future<void> _showAuthDialog() async {
+    if (_isShowingAuthDialog) {
+      return;
+    }
+    _isShowingAuthDialog = true;
+
+    // 自动判断当前状态：未登录 / 过期
+    final token = await Storage.getString(StorageKeys.token);
+    final bool isExpired = token != null && token.isNotEmpty;
+
+    await showCupertinoDialog(
+      context: Get.context!,
+      builder: (_) {
+        return CupertinoAlertDialog(
+          title: Text(isExpired ? '登录已过期' : '未登录'),
+          content: Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text(
+              isExpired ? '您的登录身份已过期，请重新登录。' : '您还未登录，请先登录。',
+            ),
+          ),
+          actions: [
+            if (!isExpired)
+              CupertinoDialogAction(
+                child: const Text('取消'),
+                onPressed: () {
+                  Navigator.pop(Get.context!);
+                  _isShowingAuthDialog = false;
+                },
+              ),
+            CupertinoDialogAction(
+              isDefaultAction: true,
+              child: const Text('去登录'),
+              onPressed: () {
+                Navigator.pop(Get.context!);
+                _isShowingAuthDialog = false;
+                // Get.toNamed(AppRoutes.login);
+                NavigationUtils.toNamed(AppRoutes.login);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // -------------------- 初始化配置 --------------------
   static Future<void> init() async {
     _customBaseUrl = await Storage.getString(StorageKeys.customApiUrl);
     if (_customBaseUrl != null) {
       debugPrint('🔧 检测到自定义 API 地址: $_customBaseUrl');
     }
 
-    // 生产环境不允许使用代理
     const env = String.fromEnvironment('ENV', defaultValue: 'development');
     if (env != 'production') {
       _proxyEnabled = await Storage.getBool(StorageKeys.proxyEnabled) ?? false;
@@ -38,6 +86,7 @@ class ApiService {
     }
   }
 
+  // -------------------- 构造函数 --------------------
   ApiService() {
     // 优先使用自定义的 API 地址，否则使用 .env 中的默认地址
     final baseUrl = _customBaseUrl ?? dotenv.env['API_URL'] ?? '';
@@ -59,84 +108,102 @@ class ApiService {
     if (_proxyEnabled && _proxyHost != null && _proxyPort != null) {
       (_dio.httpClientAdapter as IOHttpClientAdapter).createHttpClient = () {
         final client = HttpClient();
-        client.findProxy = (uri) {
-          return 'PROXY $_proxyHost:$_proxyPort';
-        };
-        // 抓包时忽略证书验证
+        client.findProxy = (_) => 'PROXY $_proxyHost:$_proxyPort';
         client.badCertificateCallback = (cert, host, port) => true;
         debugPrint('✅ 代理已启用: $_proxyHost:$_proxyPort');
         return client;
       };
     }
 
-    _dio.interceptors.add(InterceptorsWrapper(
-      onRequest: (options, handler) async {
-        // 动态获取 token
-        final token = await Storage.getString(StorageKeys.token);
-        if (token != null && token.isNotEmpty) {
-          options.headers['accesstoken'] = token;
-        }
-        debugPrint('⏩ 请求接口: ${options.uri}');
-        debugPrint('⏩ 请求方式: ${options.method}');
-        debugPrint('⏩ 请求头: ${options.headers}');
-        debugPrint('⏩ 请求参数: ${options.data ?? options.queryParameters}');
-
-        handler.next(options);
-      },
-      onResponse: (response, handler) {
-        // ✅ 打印响应数据
-        debugPrint('✅ 接口响应: ${response.requestOptions.uri}');
-        debugPrint('✅ 响应状态: ${response.statusCode}');
-        debugPrint('✅ 响应数据: ${response.data}');
-        if (response.statusCode == 200) {
-          final data = response.data;
-          if (ApiConfig.getCode(data) == ApiConfig.unauthorizedCode) {
-            EasyLoading.showToast('登录信息过期，请重新登录');
-            Future.delayed(const Duration(seconds: 1), () {
-              Get.offAllNamed(AppRoutes.login);
-            });
-            return;
+    // -------------------- 拦截器 --------------------
+    _dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          // 动态获取 token
+          final token = await Storage.getString(StorageKeys.token);
+          if (token != null && token.isNotEmpty) {
+            options.headers['accesstoken'] = token;
           }
-          // 如果不是成功状态码，说明业务失败
-          if (data is Map<String, dynamic> && !ApiConfig.isSuccess(data)) {
-            final msg = ApiConfig.getMessage(data) ?? '接口返回异常';
-            EasyLoading.showToast(msg);
-            return handler.reject(DioException(
+
+          debugPrint('⏩ 请求接口: ${options.uri}');
+          debugPrint('⏩ 请求方式: ${options.method}');
+          debugPrint('⏩ 请求头: ${options.headers}');
+          debugPrint('⏩ 请求参数: ${options.data ?? options.queryParameters}');
+
+          handler.next(options);
+        },
+
+        onResponse: (response, handler) {
+          debugPrint('✅ 响应接口: ${response.requestOptions.uri}');
+          debugPrint('✅ 响应状态: ${response.statusCode}');
+          debugPrint('✅ 响应数据: ${response.data}');
+
+          if (response.statusCode == 200) {
+            final data = response.data;
+
+            // -------------------- 401 处理 --------------------
+            if (ApiConfig.getCode(data) == ApiConfig.unauthorizedCode) {
+              _showAuthDialog();
+              final msg = ApiConfig.getMessage(data) ?? '接口返回异常';
+              return handler.reject(
+                DioException(
+                  requestOptions: response.requestOptions,
+                  response: response,
+                  error: '接口返回错误: $msg',
+                  type: DioExceptionType.badResponse,
+                ),
+              );
+            }
+
+            // -------------------- 业务失败 --------------------
+            if (data is Map<String, dynamic> && !ApiConfig.isSuccess(data)) {
+              final msg = ApiConfig.getMessage(data) ?? '接口返回异常';
+              EasyLoading.showToast(msg);
+              return handler.reject(
+                DioException(
+                  requestOptions: response.requestOptions,
+                  response: response,
+                  error: '接口返回错误: $msg',
+                  type: DioExceptionType.badResponse,
+                ),
+              );
+            }
+
+            return handler.next(response);
+          }
+
+          // -------------------- HTTP 非200 --------------------
+          if (response.statusCode == ApiConfig.unauthorizedCode) {
+            _showAuthDialog();
+          } else {
+            EasyLoading.showToast('请求异常：${response.statusCode}');
+          }
+
+          return handler.reject(
+            DioException(
               requestOptions: response.requestOptions,
               response: response,
-              error: '接口返回错误: $msg',
+              error: '状态码异常: ${response.statusCode}',
               type: DioExceptionType.badResponse,
-            ));
+            ),
+          );
+        },
+
+        // -------------------- 修复重点：401 不提示“网络异常” --------------------
+        onError: (DioException e, handler) {
+          // ❗ 401 不再提示网络异常（避免未登录误报）
+          if (e.response?.statusCode == ApiConfig.unauthorizedCode) {
+            return handler.next(e);
           }
 
-          // 成功则继续
-          return handler.next(response);
-        }
-
-        // 非200的 HTTP 错误
-        if (response.statusCode == ApiConfig.unauthorizedCode) {
-          EasyLoading.showToast('登录信息过期，请重新登录');
-          Future.delayed(const Duration(seconds: 1), () {
-            Get.offAllNamed(AppRoutes.login);
-          });
-        } else {
-          EasyLoading.showToast('请求异常：${response.statusCode}');
-        }
-
-        return handler.reject(DioException(
-          requestOptions: response.requestOptions,
-          response: response,
-          error: '状态码异常: ${response.statusCode}',
-          type: DioExceptionType.badResponse,
-        ));
-      },
-      onError: (DioException e, handler) {
-        EasyLoading.showToast('网络异常，请检查网络连接');
-        handler.next(e);
-      },
-    ));
+          EasyLoading.showToast('网络异常，请检查网络连接');
+          handler.next(e);
+        },
+      ),
+    );
   }
 
+  // -------------------- GET --------------------
   Future<dynamic> get(String path, {Map<String, dynamic>? params}) async {
     try {
       final response = await _dio.get(path, queryParameters: params);
@@ -146,14 +213,15 @@ class ApiService {
     }
   }
 
+  // -------------------- POST --------------------
   Future<dynamic> post(
     String path, {
     dynamic data,
     Map<String, dynamic>? query,
-    FormData? formData, // 添加 FormData 参数用于文件上传
-    void Function(int sent, int total)? onProgress, // 添加进度回调
-    Duration? sendTimeout, // 添加发送超时参数
-    Duration? receiveTimeout, // 添加接收超时参数
+    FormData? formData,
+    void Function(int sent, int total)? onProgress,
+    Duration? sendTimeout,
+    Duration? receiveTimeout,
   }) async {
     try {
       final Options options = Options(
@@ -162,21 +230,19 @@ class ApiService {
       );
 
       Response response;
+
       if (formData != null) {
-        // 如果提供了 formData，则使用 formData（用于文件上传）
         response = await _dio.post(
           path,
           data: formData,
           queryParameters: query,
           onSendProgress: onProgress,
           options: Options(
-            sendTimeout:
-                sendTimeout ?? const Duration(seconds: 60), // 文件上传默认 60 秒超时
+            sendTimeout: sendTimeout ?? const Duration(seconds: 60),
             receiveTimeout: receiveTimeout ?? const Duration(seconds: 60),
           ),
         );
       } else {
-        // 否则使用普通数据
         response = await _dio.post(
           path,
           data: data,
@@ -185,13 +251,13 @@ class ApiService {
         );
       }
 
-      return ApiConfig.getData(response.data); // 只返回 data 字段
+      return ApiConfig.getData(response.data);
     } on DioException {
       rethrow;
     }
   }
 
-  /// 上传文件（保留此方法以保持 API 兼容性，内部调用通用 post 方法）
+  // -------------------- 文件上传 --------------------
   Future<dynamic> uploadFile(
     String path, {
     required FormData formData,
@@ -201,7 +267,7 @@ class ApiService {
       path,
       formData: formData,
       onProgress: onProgress,
-      sendTimeout: const Duration(seconds: 60), // 文件上传需要更长的超时时间
+      sendTimeout: const Duration(seconds: 60),
       receiveTimeout: const Duration(seconds: 60),
     );
   }

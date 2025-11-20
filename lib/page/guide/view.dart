@@ -129,7 +129,7 @@ class _GuideViewState extends State<GuideView> {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
-                  _countdown > 0 ? '跳过 $_countdown' : '跳过',
+                  _countdown > 0 ? '跳过' : '跳过',
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 14,
