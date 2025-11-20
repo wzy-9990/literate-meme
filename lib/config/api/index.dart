@@ -35,7 +35,7 @@ class ApiConfig {
 
   /// 从响应数据中获取状态码
   static dynamic getCode(Map<String, dynamic> data) {
-    return data[codeField];
+    return int.parse(data[codeField]);
   }
 
   /// 从响应数据中获取数据

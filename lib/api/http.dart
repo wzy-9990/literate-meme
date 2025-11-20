@@ -8,7 +8,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_tem/config/api/index.dart';
 import 'package:flutter_tem/routers/app_routes.dart';
 import 'package:flutter_tem/utils/storage/index.dart';
-import 'package:get/get.dart' hide FormData;
+import 'package:get/get.dart' hide FormData, Response;
 
 class ApiService {
   late Dio _dio;
@@ -90,6 +90,13 @@ class ApiService {
         debugPrint('✅ 响应数据: ${response.data}');
         if (response.statusCode == 200) {
           final data = response.data;
+          if (ApiConfig.getCode(data) == ApiConfig.unauthorizedCode) {
+            EasyLoading.showToast('登录信息过期，请重新登录');
+            Future.delayed(const Duration(seconds: 1), () {
+              Get.offAllNamed(AppRoutes.login);
+            });
+            return;
+          }
           // 如果不是成功状态码，说明业务失败
           if (data is Map<String, dynamic> && !ApiConfig.isSuccess(data)) {
             final msg = ApiConfig.getMessage(data) ?? '接口返回异常';
@@ -143,69 +150,60 @@ class ApiService {
     String path, {
     dynamic data,
     Map<String, dynamic>? query,
+    FormData? formData, // 添加 FormData 参数用于文件上传
+    void Function(int sent, int total)? onProgress, // 添加进度回调
+    Duration? sendTimeout, // 添加发送超时参数
+    Duration? receiveTimeout, // 添加接收超时参数
   }) async {
     try {
-      final response =
-          await _dio.post(path, data: data, queryParameters: query);
+      final Options options = Options(
+        sendTimeout: sendTimeout ?? const Duration(seconds: 5),
+        receiveTimeout: receiveTimeout ?? const Duration(seconds: 3),
+      );
+
+      Response response;
+      if (formData != null) {
+        // 如果提供了 formData，则使用 formData（用于文件上传）
+        response = await _dio.post(
+          path,
+          data: formData,
+          queryParameters: query,
+          onSendProgress: onProgress,
+          options: Options(
+            sendTimeout:
+                sendTimeout ?? const Duration(seconds: 60), // 文件上传默认 60 秒超时
+            receiveTimeout: receiveTimeout ?? const Duration(seconds: 60),
+          ),
+        );
+      } else {
+        // 否则使用普通数据
+        response = await _dio.post(
+          path,
+          data: data,
+          queryParameters: query,
+          options: options,
+        );
+      }
+
       return ApiConfig.getData(response.data); // 只返回 data 字段
     } on DioException {
       rethrow;
     }
   }
 
-  /// 上传文件
-  Future<Map<String, dynamic>?> uploadFile(
+  /// 上传文件（保留此方法以保持 API 兼容性，内部调用通用 post 方法）
+  Future<dynamic> uploadFile(
     String path, {
     required FormData formData,
     void Function(int sent, int total)? onProgress,
   }) async {
-    try {
-      final response = await _dio.post(
-        path,
-        data: formData,
-        onSendProgress: onProgress,
-        options: Options(
-          // 文件上传需要更长的超时时间
-          sendTimeout: const Duration(seconds: 60), // 发送超时 60 秒
-          receiveTimeout: const Duration(seconds: 60), // 接收超时 60 秒
-        ),
-      );
-
-      // 返回 data 字段
-      if (response.statusCode == 200 && response.data is Map) {
-        final data = response.data as Map<String, dynamic>;
-        if (ApiConfig.isSuccess(data) && ApiConfig.getData(data) != null) {
-          return ApiConfig.getData(data) as Map<String, dynamic>;
-        } else {
-          // code 不为成功状态时，显示 returnMsg 并抛出异常
-          final returnMsg = ApiConfig.getMessage(data);
-          if (returnMsg != null && returnMsg.isNotEmpty) {
-            EasyLoading.showToast(returnMsg);
-          } else {
-            EasyLoading.showToast('上传失败');
-          }
-          throw Exception(returnMsg ?? '上传失败');
-        }
-      }
-
-      return null;
-    } on DioException catch (e) {
-      // 优先显示响应数据中的 returnMsg
-      String? returnMsg;
-      if (e.response?.data is Map<String, dynamic>) {
-        final data = e.response!.data as Map<String, dynamic>;
-        returnMsg = ApiConfig.getMessage(data);
-      }
-
-      if (returnMsg != null && returnMsg.isNotEmpty) {
-        EasyLoading.showToast(returnMsg);
-      }
-
-      rethrow;
-    } catch (e) {
-      // 如果不是 DioException，则不显示 toast（因为可能已经在上面显示过了）
-      rethrow;
-    }
+    return post(
+      path,
+      formData: formData,
+      onProgress: onProgress,
+      sendTimeout: const Duration(seconds: 60), // 文件上传需要更长的超时时间
+      receiveTimeout: const Duration(seconds: 60),
+    );
   }
 }
 
