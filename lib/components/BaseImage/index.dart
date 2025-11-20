@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tem/components/BaseImage/preview.dart';
+import 'package:flutter_tem/utils/base/image_saver.dart';
 
 /// 通用图片组件
 ///
@@ -161,8 +162,49 @@ class BaseImage extends StatelessWidget {
 
     return GestureDetector(
       onTap: () => _openPreview(context),
+      onLongPress: () => _showContextMenu(context),
       child: child,
     );
+  }
+
+  /// 显示上下文菜单
+  Future<void> _showContextMenu(BuildContext context) async {
+    await showMenu(
+      context: context,
+      position: const RelativeRect.fromLTRB(0, 0, 0, 0),
+      items: [
+        const PopupMenuItem(
+          value: 'save',
+          child: Row(
+            children: [
+              const Icon(Icons.save, size: 18),
+              const SizedBox(width: 8),
+              Text('保存图片'),
+            ],
+          ),
+        ),
+      ],
+    ).then((value) {
+      if (value == 'save') {
+        _saveImage(context);
+      }
+    });
+  }
+
+  /// 保存图片到本地
+  Future<void> _saveImage(BuildContext context) async {
+    if (_isNetworkImage) {
+      // 保存网络图片
+      await ImageSaver.saveNetworkImage(imageUrl);
+    } else {
+      // 对于本地图片，显示提示信息
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('本地图片无需保存'),
+          duration: Duration(seconds: 1),
+        ),
+      );
+    }
   }
 
   @override

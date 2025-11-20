@@ -1,9 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:flutter_tem/utils/base/image_saver.dart';
 
 /// 图片预览页面
-class ImagePreviewPage extends StatelessWidget {
+class ImagePreviewPage extends StatefulWidget {
   /// 图片地址
   final String imageUrl;
 
@@ -16,27 +17,51 @@ class ImagePreviewPage extends StatelessWidget {
     this.backgroundColor = Colors.black,
   });
 
+  @override
+  State<ImagePreviewPage> createState() => _ImagePreviewPageState();
+}
+
+class _ImagePreviewPageState extends State<ImagePreviewPage> {
   /// 判断是否为网络图片
   bool get _isNetworkImage {
-    return imageUrl.startsWith('http://') || imageUrl.startsWith('https://');
+    return widget.imageUrl.startsWith('http://') ||
+        widget.imageUrl.startsWith('https://');
+  }
+
+  /// 保存图片到本地
+  Future<void> _saveImage() async {
+    if (_isNetworkImage) {
+      // 保存网络图片
+      await ImageSaver.saveNetworkImage(widget.imageUrl);
+    } else {
+      // 对于本地图片，显示提示信息或实现本地图片保存逻辑
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('本地图片无需保存'),
+            duration: Duration(seconds: 1),
+          ),
+        );
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: widget.backgroundColor,
       body: Stack(
         children: [
           // 图片预览主体
           PhotoView(
             imageProvider: _isNetworkImage
-                ? CachedNetworkImageProvider(imageUrl)
-                : AssetImage(imageUrl) as ImageProvider,
+                ? CachedNetworkImageProvider(widget.imageUrl)
+                : AssetImage(widget.imageUrl) as ImageProvider,
             minScale: PhotoViewComputedScale.contained,
             maxScale: PhotoViewComputedScale.covered * 3,
             initialScale: PhotoViewComputedScale.contained,
             backgroundDecoration: BoxDecoration(
-              color: backgroundColor,
+              color: widget.backgroundColor,
             ),
             loadingBuilder: (context, event) {
               return Center(
@@ -73,24 +98,48 @@ class ImagePreviewPage extends StatelessWidget {
             },
           ),
 
-          // 关闭按钮
+          // 顶部工具栏
           Positioned(
             top: MediaQuery.of(context).padding.top + 16,
+            left: 16,
             right: 16,
-            child: GestureDetector(
-              onTap: () => Navigator.of(context).pop(),
-              child: Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.5),
-                  shape: BoxShape.circle,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // 保存按钮
+                GestureDetector(
+                  onTap: _saveImage,
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.5),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.save,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
                 ),
-                child: const Icon(
-                  Icons.close,
-                  color: Colors.white,
-                  size: 24,
+
+                // 关闭按钮
+                GestureDetector(
+                  onTap: () => Navigator.of(context).pop(),
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.5),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.close,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
         ],

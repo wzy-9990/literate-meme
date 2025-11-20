@@ -54,6 +54,8 @@ dependencies:
 
   # 文件路径
   path: ^1.9.0  # 跨平台路径操作工具
+  path_provider: ^2.1.5  # 用于获取本地存储路径
+  image_gallery_saver: ^2.0.3  # 用于保存图片到相册
   mime: ^1.0.6  # MIME 类型识别，用于判断文件类型
 
   # URL 启动
