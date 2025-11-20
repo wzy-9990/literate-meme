@@ -84,6 +84,7 @@ class ImageSaver {
       // Android 保存到 Pictures 目录
       final directory = await getExternalStorageDirectory();
       final picturesDir = Directory('${directory!.path}/Pictures');
+      // ignore: avoid_slow_async_io
       if (!await picturesDir.exists()) {
         await picturesDir.create(recursive: true);
       }
