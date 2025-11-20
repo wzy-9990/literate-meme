@@ -1,8 +1,11 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_dynamic_icon/flutter_dynamic_icon.dart';
 import 'package:flutter_tem/config/styles/app_icons.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// App 图标管理工具
 class AppIconManager {
@@ -92,5 +95,73 @@ class AppIconManager {
   /// 恢复默认图标
   static Future<bool> restoreDefaultIcon() async {
     return await changeIcon(AppIconConfig.defaultIcon);
+  }
+
+  /// 获取自动切换开关状态
+  static bool getAutoSwitchEnabled() {
+    try {
+      final envValue = dotenv.env['AUTO_ICON_SWITCH'];
+      if (envValue == null) return false;
+      return envValue.toLowerCase() == 'true';
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /// 获取上次检查日期
+  static Future<String?> getLastCheckDate() async {
+    // 使用 shared_preferences 存储最后检查日期
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getString('last_icon_check_date');
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// 设置上次检查日期
+  static Future<void> setLastCheckDate(String date) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('last_icon_check_date', date);
+    } catch (e) {
+      // 忽略错误
+    }
+  }
+
+  /// 检查并执行自动图标切换
+  static Future<void> checkAndSwitchIcon() async {
+    // 检查环境变量，如果禁用则直接返回
+    if (!getAutoSwitchEnabled()) {
+      return;
+    }
+
+    final today = DateTime.now();
+    final todayString = '${today.year}-${today.month}-${today.day}';
+    final lastCheck = await getLastCheckDate();
+
+    // 如果今天还没检查过，则执行图标切换
+    if (lastCheck != todayString) {
+      await changeIconByDate();
+      await setLastCheckDate(todayString);
+    }
+  }
+
+  /// 手动触发图标切换
+  static Future<void> manualSwitchIcon() async {
+    await changeIconByDate();
+    final today = DateTime.now();
+    final todayString = '${today.year}-${today.month}-${today.day}';
+    await setLastCheckDate(todayString);
+  }
+
+  /// 重置服务状态
+  static Future<void> reset() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('last_icon_check_date');
+    } catch (e) {
+      // 忽略错误
+    }
   }
 }

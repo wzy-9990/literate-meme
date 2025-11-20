@@ -9,12 +9,14 @@ import 'package:flutter_tem/config/env/index.dart';
 import 'package:flutter_tem/config/theme/index.dart';
 import 'package:flutter_tem/routers/app_pages.dart';
 import 'package:flutter_tem/routers/app_routes.dart';
+import 'package:flutter_tem/utils/base/app_icon_manager.dart';
 import 'package:get/get.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await EnvConfig.load();
-  EasyLoadingConfig.init();
+  await EnvConfig.load(); // 加载环境变量
+  await AppIconManager.checkAndSwitchIcon(); // 启动时检查是否需要切换图标
+  EasyLoadingConfig.init(); // 初始化 EasyLoading
   runApp(const MyApp());
 }
 

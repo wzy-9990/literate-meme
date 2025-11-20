@@ -285,7 +285,8 @@ class _AppIconExamplePageState extends State<AppIconExamplePage> {
                           '• 切换后需要返回主屏幕查看效果\n'
                           '• iOS 切换时会显示系统提示弹窗\n'
                           '• 可以根据日期自动切换节日图标\n'
-                          '• 图标文件需要提前准备并配置',
+                          '• 图标文件需要提前准备并配置\n'
+                          '• 自动切换功能可通过 .env 文件中的 AUTO_ICON_SWITCH 参数控制',
                           style: TextStyle(fontSize: 14, height: 1.5),
                         ),
                       ],
