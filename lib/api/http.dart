@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -13,24 +14,23 @@ import 'package:get/get.dart' hide FormData, Response;
 
 class ApiService {
   late Dio _dio;
-  static String? _customBaseUrl; // 自定义的 API 地址
-  static bool _proxyEnabled = false; // 是否启用代理
-  static String? _proxyHost; // 代理地址
-  static int? _proxyPort; // 代理端口
+  static String? _customBaseUrl;
+  static bool _proxyEnabled = false;
+  static String? _proxyHost;
+  static int? _proxyPort;
   static bool _isShowingAuthDialog = false;
 
   // -------------------- 登录弹窗 --------------------
-  static Future<void> _showAuthDialog() async {
-    if (_isShowingAuthDialog) {
-      return;
-    }
+  static Future<Map<String, dynamic>?> _showAuthDialog() async {
+    if (_isShowingAuthDialog) return null;
     _isShowingAuthDialog = true;
 
-    // 自动判断当前状态：未登录 / 过期
     final token = await Storage.getString(StorageKeys.token);
     final bool isExpired = token != null && token.isNotEmpty;
 
-    await showCupertinoDialog(
+    final completer = Completer<Map<String, dynamic>?>();
+
+    showCupertinoDialog(
       context: Get.context!,
       builder: (_) {
         return CupertinoAlertDialog(
@@ -48,22 +48,31 @@ class ApiService {
                 onPressed: () {
                   Navigator.pop(Get.context!);
                   _isShowingAuthDialog = false;
+                  completer.complete(null);
                 },
               ),
             CupertinoDialogAction(
               isDefaultAction: true,
               child: const Text('去登录'),
-              onPressed: () {
+              onPressed: () async {
                 Navigator.pop(Get.context!);
                 _isShowingAuthDialog = false;
-                // Get.toNamed(AppRoutes.login);
-                NavigationUtils.toNamed(AppRoutes.login);
+
+                // 跳转登录页并等待返回结果
+                final res = await NavigationUtils.toNamed(AppRoutes.login);
+                if (res != null && res is Map<String, dynamic>) {
+                  completer.complete(res);
+                } else {
+                  completer.complete(null);
+                }
               },
             ),
           ],
         );
       },
     );
+
+    return completer.future;
   }
 
   // -------------------- 初始化配置 --------------------
@@ -88,23 +97,18 @@ class ApiService {
 
   // -------------------- 构造函数 --------------------
   ApiService() {
-    // 优先使用自定义的 API 地址，否则使用 .env 中的默认地址
     final baseUrl = _customBaseUrl ?? dotenv.env['API_URL'] ?? '';
-
     debugPrint('🌐 API Base URL: $baseUrl');
 
     final baseOptions = BaseOptions(
       baseUrl: baseUrl,
       connectTimeout: const Duration(milliseconds: 5000),
       receiveTimeout: const Duration(milliseconds: 3000),
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: {'Content-Type': 'application/json'},
     );
 
     _dio = Dio(baseOptions);
 
-    // 配置代理（仅非生产环境）
     if (_proxyEnabled && _proxyHost != null && _proxyPort != null) {
       (_dio.httpClientAdapter as IOHttpClientAdapter).createHttpClient = () {
         final client = HttpClient();
@@ -115,11 +119,9 @@ class ApiService {
       };
     }
 
-    // -------------------- 拦截器 --------------------
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
-          // 动态获取 token
           final token = await Storage.getString(StorageKeys.token);
           if (token != null && token.isNotEmpty) {
             options.headers['accesstoken'] = token;
@@ -132,8 +134,7 @@ class ApiService {
 
           handler.next(options);
         },
-
-        onResponse: (response, handler) {
+        onResponse: (response, handler) async {
           debugPrint('✅ 响应接口: ${response.requestOptions.uri}');
           debugPrint('✅ 响应状态: ${response.statusCode}');
           debugPrint('✅ 响应数据: ${response.data}');
@@ -141,10 +142,30 @@ class ApiService {
           if (response.statusCode == 200) {
             final data = response.data;
 
-            // -------------------- 401 处理 --------------------
             if (ApiConfig.getCode(data) == ApiConfig.unauthorizedCode) {
-              _showAuthDialog();
+              final loginResult = await _showAuthDialog();
               final msg = ApiConfig.getMessage(data) ?? '接口返回异常';
+
+              if (loginResult != null && loginResult['login'] == true) {
+                // 登录成功，重发请求
+                final opts = response.requestOptions;
+                final newToken = await Storage.getString(StorageKeys.token);
+                final cloneOpts = opts.copyWith(
+                  headers: {
+                    ...opts.headers,
+                    if (newToken != null && newToken.isNotEmpty)
+                      'accesstoken': newToken,
+                  },
+                );
+
+                try {
+                  final newResponse = await _dio.fetch(cloneOpts);
+                  return handler.resolve(newResponse);
+                } on DioException catch (e) {
+                  return handler.reject(e);
+                }
+              }
+
               return handler.reject(
                 DioException(
                   requestOptions: response.requestOptions,
@@ -155,7 +176,6 @@ class ApiService {
               );
             }
 
-            // -------------------- 业务失败 --------------------
             if (data is Map<String, dynamic> && !ApiConfig.isSuccess(data)) {
               final msg = ApiConfig.getMessage(data) ?? '接口返回异常';
               EasyLoading.showToast(msg);
@@ -172,9 +192,8 @@ class ApiService {
             return handler.next(response);
           }
 
-          // -------------------- HTTP 非200 --------------------
           if (response.statusCode == ApiConfig.unauthorizedCode) {
-            _showAuthDialog();
+            await _showAuthDialog();
           } else {
             EasyLoading.showToast('请求异常：${response.statusCode}');
           }
@@ -188,14 +207,10 @@ class ApiService {
             ),
           );
         },
-
-        // -------------------- 修复重点：401 不提示“网络异常” --------------------
         onError: (DioException e, handler) {
-          // ❗ 401 不再提示网络异常（避免未登录误报）
           if (e.response?.statusCode == ApiConfig.unauthorizedCode) {
             return handler.next(e);
           }
-
           EasyLoading.showToast('网络异常，请检查网络连接');
           handler.next(e);
         },

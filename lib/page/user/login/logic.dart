@@ -21,6 +21,8 @@ class LoginLogic extends GetxController {
     await Storage.setString(StorageKeys.token, data['accessToken']);
     await Storage.setMap(StorageKeys.userInfo, data);
     EasyLoading.showToast('登录成功');
-    Get.offAllNamed(AppRoutes.index);
+    Get.previousRoute.isEmpty
+        ? Get.offAllNamed(AppRoutes.index)
+        : Get.back(result: {'login': true, 'msg': '用户已完成登录'});
   }
 }

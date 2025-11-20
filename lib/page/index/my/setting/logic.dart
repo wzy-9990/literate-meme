@@ -29,7 +29,7 @@ class MySettingLogic extends GetxController {
 
   void logout() async {
     await Storage.clear();
-    Get.offAllNamed(AppRoutes.login);
+    Get.toNamed(AppRoutes.login);
   }
 
   void changePassword() async {
