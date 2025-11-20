@@ -17,6 +17,7 @@ class HomeView extends StatelessWidget {
       ),
       body: Column(
         children: [
+          Text(directionTypeEnum['add_points']?['value'].toString() ?? ''),
           ...directionTypeEnum.allItems.map((item) {
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),

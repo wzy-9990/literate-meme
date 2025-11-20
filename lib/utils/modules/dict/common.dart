@@ -92,4 +92,65 @@ class CommonDictEnum<T> {
   List<R?> getAllFieldValues<R>(String fieldName) {
     return _items.map((item) => item[fieldName] as R?).toList();
   }
+
+  /// 10. 操作符重载：支持通过键名访问字典项（如 directionTypeEnum['add_points']）
+  /// [key]：键名（可以是 'key' 或 'label' 对应的值）
+  /// 返回值：对应的字典项
+  Map<String, dynamic>? operator [](String key) {
+    // 首先尝试匹配 'key' 字段
+    var item = _items.firstWhere(
+      (item) => item['key'] == key,
+      orElse: () => {},
+    );
+
+    // 如果没找到，再尝试匹配 'label' 字段
+    if (item.isEmpty) {
+      item = _items.firstWhere(
+        (item) => item['label'] == key,
+        orElse: () => {},
+      );
+    }
+
+    return item.isEmpty ? null : item;
+  }
+
+  /// 11. 便捷方法：判断值是否存在（用于验证接口返回的值是否有效）
+  /// [value]：要检查的值
+  /// 返回值：是否存在
+  bool containsValue(T value) {
+    return _valueToItemMap.containsKey(value);
+  }
+
+  /// 12. 便捷方法：通过键名获取值（如 directionTypeEnum.getValueByKey('add_points')）
+  /// [key]：键名（如 'add_points'）
+  /// 返回值：对应的值
+  T? getValueByKey(String key) {
+    final item = this[key];
+    return item != null ? item['value'] as T : null;
+  }
+
+  /// 13. 便捷方法：判断 value 是否等于指定值（用于条件判断）
+  /// [value]：要检查的值
+  /// [targetValue]：目标值
+  /// 返回值：是否相等
+  bool isValueEqual(T value, T targetValue) {
+    return value == targetValue;
+  }
+
+  /// 14. 便捷方法：根据 label 判断 value 是否匹配（用于通过标签判断）
+  /// [value]：接口返回的值
+  /// [label]：期望的标签
+  /// 返回值：是否匹配
+  bool isValueByLabel(T value, String label) {
+    final item = _valueToItemMap[value];
+    return item != null && item['label'] == label;
+  }
+
+  /// 15. 便捷方法：判断 value 是否在指定的值列表中（用于多重条件判断）
+  /// [value]：要检查的值
+  /// [targetValues]：目标值列表
+  /// 返回值：是否匹配任一值
+  bool isValueIn(T value, List<T> targetValues) {
+    return targetValues.contains(value);
+  }
 }
