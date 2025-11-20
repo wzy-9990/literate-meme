@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_tem/components/BaseDoubleBackExitWrapper/index.dart';
 import 'package:flutter_tem/components/BaseUnfocusOnTap/index.dart';
@@ -29,6 +30,17 @@ class MyApp extends StatelessWidget {
         getPages: AppPages.routes,
         initialRoute: AppRoutes.guide,
         defaultTransition: Transition.cupertino,
+        // 添加本地化支持
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('zh', 'CN'), // 中文
+          Locale('en', 'US'), // 英文
+        ],
+        locale: const Locale('zh', 'CN'), // 设置默认语言为中文
         // 主题
         theme: AppTheme.lightTheme,
         // darkTheme: AppTheme.darkTheme, // 如需支持深色模式，取消此注释
