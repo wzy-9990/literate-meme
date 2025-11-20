@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_tem/api/http.dart';
+import 'package:flutter_tem/config/api/index.dart';
 import 'package:flutter_tem/utils/permission/index.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
@@ -241,7 +242,7 @@ class UploadUtil {
     void Function(int sent, int total)? onProgress,
   }) async {
     try {
-      final formData = FormData.fromMap({
+      FormData formData = FormData.fromMap({
         'file': await MultipartFile.fromFile(
           fileInfo.filePath,
           filename: fileInfo.fileName,
@@ -256,6 +257,34 @@ class UploadUtil {
       );
 
       return result;
+    } on DioException catch (e) {
+      // 如果是认证错误，尝试重新上传
+      if (e.response?.statusCode == ApiConfig.unauthorizedCode ||
+          e.error ==
+              'Login required for FormData request, please re-initiate the upload') {
+        try {
+          // 重新创建FormData并上传
+          FormData formData = FormData.fromMap({
+            'file': await MultipartFile.fromFile(
+              fileInfo.filePath,
+              filename: fileInfo.fileName,
+            ),
+          });
+
+          final result = await Api.instance.uploadFile(
+            '/pklApi/private/file/uploadFile',
+            formData: formData,
+            onProgress: onProgress,
+          );
+
+          return result;
+        } catch (retryError) {
+          debugPrint('重新上传文件失败: $retryError');
+          rethrow;
+        }
+      }
+      debugPrint('上传文件失败: $e');
+      rethrow;
     } catch (e) {
       debugPrint('上传文件失败: $e');
       rethrow;

@@ -150,6 +150,22 @@ class ApiService {
                 // 登录成功，重发请求
                 final opts = response.requestOptions;
                 final newToken = await Storage.getString(StorageKeys.token);
+
+                // 对于包含FormData的请求，我们不自动重试，因为FormData不能重复使用
+                if (opts.data is FormData) {
+                  // 如果是FormData请求（如文件上传），我们返回一个特殊的错误
+                  // 让调用方知道需要重新准备FormData并重新发起请求
+                  return handler.reject(
+                    DioException(
+                      requestOptions: opts,
+                      error:
+                          'Login required for FormData request, please re-initiate the upload',
+                      type: DioExceptionType.badResponse,
+                    ),
+                  );
+                }
+
+                // 非FormData请求可以安全重试
                 final cloneOpts = opts.copyWith(
                   headers: {
                     ...opts.headers,
@@ -267,7 +283,14 @@ class ApiService {
       }
 
       return ApiConfig.getData(response.data);
-    } on DioException {
+    } on DioException catch (e) {
+      // 对于包含FormData的请求，如果遇到认证错误，需要重新发起请求而不是重用FormData
+      if (e.response?.statusCode == ApiConfig.unauthorizedCode &&
+          formData != null) {
+        // 重新发起请求时，需要重新创建FormData
+        // 但由于我们无法从formData参数获取原始文件信息，我们需要在上传处处理
+        rethrow; // 仍然抛出异常，让调用方处理
+      }
       rethrow;
     }
   }
@@ -278,13 +301,26 @@ class ApiService {
     required FormData formData,
     void Function(int sent, int total)? onProgress,
   }) async {
-    return post(
-      path,
-      formData: formData,
-      onProgress: onProgress,
-      sendTimeout: const Duration(seconds: 60),
-      receiveTimeout: const Duration(seconds: 60),
-    );
+    try {
+      return await post(
+        path,
+        formData: formData,
+        onProgress: onProgress,
+        sendTimeout: const Duration(seconds: 60),
+        receiveTimeout: const Duration(seconds: 60),
+      );
+    } on DioException catch (e) {
+      // 如果是认证错误且是FormData请求，我们需要重新创建FormData并重试
+      if (e.response?.statusCode == ApiConfig.unauthorizedCode ||
+          e.error ==
+              'Login required for FormData request, please re-initiate the upload') {
+        // 重新登录后，调用方需要重新创建FormData并上传
+        // 由于我们无法从FormData中获取原始文件信息，所以这里直接抛出错误
+        // 让调用方知道需要重新准备上传
+        rethrow;
+      }
+      rethrow;
+    }
   }
 }
 
