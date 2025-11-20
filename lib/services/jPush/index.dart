@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tem/utils/permission/index.dart';
 import 'package:jpush_flutter/jpush_flutter.dart';
 
 ///推送工具
@@ -21,22 +22,6 @@ class JPushServices {
       onReceiveMessage: (message) async {},
     );
 
-    // jPush.isNotificationEnabled().then((bool value) {
-    //   debugPrint("通知授权是否打开: $value");
-    //   if (!value) {
-    //     Get.snackbar(
-    //       "提示",
-    //       "没有通知权限,点击跳转打开通知设置界面",
-    //       duration: const Duration(seconds: 6),
-    //       onTap: (_) {
-    //         jPush.openSettingsForNotification();
-    //       },
-    //     );
-    //   }
-    // }).catchError((onError) {
-    //   debugPrint("通知授权是否打开: ${onError.toString()}");
-    // });
-
     jPush.enableAutoWakeup(enable: true);
     jPush.setup(
       appKey: '038e7379d0c3945d4607c4a2',
@@ -51,10 +36,27 @@ class JPushServices {
       ),
     );
 
+    // 请求通知权限
+    _requestNotificationPermission();
+
     final rid = await jPush.getRegistrationID();
     debugPrint('RegistrationID: $rid');
 
     setAlias('拼卡拉司机版');
+  }
+
+  /// 请求通知权限
+  Future<void> _requestNotificationPermission() async {
+    // 检查并请求通知权限
+    final granted = await PermissionUtil.requestNotification(
+      tip: '需要通知权限以接收订单和消息提醒',
+    );
+
+    if (!granted) {
+      debugPrint('❌ 通知权限被拒绝');
+    } else {
+      debugPrint('✅ 通知权限已授予');
+    }
   }
 
   void setAlias(String aliasStr) {
