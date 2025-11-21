@@ -48,6 +48,7 @@ class MainActivity: FlutterActivity() {
         try {
             val packageManager = packageManager
             val packageName = packageName
+            val mainActivityComponent = ComponentName(packageName, "com.pinkala.driver.MainActivity")
 
             // 禁用所有图标别名
             iconMap.values.forEach { aliasName ->
@@ -58,10 +59,18 @@ class MainActivity: FlutterActivity() {
                 )
             }
 
-            // 如果不是默认图标，启用对应的图标别名
+            // 如果不是默认图标，启用对应的图标别名并禁用主 Activity
             if (iconName != "default") {
                 val aliasName = iconMap[iconName]
                 if (aliasName != null) {
+                    // 禁用主 Activity 的 launcher，避免出现两个图标
+                    packageManager.setComponentEnabledSetting(
+                        mainActivityComponent,
+                        PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                        PackageManager.DONT_KILL_APP
+                    )
+
+                    // 启用对应的图标别名
                     packageManager.setComponentEnabledSetting(
                         ComponentName(packageName, aliasName),
                         PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
@@ -72,7 +81,12 @@ class MainActivity: FlutterActivity() {
                     result.error("INVALID_ICON", "Unknown icon name: $iconName", null)
                 }
             } else {
-                // 默认图标，所有别名都禁用即可
+                // 默认图标，启用主 Activity，禁用所有别名
+                packageManager.setComponentEnabledSetting(
+                    mainActivityComponent,
+                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                    PackageManager.DONT_KILL_APP
+                )
                 result.success(true)
             }
         } catch (e: Exception) {
