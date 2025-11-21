@@ -11,6 +11,7 @@ class MainActivity: FlutterActivity() {
 
     // 图标名称到 Activity Alias 的映射
     private val iconMap = mapOf(
+        "default" to "com.pinkala.driver.default_icon",
         "spring_festival" to "com.pinkala.driver.spring_festival",
         "labor_day" to "com.pinkala.driver.labor_day",
         "national_day" to "com.pinkala.driver.national_day",
@@ -48,9 +49,15 @@ class MainActivity: FlutterActivity() {
         try {
             val packageManager = packageManager
             val packageName = packageName
-            val mainActivityComponent = ComponentName(packageName, "com.pinkala.driver.MainActivity")
 
-            // 禁用所有图标别名
+            // 获取目标图标的 alias 名称
+            val targetAlias = iconMap[iconName]
+            if (targetAlias == null) {
+                result.error("INVALID_ICON", "Unknown icon name: $iconName", null)
+                return
+            }
+
+            // 禁用所有图标别名（包括默认图标）
             iconMap.values.forEach { aliasName ->
                 packageManager.setComponentEnabledSetting(
                     ComponentName(packageName, aliasName),
@@ -59,36 +66,14 @@ class MainActivity: FlutterActivity() {
                 )
             }
 
-            // 如果不是默认图标，启用对应的图标别名并禁用主 Activity
-            if (iconName != "default") {
-                val aliasName = iconMap[iconName]
-                if (aliasName != null) {
-                    // 禁用主 Activity 的 launcher，避免出现两个图标
-                    packageManager.setComponentEnabledSetting(
-                        mainActivityComponent,
-                        PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                        PackageManager.DONT_KILL_APP
-                    )
+            // 启用目标图标别名
+            packageManager.setComponentEnabledSetting(
+                ComponentName(packageName, targetAlias),
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP
+            )
 
-                    // 启用对应的图标别名
-                    packageManager.setComponentEnabledSetting(
-                        ComponentName(packageName, aliasName),
-                        PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                        PackageManager.DONT_KILL_APP
-                    )
-                    result.success(true)
-                } else {
-                    result.error("INVALID_ICON", "Unknown icon name: $iconName", null)
-                }
-            } else {
-                // 默认图标，启用主 Activity，禁用所有别名
-                packageManager.setComponentEnabledSetting(
-                    mainActivityComponent,
-                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                    PackageManager.DONT_KILL_APP
-                )
-                result.success(true)
-            }
+            result.success(true)
         } catch (e: Exception) {
             result.error("CHANGE_ICON_FAILED", e.message, null)
         }
