@@ -37,12 +37,12 @@ class ImageSaver {
           return false;
         }
       } else {
-        EasyLoading.showError('未获得相册权限');
+        EasyLoading.dismiss();
         return false;
       }
     } catch (e) {
       EasyLoading.dismiss();
-      EasyLoading.showError('保存失败');
+
       return false;
     }
   }
