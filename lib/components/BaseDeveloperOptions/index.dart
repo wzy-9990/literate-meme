@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_tem/routers/app_routes.dart';
 import 'package:flutter_tem/utils/storage/index.dart';
 import 'package:get/get.dart';
@@ -73,20 +74,21 @@ class BaseDeveloperOptions {
 
     Get.dialog(
       AlertDialog(
+        contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
         title: Row(
           children: [
-            const Text('开发者选项'),
-            const SizedBox(width: 8),
+            Text('开发者选项', style: TextStyle(fontSize: 16.sp)),
+            SizedBox(width: 8.w),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
               decoration: BoxDecoration(
                 color: Colors.orange,
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(4.r),
               ),
               child: Text(
                 _env.toUpperCase(),
-                style: const TextStyle(
-                  fontSize: 10,
+                style: TextStyle(
+                  fontSize: 10.sp,
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
@@ -94,192 +96,237 @@ class BaseDeveloperOptions {
             ),
           ],
         ),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // API 地址配置
-              const Text(
-                '1. 修改 API 地址',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
+        content: SizedBox(
+          height: 350.h, // 设置最大高度，使用屏幕适配
+          width: 300.w, // 设置宽度，防止内容过宽，使用屏幕适配
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // API 地址配置
+                Text(
+                  '1. 修改 API 地址',
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                '修改后将退出登录，下次请求将使用新地址',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey,
+                SizedBox(height: 8.h),
+                Text(
+                  '修改后将退出登录，下次请求将使用新地址',
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    color: Colors.grey,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: apiUrlController,
-                decoration: const InputDecoration(
-                  labelText: 'API 地址',
-                  hintText: 'https://example.com/api',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.link),
-                  isDense: true,
-                ),
-                keyboardType: TextInputType.url,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                '当前地址：$currentApiUrl',
-                style: const TextStyle(
-                  fontSize: 11,
-                  color: Colors.grey,
-                ),
-              ),
-
-              const SizedBox(height: 24),
-              const Divider(),
-              const SizedBox(height: 16),
-
-              // 抓包代理配置
-              const Text(
-                '2. 抓包代理配置',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                '配置抓包代理后，所有请求将通过代理发送',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey,
-                ),
-              ),
-              const SizedBox(height: 12),
-
-              // 启用代理开关
-              Obx(() => SwitchListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: const Text(
-                      '启用代理',
-                      style: TextStyle(fontSize: 14),
+                SizedBox(height: 12.h),
+                TextField(
+                  controller: apiUrlController,
+                  decoration: InputDecoration(
+                    labelText: 'API 地址',
+                    hintText: 'https://example.com/api',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(4.r),
                     ),
-                    value: enableProxy.value,
-                    onChanged: (value) {
-                      enableProxy.value = value;
-                    },
-                  )),
-
-              const SizedBox(height: 12),
-
-              // 代理地址
-              Obx(() => TextField(
-                    controller: proxyHostController,
-                    enabled: enableProxy.value,
-                    decoration: const InputDecoration(
-                      labelText: '代理地址',
-                      hintText: '例如：192.168.1.100',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.dns),
-                      isDense: true,
+                    prefixIcon: const Icon(Icons.link),
+                    isDense: true,
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 12.w,
+                      vertical: 8.h,
                     ),
-                    keyboardType: TextInputType.url,
-                  )),
-
-              const SizedBox(height: 12),
-
-              // 代理端口
-              Obx(() => TextField(
-                    controller: proxyPortController,
-                    enabled: enableProxy.value,
-                    decoration: const InputDecoration(
-                      labelText: '代理端口',
-                      hintText: '例如：8888',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.numbers),
-                      isDense: true,
-                    ),
-                    keyboardType: TextInputType.number,
-                  )),
-
-              const SizedBox(height: 8),
-              const Text(
-                '提示：常用抓包工具端口 Charles(8888)、Fiddler(8888)、Proxyman(9090)',
-                style: TextStyle(
-                  fontSize: 10,
-                  color: Colors.grey,
+                  ),
+                  keyboardType: TextInputType.url,
+                  style: TextStyle(fontSize: 12.sp),
                 ),
-              ),
-            ],
+                SizedBox(height: 8.h),
+                Text(
+                  '当前地址：$currentApiUrl',
+                  style: TextStyle(
+                    fontSize: 11.sp,
+                    color: Colors.grey,
+                  ),
+                ),
+
+                SizedBox(height: 12.h),
+                Divider(height: 1.h),
+                SizedBox(height: 12.h),
+
+                // 抓包代理配置
+                Text(
+                  '2. 抓包代理配置',
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                SizedBox(height: 8.h),
+                Text(
+                  '配置抓包代理后，所有请求将通过代理发送',
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    color: Colors.grey,
+                  ),
+                ),
+                SizedBox(height: 12.h),
+
+                // 启用代理开关
+                Obx(() => SwitchListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(
+                        '启用代理',
+                        style: TextStyle(fontSize: 14.sp),
+                      ),
+                      value: enableProxy.value,
+                      onChanged: (value) {
+                        enableProxy.value = value;
+                      },
+                      dense: true, // 让开关更紧凑
+                      materialTapTargetSize:
+                          MaterialTapTargetSize.shrinkWrap, // 减小点击区域
+                    )),
+
+                SizedBox(height: 12.h),
+
+                // 代理地址
+                Obx(() => TextField(
+                      controller: proxyHostController,
+                      enabled: enableProxy.value,
+                      decoration: InputDecoration(
+                        labelText: '代理地址',
+                        hintText: '例如：192.168.1.100',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(4.r),
+                        ),
+                        prefixIcon: const Icon(Icons.dns),
+                        isDense: true,
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 12.w,
+                          vertical: 8.h,
+                        ),
+                      ),
+                      keyboardType: TextInputType.url,
+                      style: TextStyle(fontSize: 12.sp),
+                    )),
+
+                SizedBox(height: 12.h),
+
+                // 代理端口
+                Obx(() => TextField(
+                      controller: proxyPortController,
+                      enabled: enableProxy.value,
+                      decoration: InputDecoration(
+                        labelText: '代理端口',
+                        hintText: '例如：8888',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(4.r),
+                        ),
+                        prefixIcon: const Icon(Icons.numbers),
+                        isDense: true,
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 12.w,
+                          vertical: 8.h,
+                        ),
+                      ),
+                      keyboardType: TextInputType.number,
+                      style: TextStyle(fontSize: 12.sp),
+                    )),
+
+                SizedBox(height: 8.h),
+                Text(
+                  '提示：常用抓包工具端口 Charles(8888)、Fiddler(8888)、Proxyman(9090)',
+                  style: TextStyle(
+                    fontSize: 10.sp,
+                    color: Colors.grey,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
         actions: [
-          TextButton(
-            onPressed: () {
-              // 先移除焦点，避免关闭时访问已销毁的 controller
-              FocusManager.instance.primaryFocus?.unfocus();
-              // 延迟关闭，确保焦点完全释放
-              Future.delayed(const Duration(milliseconds: 100), () {
-                Get.back();
-                apiUrlController.dispose();
-                proxyHostController.dispose();
-                proxyPortController.dispose();
-              });
-            },
-            child: const Text('取消'),
-          ),
-          TextButton(
-            onPressed: () {
-              // 先移除焦点
-              FocusManager.instance.primaryFocus?.unfocus();
-              Future.delayed(const Duration(milliseconds: 100), () {
-                _resetToDefaultConfig();
-                apiUrlController.dispose();
-                proxyHostController.dispose();
-                proxyPortController.dispose();
-              });
-            },
-            child: const Text('恢复默认'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              final newApiUrl = apiUrlController.text.trim();
-              if (newApiUrl.isEmpty) {
-                EasyLoading.showToast('请输入 API 地址');
-                return;
-              }
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TextButton(
+                onPressed: () {
+                  // 先移除焦点，避免关闭时访问已销毁的 controller
+                  FocusManager.instance.primaryFocus?.unfocus();
+                  // 延迟关闭，确保焦点完全释放
+                  Future.delayed(const Duration(milliseconds: 100), () {
+                    Get.back();
+                    apiUrlController.dispose();
+                    proxyHostController.dispose();
+                    proxyPortController.dispose();
+                  });
+                },
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                ),
+                child: Text('取消', style: TextStyle(fontSize: 12.sp)),
+              ),
+              SizedBox(width: 8.w),
+              TextButton(
+                onPressed: () {
+                  // 先移除焦点
+                  FocusManager.instance.primaryFocus?.unfocus();
+                  Future.delayed(const Duration(milliseconds: 100), () {
+                    _resetToDefaultConfig();
+                    apiUrlController.dispose();
+                    proxyHostController.dispose();
+                    proxyPortController.dispose();
+                  });
+                },
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                ),
+                child: Text('恢复默认', style: TextStyle(fontSize: 12.sp)),
+              ),
+              SizedBox(width: 8.w),
+              ElevatedButton(
+                onPressed: () {
+                  final newApiUrl = apiUrlController.text.trim();
+                  if (newApiUrl.isEmpty) {
+                    EasyLoading.showToast('请输入 API 地址');
+                    return;
+                  }
 
-              // 验证代理配置
-              if (enableProxy.value) {
-                final proxyHost = proxyHostController.text.trim();
-                final proxyPort = proxyPortController.text.trim();
-                if (proxyHost.isEmpty || proxyPort.isEmpty) {
-                  EasyLoading.showToast('请完整填写代理配置');
-                  return;
-                }
-                final port = int.tryParse(proxyPort);
-                if (port == null || port < 1 || port > 65535) {
-                  EasyLoading.showToast('端口号必须在 1-65535 之间');
-                  return;
-                }
-              }
+                  // 验证代理配置
+                  if (enableProxy.value) {
+                    final proxyHost = proxyHostController.text.trim();
+                    final proxyPort = proxyPortController.text.trim();
+                    if (proxyHost.isEmpty || proxyPort.isEmpty) {
+                      EasyLoading.showToast('请完整填写代理配置');
+                      return;
+                    }
+                    final port = int.tryParse(proxyPort);
+                    if (port == null || port < 1 || port > 65535) {
+                      EasyLoading.showToast('端口号必须在 1-65535 之间');
+                      return;
+                    }
+                  }
 
-              // 先移除焦点
-              FocusManager.instance.primaryFocus?.unfocus();
-              Future.delayed(const Duration(milliseconds: 100), () {
-                _applyConfig(
-                  newApiUrl,
-                  enableProxy.value,
-                  proxyHostController.text.trim(),
-                  proxyPortController.text.trim(),
-                );
-                apiUrlController.dispose();
-                proxyHostController.dispose();
-                proxyPortController.dispose();
-              });
-            },
-            child: const Text('应用配置'),
+                  // 先移除焦点
+                  FocusManager.instance.primaryFocus?.unfocus();
+                  Future.delayed(const Duration(milliseconds: 100), () {
+                    _applyConfig(
+                      newApiUrl,
+                      enableProxy.value,
+                      proxyHostController.text.trim(),
+                      proxyPortController.text.trim(),
+                    );
+                    apiUrlController.dispose();
+                    proxyHostController.dispose();
+                    proxyPortController.dispose();
+                  });
+                },
+                style: ElevatedButton.styleFrom(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
+                ),
+                child: Text('应用配置', style: TextStyle(fontSize: 12.sp)),
+              ),
+            ],
           ),
         ],
       ),
