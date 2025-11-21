@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tem/components/BaseDoubleBackExitWrapper/index.dart';
-import 'package:flutter_tem/page/index/modules/home/view.dart';
 import 'package:flutter_tem/page/index/logic.dart';
+import 'package:flutter_tem/page/index/modules/home/view.dart';
 import 'package:flutter_tem/page/index/modules/message/view.dart';
 import 'package:flutter_tem/page/index/modules/my/view.dart';
 import 'package:get/get.dart';

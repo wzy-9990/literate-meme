@@ -3,8 +3,8 @@ import 'package:flutter_tem/components/BaseDeveloperOptions/index.dart';
 import 'package:flutter_tem/page/index/modules/my/logic.dart';
 import 'package:flutter_tem/routers/app_routes.dart';
 import 'package:flutter_tem/routers/index.dart';
-import 'package:flutter_tem/utils/storage/index.dart';
 import 'package:get/get.dart';
+import 'package:flutter_tem/utils/storage/index.dart';
 
 class MySettingLogic extends GetxController {
   final myLogic = Get.find<MyLogic>();
