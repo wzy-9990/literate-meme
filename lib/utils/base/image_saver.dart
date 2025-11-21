@@ -5,7 +5,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_tem/utils/permission/index.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
-import 'package:path_provider/path_provider.dart';
 
 /// 图片保存工具类
 class ImageSaver {
@@ -78,35 +77,19 @@ class ImageSaver {
   }
 
   /// 保存图片到相册
-  static Future<void> _saveImageToGallery(
+  static Future<Map<String, dynamic>?> _saveImageToGallery(
       Uint8List imageBytes, String? fileName) async {
-    if (Platform.isAndroid) {
-      // Android 保存到 Pictures 目录
-      final directory = await getExternalStorageDirectory();
-      final picturesDir = Directory('${directory!.path}/Pictures');
-      // ignore: avoid_slow_async_io
-      if (!await picturesDir.exists()) {
-        await picturesDir.create(recursive: true);
-      }
-      final name = fileName ?? '${DateTime.now().millisecondsSinceEpoch}.png';
-      final imagePath = '${picturesDir.path}/$name';
-      final imageFile = File(imagePath);
-      await imageFile.writeAsBytes(imageBytes);
-    } else if (Platform.isIOS) {
-      // iOS 使用 image_gallery_saver 包来保存到相册
-      try {
-        final result = await ImageGallerySaver.saveImage(
-          imageBytes,
-          name: fileName ?? 'IMG_${DateTime.now().millisecondsSinceEpoch}',
-          quality: 100,
-        );
+    try {
+      // 使用 image_gallery_saver 统一处理 Android 和 iOS
+      final result = await ImageGallerySaver.saveImage(
+        imageBytes,
+        name: fileName ?? 'IMG_${DateTime.now().millisecondsSinceEpoch}',
+        quality: 100,
+      );
 
-        if (!result['isSuccess']) {
-          throw Exception('保存到相册失败');
-        }
-      } catch (e) {
-        throw Exception('保存到相册失败: $e');
-      }
+      return result;
+    } catch (e) {
+      return {'isSuccess': false, 'errorMessage': e.toString()};
     }
   }
 }
