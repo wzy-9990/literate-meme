@@ -25,7 +25,8 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 /// ```
 abstract class BasePaginationLogic<T> extends GetxController {
   /// 刷新控制器
-  final RefreshController refreshController = RefreshController(initialRefresh: false);
+  final RefreshController refreshController =
+      RefreshController(initialRefresh: false);
 
   /// 数据列表
   final RxList<T> items = <T>[].obs;
@@ -66,10 +67,31 @@ abstract class BasePaginationLogic<T> extends GetxController {
   /// 是否处于搜索状态
   bool get isSearching => _searchParams != null && _searchParams!.isNotEmpty;
 
+  /// 是否在 onInit 自动加载数据（部分页面可延迟到 onReady 避免路由动画抖动）
+  bool get autoLoadOnInit => true;
+
+  /// 首次加载的延迟（用于等待路由动画结束再加载）
+  Duration get initialLoadDelay => Duration.zero;
+
   @override
   void onInit() {
     super.onInit();
-    loadData();
+    if (autoLoadOnInit) {
+      loadData();
+    }
+  }
+
+  @override
+  void onReady() {
+    super.onReady();
+    if (!autoLoadOnInit) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        if (initialLoadDelay > Duration.zero) {
+          await Future.delayed(initialLoadDelay);
+        }
+        await loadData();
+      });
+    }
   }
 
   @override
@@ -117,7 +139,8 @@ abstract class BasePaginationLogic<T> extends GetxController {
         items.addAll(newItems);
       }
 
-      debugPrint('✅ 加载了 ${newItems.length} 条数据，当前共 ${items.length} 条，总共 $_total 条，第 $_page/$_totalPages 页');
+      debugPrint(
+          '✅ 加载了 ${newItems.length} 条数据，当前共 ${items.length} 条，总共 $_total 条，第 $_page/$_totalPages 页');
 
       // 加载完成后隐藏 loading
       isLoading.value = false;
@@ -199,7 +222,7 @@ class PaginationResponse<T> {
   ///   - 提供时：使用自定义转换（如转换为 Model 类）
   factory PaginationResponse.fromMap(
     dynamic response, [
-    T Function(dynamic)? itemMapper,  // 👈 改为可选参数
+    T Function(dynamic)? itemMapper, // 👈 改为可选参数
   ]) {
     // 处理 null
     if (response == null) {
@@ -243,9 +266,11 @@ class PaginationResponse<T> {
   }
 
   /// 从 List 创建（直接返回数组的情况）
-  factory PaginationResponse.fromList(List list, T Function(Map<String, dynamic>) itemMapper) {
+  factory PaginationResponse.fromList(
+      List list, T Function(Map<String, dynamic>) itemMapper) {
     return PaginationResponse<T>(
-      records: list.map((item) => itemMapper(item as Map<String, dynamic>)).toList(),
+      records:
+          list.map((item) => itemMapper(item as Map<String, dynamic>)).toList(),
     );
   }
 }
