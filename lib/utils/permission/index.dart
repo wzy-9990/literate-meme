@@ -7,6 +7,19 @@ import 'package:permission_handler/permission_handler.dart';
 /// 权限工具类
 ///
 /// 提供统一的权限请求、检查、引导功能
+///
+/// ⚠️ Android 13+ (API 33+) 重要变更：
+/// - Permission.storage (READ/WRITE_EXTERNAL_STORAGE) 已废弃
+/// - 使用新的分段权限：
+///   - Permission.photos - 访问图片和照片
+///   - Permission.videos - 访问视频
+///   - Permission.audio - 访问音频文件
+///   - Permission.manageExternalStorage - 管理所有文件（需特殊审核）
+///
+/// 📝 建议：
+/// - 优先使用应用专属目录（getApplicationDocumentsDirectory），无需权限
+/// - 只在需要访问媒体库或共享存储时才请求相应权限
+/// - 避免使用 manageExternalStorage，除非确实需要访问所有文件
 class PermissionUtil {
   /// 根据 Permission 返回中文名称
   static String getPermissionName(Permission permission) {
@@ -17,6 +30,12 @@ class PermissionUtil {
         return '相册';
       case Permission.storage:
         return '存储';
+      case Permission.videos:
+        return '视频';
+      case Permission.audio:
+        return '音频';
+      case Permission.manageExternalStorage:
+        return '文件管理';
       case Permission.microphone:
         return '麦克风';
       case Permission.location:
@@ -334,11 +353,26 @@ class PermissionUtil {
   }
 
   /// 存储权限快捷方法
+  ///
+  /// Android 13+ (API 33+) 需要使用新的媒体权限
+  /// 根据 Android 版本自动选择合适的权限
   static Future<bool> requestStorage({String? tip}) async {
-    return requestPermissionWithTip(
-      Permission.storage,
-      tipMessage: tip ?? '需要访问存储以保存文件',
-    );
+    if (Platform.isAndroid) {
+      // Android 13+ 使用新的媒体权限（photos 包含图片访问）
+      // 对于一般的文件保存，建议使用应用专属目录，不需要权限
+      // 如果需要访问媒体文件，使用 photos/videos/audio 权限
+      return requestPermissionWithTip(
+        Permission.photos,
+        tipMessage: tip ?? '需要访问相册以保存图片',
+      );
+    } else if (Platform.isIOS) {
+      return requestPermissionWithTip(
+        Permission.photos,
+        tipMessage: tip ?? '需要访问相册以保存图片',
+      );
+    }
+
+    return false;
   }
 
   /// 通知权限快捷方法
@@ -347,6 +381,72 @@ class PermissionUtil {
       Permission.notification,
       tipMessage: tip ?? '需要通知权限以接收消息提醒',
     );
+  }
+
+  /// 视频权限快捷方法（Android 13+）
+  static Future<bool> requestVideos({String? tip}) async {
+    return requestPermissionWithTip(
+      Permission.videos,
+      tipMessage: tip ?? '需要访问视频以保存或选择视频',
+    );
+  }
+
+  /// 音频权限快捷方法（Android 13+）
+  static Future<bool> requestAudio({String? tip}) async {
+    return requestPermissionWithTip(
+      Permission.audio,
+      tipMessage: tip ?? '需要访问音频文件',
+    );
+  }
+
+  /// 管理外部存储权限（慎用，需要 Google Play 审核）
+  ///
+  /// Android 11+ 如果需要访问所有文件，需要此权限
+  /// 注意：Google Play 对此权限有严格审核要求
+  static Future<bool> requestManageExternalStorage({String? tip}) async {
+    if (Platform.isAndroid) {
+      return requestPermissionWithTip(
+        Permission.manageExternalStorage,
+        tipMessage: tip ?? '需要管理所有文件的权限',
+      );
+    }
+    return false;
+  }
+
+  /// 请求媒体库权限（照片+视频）
+  ///
+  /// 适用于需要同时访问照片和视频的场景
+  static Future<Map<Permission, bool>> requestMediaLibrary({
+    String? tip,
+  }) async {
+    final permissions = [Permission.photos, Permission.videos];
+    final results = <Permission, bool>{};
+
+    // 显示权限用途说明
+    if (tip != null && tip.isNotEmpty) {
+      _showPermissionTip(
+        permissionType: '媒体库',
+        message: tip,
+      );
+    }
+
+    for (final permission in permissions) {
+      final status = await permission.status;
+      if (status.isGranted || status.isLimited) {
+        results[permission] = true;
+      } else if (status.isDenied) {
+        final result = await permission.request();
+        results[permission] = result.isGranted || result.isLimited;
+      } else {
+        results[permission] = false;
+      }
+    }
+
+    // 移除权限提示
+    _tipOverlayEntry?.remove();
+    _tipOverlayEntry = null;
+
+    return results;
   }
 
   /// 调试权限状态（用于排查问题）

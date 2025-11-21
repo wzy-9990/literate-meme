@@ -86,14 +86,17 @@ class PermissionExampleView extends StatelessWidget {
   /// 保存文件示例
   Future<void> _saveFile() async {
     final granted = await PermissionUtil.requestStorage(
-      tip: '需要存储权限以保存文件',
+      tip: '需要相册权限以保存图片到相册',
     );
 
     if (granted) {
-      debugPrint('✅ 存储权限已授予，可以保存文件');
-      // TODO: 保存文件
+      debugPrint('✅ 相册权限已授予，可以保存图片');
+      // TODO: 保存图片到相册
+      // 提示：在 Android 13+ 上，这个方法会请求 photos 权限
+      // 如果需要保存视频，请使用 PermissionUtil.requestVideos()
+      // 如果只需要保存到应用目录，不需要任何权限
     } else {
-      debugPrint('❌ 存储权限被拒绝');
+      debugPrint('❌ 相册权限被拒绝');
     }
   }
 
@@ -170,7 +173,7 @@ class PermissionExampleView extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               _buildButton(
-                label: '保存文件（存储权限）',
+                label: '保存图片（相册权限）',
                 icon: Icons.save,
                 onPressed: _saveFile,
               ),
@@ -287,6 +290,45 @@ class PermissionExampleView extends StatelessWidget {
           _buildInfoItem('3. Android 会显示顶部权限说明提示'),
           _buildInfoItem('4. 永久拒绝后会引导跳转设置'),
           _buildInfoItem('5. 查看控制台日志了解权限状态'),
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.orange[50],
+              borderRadius: BorderRadius.circular(6),
+              border: Border.all(color: Colors.orange[200]!),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.warning_amber, color: Colors.orange[700], size: 18),
+                    const SizedBox(width: 6),
+                    Text(
+                      'Android 13+ 权限变更',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.orange[700],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  '存储权限 (storage) 已废弃，现使用:\n'
+                  '• photos - 访问图片\n'
+                  '• videos - 访问视频\n'
+                  '• audio - 访问音频',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey[700],
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
