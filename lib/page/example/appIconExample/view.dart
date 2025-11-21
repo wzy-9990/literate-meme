@@ -45,6 +45,31 @@ class _AppIconExamplePageState extends State<AppIconExamplePage> {
 
   /// 切换图标
   Future<void> _changeIcon(String iconName) async {
+    // 显示确认对话框
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('确认切换图标'),
+        content: Text(
+          '切换到「${AppIconConfig.iconNames[iconName]}」图标后，应用会自动返回桌面。\n\n'
+          '您需要重新打开应用才能继续使用。\n\n'
+          '是否继续？',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('取消'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('确认切换'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+
     setState(() {
       _isLoading = true;
     });
@@ -71,6 +96,47 @@ class _AppIconExamplePageState extends State<AppIconExamplePage> {
 
   /// 根据日期自动切换
   Future<void> _changeIconByDate() async {
+    // 先获取当前和目标图标
+    final currentIcon = await AppIconManager.getCurrentIconName();
+    final targetIcon = AppIconConfig.getCurrentIcon();
+
+    // 如果图标相同，不需要切换
+    if (currentIcon == targetIcon) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('当前已是正确的图标：${AppIconConfig.iconNames[targetIcon]}'),
+          ),
+        );
+      }
+      return;
+    }
+
+    // 显示确认对话框
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('确认切换图标'),
+        content: Text(
+          '将根据当前日期切换到「${AppIconConfig.iconNames[targetIcon]}」图标。\n\n'
+          '切换后应用会自动返回桌面，您需要重新打开应用才能继续使用。\n\n'
+          '是否继续？',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('取消'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('确认切换'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+
     setState(() {
       _isLoading = true;
     });
@@ -282,10 +348,10 @@ class _AppIconExamplePageState extends State<AppIconExamplePage> {
                         SizedBox(height: 12),
                         Text(
                           '• iOS 和 Android 都支持动态图标切换\n'
-                          '• 切换后需要返回主屏幕查看效果\n'
+                          '• 手动切换图标时，应用会自动返回桌面\n'
                           '• iOS 切换时会显示系统提示弹窗\n'
-                          '• 可以根据日期自动切换节日图标\n'
-                          '• 图标文件需要提前准备并配置\n'
+                          '• 应用启动时会自动检查并切换节日图标（每天检查一次）\n'
+                          '• 自动切换只在图标需要变化时才执行，避免不必要的返回桌面\n'
                           '• 自动切换功能可通过 .env 文件中的 AUTO_ICON_SWITCH 参数控制',
                           style: TextStyle(fontSize: 14, height: 1.5),
                         ),

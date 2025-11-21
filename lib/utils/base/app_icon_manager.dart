@@ -140,9 +140,20 @@ class AppIconManager {
     final todayString = '${today.year}-${today.month}-${today.day}';
     final lastCheck = await getLastCheckDate();
 
-    // 如果今天还没检查过，则执行图标切换
+    // 如果今天还没检查过，检查是否需要切换
     if (lastCheck != todayString) {
-      await changeIconByDate();
+      // 先获取当前图标和应该显示的图标
+      final currentIcon = await getCurrentIconName();
+      final targetIcon = AppIconConfig.getCurrentIcon();
+
+      // 只有当图标需要变化时才切换（避免不必要的切换导致返回桌面）
+      if (currentIcon != targetIcon) {
+        debugPrint('自动切换图标: $currentIcon -> $targetIcon');
+        await changeIcon(targetIcon);
+      } else {
+        debugPrint('图标无需切换，当前已是: $currentIcon');
+      }
+
       await setLastCheckDate(todayString);
     }
   }
