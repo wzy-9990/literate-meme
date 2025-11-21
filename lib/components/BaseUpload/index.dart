@@ -831,15 +831,18 @@ class _BaseUploadState extends State<BaseUpload> {
         children: [
           // 图片预览
           if (item.fileInfo.isImage)
-            GestureDetector(
-              onTap: () => _openImagePreview(item),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.file(
-                  File(item.fileInfo.filePath),
-                  width: 100,
-                  height: 100,
-                  fit: BoxFit.cover,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () => _openImagePreview(item),
+                  child: Ink.image(
+                    image: FileImage(File(item.fileInfo.filePath)),
+                    width: 100,
+                    height: 100,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             )
@@ -971,15 +974,18 @@ class _BaseUploadState extends State<BaseUpload> {
         children: [
           // 文件图标/缩略图
           if (item.fileInfo.isImage)
-            GestureDetector(
-              onTap: () => _openImagePreview(item),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(4),
-                child: Image.file(
-                  File(item.fileInfo.filePath),
-                  width: 50,
-                  height: 50,
-                  fit: BoxFit.cover,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () => _openImagePreview(item),
+                  child: Ink.image(
+                    image: FileImage(File(item.fileInfo.filePath)),
+                    width: 50,
+                    height: 50,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             )
