@@ -169,7 +169,7 @@ class BaseImage extends StatelessWidget {
 
   /// 显示上下文菜单
   Future<void> _showContextMenu(BuildContext context) async {
-    await showMenu(
+    final value = await showMenu(
       context: context,
       position: const RelativeRect.fromLTRB(0, 0, 0, 0),
       items: [
@@ -177,18 +177,22 @@ class BaseImage extends StatelessWidget {
           value: 'save',
           child: Row(
             children: [
-              const Icon(Icons.save, size: 18),
-              const SizedBox(width: 8),
+              Icon(Icons.save, size: 18),
+              SizedBox(width: 8),
               Text('保存图片'),
             ],
           ),
         ),
       ],
-    ).then((value) {
-      if (value == 'save') {
-        _saveImage(context);
-      }
-    });
+    );
+
+    if (!context.mounted) {
+      return;
+    }
+
+    if (value == 'save') {
+      await _saveImage(context);
+    }
   }
 
   /// 保存图片到本地

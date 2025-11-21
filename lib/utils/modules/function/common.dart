@@ -56,7 +56,9 @@ class CommonFunction {
     } else if (val is String) {
       // 字符串转数字（兼容空字符串、纯空格字符串）
       final trimmed = val.trim();
-      if (trimmed.isEmpty) return 0;
+      if (trimmed.isEmpty) {
+        return 0;
+      }
       return num.tryParse(trimmed) ?? 0; // 解析失败返回 0
     } else if (val is bool) {
       return val ? 1 : 0; // 布尔值转数字（true→1，false→0）

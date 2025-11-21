@@ -68,7 +68,13 @@ class _AppIconExamplePageState extends State<AppIconExamplePage> {
       ),
     );
 
-    if (confirmed != true) return;
+    if (confirmed != true) {
+      return;
+    }
+
+    if (!mounted) {
+      return;
+    }
 
     setState(() {
       _isLoading = true;
@@ -135,7 +141,13 @@ class _AppIconExamplePageState extends State<AppIconExamplePage> {
       ),
     );
 
-    if (confirmed != true) return;
+    if (confirmed != true) {
+      return;
+    }
+
+    if (!mounted) {
+      return;
+    }
 
     setState(() {
       _isLoading = true;
@@ -320,7 +332,7 @@ class _AppIconExamplePageState extends State<AppIconExamplePage> {
                       ),
                     ),
                   );
-                }).toList(),
+                }),
 
                 const SizedBox(height: 20),
 

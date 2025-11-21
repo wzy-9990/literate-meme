@@ -101,7 +101,9 @@ class AppIconManager {
   static bool getAutoSwitchEnabled() {
     try {
       final envValue = dotenv.env['AUTO_ICON_SWITCH'];
-      if (envValue == null) return false;
+      if (envValue == null) {
+        return false;
+      }
       return envValue.toLowerCase() == 'true';
     } catch (e) {
       return false;

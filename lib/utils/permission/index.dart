@@ -53,8 +53,10 @@ class PermissionUtil {
         return '电话';
       case Permission.sms:
         return '短信';
-      case Permission.calendar:
-        return '日历';
+      case Permission.calendarWriteOnly:
+        return '日历（写入）';
+      case Permission.calendarFullAccess:
+        return '日历（读写）';
       case Permission.bluetooth:
         return '蓝牙';
       case Permission.bluetoothScan:

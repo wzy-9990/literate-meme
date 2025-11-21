@@ -122,7 +122,9 @@ class _WebViewPageState extends State<WebViewPageView> {
     if (await _controller.canGoBack()) {
       await _controller.goBack();
     } else {
-      if (mounted) Get.back();
+      if (mounted) {
+        Get.back();
+      }
     }
   }
 

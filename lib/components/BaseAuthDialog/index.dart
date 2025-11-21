@@ -14,7 +14,9 @@ class BaseAuthDialog {
   ///
   /// [isExpired] 是否为登录过期状态，如果为 null 则自动检测
   static Future<Map<String, dynamic>?> showAuthDialog({bool? isExpired}) async {
-    if (_isShowingAuthDialog) return null;
+    if (_isShowingAuthDialog) {
+      return null;
+    }
     _isShowingAuthDialog = true;
 
     // 如果没有传入 isExpired 参数，则自动检测

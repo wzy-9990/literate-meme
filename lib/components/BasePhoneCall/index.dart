@@ -24,8 +24,8 @@ class BasePhoneCall extends StatelessWidget {
   final double? iconSize;
 
   const BasePhoneCall({
-    super.key,
     required this.phoneNumber,
+    super.key,
     this.text,
     this.style,
     this.type = BasePhoneCallType.text,

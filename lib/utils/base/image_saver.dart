@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:isolate';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
@@ -40,7 +41,7 @@ class ImageSaver {
         if (!await imageFile.exists()) {
           throw const FileSystemException('文件不存在');
         }
-        return await imageFile.readAsBytes();
+        return await Isolate.run(imageFile.readAsBytesSync);
       },
       fileReadFailMessage: '文件不存在',
     );

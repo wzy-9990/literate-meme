@@ -217,7 +217,9 @@ class BaseUploadUtil {
         imageQuality: imageQuality,
       );
 
-      if (image == null) return null;
+      if (image == null) {
+        return null;
+      }
 
       final file = File(image.path);
       return BaseUploadFileInfo.fromFile(file);
@@ -281,10 +283,14 @@ class BaseUploadUtil {
         allowedExtensions: allowedExtensions,
       );
 
-      if (result == null || result.files.isEmpty) return null;
+      if (result == null || result.files.isEmpty) {
+        return null;
+      }
 
       final platformFile = result.files.first;
-      if (platformFile.path == null) return null;
+      if (platformFile.path == null) {
+        return null;
+      }
 
       final file = File(platformFile.path!);
       return BaseUploadFileInfo.fromFile(file);
@@ -309,7 +315,9 @@ class BaseUploadUtil {
         allowMultiple: true,
       );
 
-      if (result == null || result.files.isEmpty) return [];
+      if (result == null || result.files.isEmpty) {
+        return [];
+      }
 
       return result.files
           .where((file) => file.path != null)
@@ -333,7 +341,7 @@ class BaseUploadUtil {
     void Function(int sent, int total)? onProgress,
   }) async {
     try {
-      FormData formData = FormData.fromMap({
+      final FormData formData = FormData.fromMap({
         'file': await MultipartFile.fromFile(
           fileInfo.filePath,
           filename: fileInfo.fileName,
@@ -355,7 +363,7 @@ class BaseUploadUtil {
               'Login required for FormData request, please re-initiate the upload') {
         try {
           // 重新创建FormData并上传
-          FormData formData = FormData.fromMap({
+          final FormData formData = FormData.fromMap({
             'file': await MultipartFile.fromFile(
               fileInfo.filePath,
               filename: fileInfo.fileName,
@@ -531,7 +539,9 @@ class _BaseUploadState extends State<BaseUpload> {
 
     // 先弹出弹窗让用户选择来源
     final source = await BaseUploadUtil.showImageSourceDialog(context);
-    if (source == null) return;
+    if (source == null) {
+      return;
+    }
 
     // 根据来源选择
     if (source == BaseImageSourceType.camera) {
@@ -606,7 +616,9 @@ class _BaseUploadState extends State<BaseUpload> {
       return;
     }
 
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
 
     final item = UploadItem(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -681,7 +693,9 @@ class _BaseUploadState extends State<BaseUpload> {
 
   /// 上传文件
   Future<void> _uploadFile(UploadItem item) async {
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
 
     setState(() {
       item.status = UploadStatus.uploading;
@@ -708,7 +722,9 @@ class _BaseUploadState extends State<BaseUpload> {
         );
       }
 
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
 
       setState(() {
         item.status = UploadStatus.success;
@@ -742,7 +758,9 @@ class _BaseUploadState extends State<BaseUpload> {
 
   /// 删除文件
   void _removeFile(UploadItem item) {
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
 
     setState(() {
       // 如果文件上传成功，从上传数据列表中移除
@@ -758,7 +776,9 @@ class _BaseUploadState extends State<BaseUpload> {
 
   /// 显示提示
   void _showMessage(String message) {
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message)),
     );
@@ -796,7 +816,9 @@ class _BaseUploadState extends State<BaseUpload> {
 
   /// 打开图片预览
   void _openImagePreview(UploadItem item) {
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
 
     // 优先使用上传后的 fileUrl，否则使用本地路径
     String imageUrl = item.fileInfo.filePath;
