@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -64,16 +64,34 @@ class PermissionUtil {
     }
 
     if (status.isDenied) {
-      final result = await permission.request();
-      return result.isGranted || result.isLimited;
+      try {
+        final result = await permission.request();
+        // 移除权限提示（如果存在）
+        _tipOverlayEntry?.remove();
+        _tipOverlayEntry = null;
+        return result.isGranted || result.isLimited;
+      } catch (e) {
+        // 移除权限提示（如果存在）
+        _tipOverlayEntry?.remove();
+        _tipOverlayEntry = null;
+        rethrow;
+      }
     }
 
     if (status.isPermanentlyDenied) {
+      // 移除权限提示（如果存在）
+      _tipOverlayEntry?.remove();
+      _tipOverlayEntry = null;
+
       await _showPermissionDeniedDialog(
         permissionType: getPermissionName(permission),
       );
       return false;
     }
+
+    // 移除权限提示（如果存在）
+    _tipOverlayEntry?.remove();
+    _tipOverlayEntry = null;
 
     return false;
   }
@@ -103,48 +121,114 @@ class PermissionUtil {
     }
 
     if (status.isDenied) {
-      final result = await permission.request();
+      try {
+        final result = await permission.request();
 
-      // 如果请求后仍然被拒绝，检查是否需要引导用户去设置
-      if (!result.isGranted && !result.isLimited) {
-        // 在 iOS 上，如果用户之前拒绝过，系统可能不会再弹窗
-        // 此时需要引导用户去设置中手动开启
-        if (Platform.isIOS && showDeniedDialog) {
-          final newStatus = await permission.status;
-          // 如果状态仍然是 denied（说明系统没有弹窗或用户再次拒绝）
-          if (newStatus.isDenied || newStatus.isPermanentlyDenied) {
-            await _showPermissionDeniedDialog(
-              permissionType: getPermissionName(permission),
-            );
+        // 移除权限提示
+        _tipOverlayEntry?.remove();
+        _tipOverlayEntry = null;
+
+        // 如果请求后仍然被拒绝，检查是否需要引导用户去设置
+        if (!result.isGranted && !result.isLimited) {
+          // 在 iOS 上，如果用户之前拒绝过，系统可能不会再弹窗
+          // 此时需要引导用户去设置中手动开启
+          if (Platform.isIOS && showDeniedDialog) {
+            final newStatus = await permission.status;
+            // 如果状态仍然是 denied（说明系统没有弹窗或用户再次拒绝）
+            if (newStatus.isDenied || newStatus.isPermanentlyDenied) {
+              await _showPermissionDeniedDialog(
+                permissionType: getPermissionName(permission),
+              );
+            }
           }
+          return false;
         }
-        return false;
-      }
 
-      return result.isGranted || result.isLimited;
+        return result.isGranted || result.isLimited;
+      } catch (e) {
+        // 移除权限提示
+        _tipOverlayEntry?.remove();
+        _tipOverlayEntry = null;
+        rethrow;
+      }
     }
 
     if (status.isPermanentlyDenied && showDeniedDialog) {
+      // 移除权限提示
+      _tipOverlayEntry?.remove();
+      _tipOverlayEntry = null;
+
       await _showPermissionDeniedDialog(
         permissionType: getPermissionName(permission),
       );
       return false;
     }
 
+    // 移除权限提示
+    _tipOverlayEntry?.remove();
+    _tipOverlayEntry = null;
+
     return false;
   }
 
   /// 显示权限用途提示（顶部悬浮）
+  static OverlayEntry? _tipOverlayEntry;
+
   static void _showPermissionTip({
     required String permissionType,
     required String message,
   }) {
     if (Platform.isAndroid) {
-      EasyLoading.showToast(
-        '$permissionType权限说明\n$message',
-        duration: const Duration(seconds: 3),
-        toastPosition: EasyLoadingToastPosition.top,
-      );
+      // 移除之前的提示（如果存在）
+      _tipOverlayEntry?.remove();
+      _tipOverlayEntry = null;
+
+      // 创建新的 OverlayEntry
+      final overlayContext = Get.overlayContext;
+      if (overlayContext != null) {
+        _tipOverlayEntry = OverlayEntry(
+          builder: (context) => Positioned(
+            top: MediaQuery.of(context).padding.top + 10.w,
+            left: 20.w,
+            right: 20.w,
+            child: Material(
+              color: Colors.transparent,
+              child: GestureDetector(
+                onTap: () => _tipOverlayEntry?.remove(),
+                child: Container(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 16.r, vertical: 10.r),
+                  decoration: BoxDecoration(
+                    color: Colors.black87,
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '$permissionType权限使用说明',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16.sp,
+                        ),
+                      ),
+                      SizedBox(height: 2.w),
+                      Text(
+                        message,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14.sp,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+        Overlay.of(overlayContext).insert(_tipOverlayEntry!);
+      }
     }
   }
 
