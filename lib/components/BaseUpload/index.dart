@@ -1089,9 +1089,9 @@ class _BaseUploadState extends State<BaseUpload> {
 
   /// 添加按钮（网格）
   Widget _buildAddButton() {
-    return GestureDetector(
-      onTap: _pickFiles,
-      child: Container(
+    return Material(
+      color: Colors.transparent,
+      child: Ink(
         width: 100,
         height: 100,
         decoration: BoxDecoration(
@@ -1100,16 +1100,20 @@ class _BaseUploadState extends State<BaseUpload> {
           borderRadius: BorderRadius.circular(8),
           color: Colors.grey[50],
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.add, size: 32, color: Colors.grey[600]),
-            const SizedBox(height: 4),
-            Text(
-              '添加${widget.imageOnly ? "图片" : "文件"}',
-              style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-            ),
-          ],
+        child: InkWell(
+          onTap: _pickFiles,
+          borderRadius: BorderRadius.circular(8),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.add, size: 32, color: Colors.grey[600]),
+              const SizedBox(height: 4),
+              Text(
+                '添加${widget.imageOnly ? "图片" : "文件"}',
+                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -1117,25 +1121,31 @@ class _BaseUploadState extends State<BaseUpload> {
 
   /// 添加按钮（列表）
   Widget _buildAddButtonList() {
-    return GestureDetector(
-      onTap: _pickFiles,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+    return Material(
+      color: Colors.transparent,
+      child: Ink(
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey[300]!),
           borderRadius: BorderRadius.circular(8),
           color: Colors.grey[50],
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.add_circle_outline, color: Colors.grey[600]),
-            const SizedBox(width: 8),
-            Text(
-              '添加${widget.imageOnly ? "图片" : "文件"}',
-              style: TextStyle(color: Colors.grey[700]),
+        child: InkWell(
+          onTap: _pickFiles,
+          borderRadius: BorderRadius.circular(8),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.add_circle_outline, color: Colors.grey[600]),
+                const SizedBox(width: 8),
+                Text(
+                  '添加${widget.imageOnly ? "图片" : "文件"}',
+                  style: TextStyle(color: Colors.grey[700]),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
