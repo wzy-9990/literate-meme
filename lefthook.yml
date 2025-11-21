@@ -5,6 +5,13 @@ pre-commit:
   parallel: false  # 顺序执行，先格式化再检查
   commands:
 
+    # 1. 自动修复常见 lint（导入排序等）
+    fix:
+      glob: "*.dart"
+      run: |
+        echo "自动修复导入排序等问题..."
+        dart fix --apply --code=directives_ordering
+
     # 2. 代码格式化（自动修复缩进、空格等问题）
     format:
       glob: "*.dart"

@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_tem/components/BaseAppBar/index.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class WebViewPageView extends StatefulWidget {
@@ -145,8 +147,7 @@ class _WebViewPageState extends State<WebViewPageView> {
                 title: const Text('在浏览器中打开'),
                 onTap: () async {
                   Navigator.pop(context);
-                  // 可以使用 url_launcher 插件在浏览器中打开链接
-                  // await launchUrl(Uri.parse(widget.url));
+                  await _openInBrowser();
                 },
               ),
               ListTile(
@@ -154,9 +155,7 @@ class _WebViewPageState extends State<WebViewPageView> {
                 title: const Text('复制链接'),
                 onTap: () {
                   Navigator.pop(context);
-                  // 可以使用 Clipboard 插件复制链接
-                  // Clipboard.setData(ClipboardData(text: widget.url));
-                  Get.snackbar('提示', '链接已复制');
+                  _copyLink();
                 },
               ),
             ],
@@ -164,5 +163,26 @@ class _WebViewPageState extends State<WebViewPageView> {
         );
       },
     );
+  }
+
+  Future<void> _openInBrowser() async {
+    final uri = Uri.parse(widget.url);
+    final canLaunch = await canLaunchUrl(uri);
+    if (!canLaunch) {
+      Get.snackbar('提示', '无法在浏览器打开该链接');
+      return;
+    }
+    final success = await launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication,
+    );
+    if (!success) {
+      Get.snackbar('提示', '打开浏览器失败');
+    }
+  }
+
+  Future<void> _copyLink() async {
+    await Clipboard.setData(ClipboardData(text: widget.url));
+    Get.snackbar('提示', '链接已复制');
   }
 }
