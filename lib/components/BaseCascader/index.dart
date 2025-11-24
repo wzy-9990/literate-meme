@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_tem/api/modules/common.dart';
+import 'package:flutter_tem/components/BaseEmpty/index.dart';
+import 'package:flutter_tem/components/BaseLoading/index.dart';
 
 /// 级联节点
 class BaseCascaderNode {
@@ -30,6 +32,8 @@ class BaseCascaderPicker extends StatefulWidget {
     this.maxSelectCount = 3,
     this.selectableLevels = const {3},
     this.initialSelectedIds = const [],
+    this.showAllEntry = false,
+    this.showPathBreadcrumb = false,
     this.onConfirm,
   });
 
@@ -50,6 +54,12 @@ class BaseCascaderPicker extends StatefulWidget {
 
   /// 初始选中 ID 列表
   final List<String> initialSelectedIds;
+
+  /// 是否展示“全国/全省/全市”快捷入口
+  final bool showAllEntry;
+
+  /// 是否显示顶部路径面包屑（省/市/区标签）
+  final bool showPathBreadcrumb;
 
   /// 确认回调
   final void Function(List<BaseCascaderNode> selected)? onConfirm;
@@ -197,9 +207,10 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
     try {
       final data = await getAreaConfigApi(type: 1);
       if (data is List) {
-        _options = data.map((e) => _mapNode(e)).toList();
+        _options = _injectAllOptions(data.map((e) => _mapNode(e)).toList());
       } else if (data is Map && data['data'] is List) {
-        _options = (data['data'] as List).map((e) => _mapNode(e)).toList();
+        _options = _injectAllOptions(
+            (data['data'] as List).map((e) => _mapNode(e)).toList());
       } else {
         _error = '未获取到地区数据';
       }
@@ -227,11 +238,67 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
     );
   }
 
+  List<BaseCascaderNode> _injectAllOptions(List<BaseCascaderNode> provinces) {
+    if (!widget.showAllEntry) return provinces;
+
+    // 顶部添加“全国”
+    final List<BaseCascaderNode> result = [
+      const BaseCascaderNode(
+        id: 'all_country',
+        label: '全国',
+      ),
+      ...provinces
+    ];
+
+    // 为省级添加“全<省名>”，为市级添加“全<市名>”
+    for (int i = 0; i < result.length; i++) {
+      final province = result[i];
+      if (province.children.isEmpty) continue;
+      final newCities = <BaseCascaderNode>[
+        BaseCascaderNode(
+          id: '${province.id}_all_province',
+          label: '全${province.label}',
+        ),
+        ...province.children,
+      ];
+      final patchedCities = <BaseCascaderNode>[];
+      for (final city in newCities) {
+        if (city.children.isEmpty) {
+          patchedCities.add(city);
+        } else {
+          patchedCities.add(
+            BaseCascaderNode(
+              id: city.id,
+              label: city.label,
+              children: [
+                BaseCascaderNode(
+                  id: '${city.id}_all_city',
+                  label: '全${city.label}',
+                ),
+                ...city.children,
+              ],
+            ),
+          );
+        }
+      }
+      result[i] = BaseCascaderNode(
+        id: province.id,
+        label: province.label,
+        children: patchedCities,
+      );
+    }
+
+    return result;
+  }
+
   Widget build(BuildContext context) {
     if (_loading) {
       return const SizedBox(
         height: 420,
-        child: Center(child: CupertinoActivityIndicator()),
+        child: ClipRRect(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+          child: BaseLoading(message: '加载中...'),
+        ),
       );
     }
 
@@ -239,7 +306,10 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
       // 初始未加载
       return const SizedBox(
         height: 420,
-        child: Center(child: CupertinoActivityIndicator()),
+        child: ClipRRect(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+          child: BaseLoading(message: '加载中...'),
+        ),
       );
     }
 
@@ -247,9 +317,10 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
       return SizedBox(
         height: 420,
         child: Center(
-          child: Text(
-            _error,
-            style: const TextStyle(color: Colors.red),
+          child: BaseEmpty(
+            title: _error,
+            buttonText: '重试',
+            onButtonPressed: _initOptions,
           ),
         ),
       );
@@ -257,7 +328,12 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
 
     return SafeArea(
       child: Container(
-        color: Colors.white,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(16),
+          ),
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -297,18 +373,11 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
   }
 
   Widget _buildHeader() {
+    final primaryColor = Theme.of(context).colorScheme.primary;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         children: [
-          Text(
-            widget.title,
-            style: const TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const Spacer(),
           CupertinoButton(
             padding: EdgeInsets.zero,
             onPressed: () => Navigator.of(context).pop(),
@@ -317,17 +386,49 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
               style: TextStyle(color: CupertinoColors.systemGrey),
             ),
           ),
-          const SizedBox(width: 4),
+          Expanded(
+            child: Align(
+              alignment: Alignment.center,
+              child: Text(
+                widget.title,
+                style: const TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
+          CupertinoButton(
+            padding: EdgeInsets.zero,
+            onPressed: () {
+              setState(() {
+                _provinceIndex = null;
+                _cityIndex = null;
+                _districtIndex = null;
+                _selectedIds.clear();
+                _searchText = '';
+                _searchHits.clear();
+              });
+            },
+            child: const Text(
+              '清空',
+              style: TextStyle(color: CupertinoColors.systemGrey),
+            ),
+          ),
           CupertinoButton(
             padding: EdgeInsets.zero,
             onPressed: () {
               final selected = _collectSelected();
+              if (selected.isEmpty) {
+                EasyLoading.showToast('请至少选择一个地区');
+                return;
+              }
               widget.onConfirm?.call(selected);
               Navigator.of(context).pop(selected);
             },
-            child: const Text(
+            child: Text(
               '完成',
-              style: TextStyle(color: CupertinoColors.activeBlue),
+              style: TextStyle(color: primaryColor),
             ),
           ),
         ],
@@ -341,70 +442,64 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              _buildPathChip(_provinceLabel, isActive: _provinceIndex != null),
-              const SizedBox(width: 8),
-              _buildPathChip(_cityLabel, isActive: _cityIndex != null),
-              const SizedBox(width: 8),
-              _buildPathChip(_districtLabel, isActive: _districtIndex != null),
-              const Spacer(),
-              TextButton(
-                onPressed: () {
-                  setState(() {
-                    _provinceIndex = null;
-                    _cityIndex = null;
-                    _districtIndex = null;
-                    _selectedIds.clear();
-                    _searchText = '';
-                    _searchHits.clear();
-                  });
-                },
-                child: const Text('清空'),
-              )
-            ],
-          ),
-          const SizedBox(height: 8),
+          if (widget.showPathBreadcrumb) ...[
+            Row(
+              children: [
+                _buildPathChip(_provinceLabel,
+                    isActive: _provinceIndex != null),
+                const SizedBox(width: 8),
+                _buildPathChip(_cityLabel, isActive: _cityIndex != null),
+                const SizedBox(width: 8),
+                _buildPathChip(_districtLabel,
+                    isActive: _districtIndex != null),
+              ],
+            ),
+            const SizedBox(height: 8),
+          ],
           if (_selectedNodes.isNotEmpty)
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: _selectedNodes
-                  .map(
-                    (node) => Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: CupertinoColors.systemGrey6,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: CupertinoColors.systemGrey4),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            node.label,
-                            style: const TextStyle(
-                                fontSize: 13, color: Colors.black87),
-                          ),
-                          const SizedBox(width: 6),
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                _selectedIds.remove(node.id);
-                              });
-                            },
-                            child: const Icon(
-                              CupertinoIcons.xmark_circle_fill,
-                              size: 16,
-                              color: CupertinoColors.systemGrey,
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: _selectedNodes
+                    .map(
+                      (node) => Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: CupertinoColors.systemGrey6,
+                          borderRadius: BorderRadius.circular(16),
+                          border:
+                              Border.all(color: CupertinoColors.systemGrey4),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              node.label,
+                              style: const TextStyle(
+                                  fontSize: 13, color: Colors.black87),
                             ),
-                          )
-                        ],
+                            const SizedBox(width: 6),
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _selectedIds.remove(node.id);
+                                });
+                              },
+                              child: const Icon(
+                                CupertinoIcons.xmark_circle_fill,
+                                size: 16,
+                                color: CupertinoColors.systemGrey,
+                              ),
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                  )
-                  .toList(),
+                    )
+                    .toList(),
+              ),
             ),
         ],
       ),
@@ -412,15 +507,14 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
   }
 
   Widget _buildPathChip(String text, {bool isActive = false}) {
+    final primaryColor = Theme.of(context).colorScheme.primary;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: isActive
-            ? CupertinoColors.activeBlue.withOpacity(0.15)
-            : Colors.grey.shade200,
+        color: isActive ? primaryColor.withOpacity(0.15) : Colors.grey.shade200,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isActive ? CupertinoColors.activeBlue : Colors.transparent,
+          color: isActive ? primaryColor : Colors.transparent,
         ),
       ),
       child: Text(
@@ -452,6 +546,7 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
       child: ListView.builder(
         itemCount: list.length,
         itemBuilder: (_, index) {
+          final primaryColor = Theme.of(context).colorScheme.primary;
           final node = list[index];
           final selected = _selectedIds.contains(node.id);
           final isActive = currentIndex == index;
@@ -469,6 +564,7 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
               color: isActive ? CupertinoColors.systemGrey6 : null,
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   if (widget.multiSelect)
                     GestureDetector(
@@ -479,7 +575,7 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
                             ? CupertinoIcons.check_mark_circled_solid
                             : CupertinoIcons.circle,
                         color: canSelect
-                            ? CupertinoColors.activeBlue
+                            ? primaryColor
                             : CupertinoColors.systemGrey,
                         size: 20,
                       ),
@@ -509,6 +605,12 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
   }
 
   Widget _buildSearchResult() {
+    if (_searchHits.isEmpty) {
+      return const BaseEmpty(
+        title: '未找到结果',
+        subtitle: '换个关键词试试',
+      );
+    }
     return ListView.builder(
       itemCount: _searchHits.length,
       itemBuilder: (_, index) {
@@ -674,6 +776,7 @@ Future<List<BaseCascaderNode>?> showCascaderPicker(
   BuildContext context, {
   List<BaseCascaderNode>? options,
   bool multiSelect = false,
+  bool showAllEntry = false,
   Set<int> selectableLevels = const {3},
   List<String> initialSelectedIds = const [],
   String title = '选择地区',
@@ -685,6 +788,7 @@ Future<List<BaseCascaderNode>?> showCascaderPicker(
       return BaseCascaderPicker(
         options: options,
         multiSelect: multiSelect,
+        showAllEntry: showAllEntry,
         selectableLevels: selectableLevels,
         initialSelectedIds: initialSelectedIds,
         title: title,

@@ -82,9 +82,13 @@ class HomeView extends StatelessWidget {
             onPressed: () async {
               final result = await showCascaderPicker(
                 context,
-                multiSelect: true,
+                // multiSelect: true,
+                // showAllEntry: true,
                 selectableLevels: {1, 2, 3},
-                initialSelectedIds: const ['330106', '330105'], // 杭州西湖区、拱墅区
+                // initialSelectedIds: const [
+                //   'all_country',
+                //   '34_all_province'
+                // ], // 杭州西湖区、拱墅区
               );
               if (result != null) {
                 debugPrint(result.toString());
