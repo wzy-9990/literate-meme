@@ -37,7 +37,7 @@ class MySettingLogic extends GetxController {
       AppRoutes.myChangePassword,
       callback: (result) async {
         isLoading.value = true;
-        initData();
+        updateUserInfo('张三');
       },
     );
   }
