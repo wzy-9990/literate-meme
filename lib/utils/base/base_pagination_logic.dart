@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tem/utils/base/delayed_initial_load_mixin.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -23,7 +24,8 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 ///   }
 /// }
 /// ```
-abstract class BasePaginationLogic<T> extends GetxController {
+abstract class BasePaginationLogic<T> extends GetxController
+    with DelayedInitialLoadMixin {
   /// 刷新控制器
   final RefreshController refreshController =
       RefreshController(initialRefresh: false);
@@ -67,38 +69,20 @@ abstract class BasePaginationLogic<T> extends GetxController {
   /// 是否处于搜索状态
   bool get isSearching => _searchParams != null && _searchParams!.isNotEmpty;
 
-  /// 是否在 onInit 自动加载数据（部分页面可延迟到 onReady 避免路由动画抖动）
-  bool get autoLoadOnInit => true;
-
-  /// 首次加载的延迟（用于等待路由动画结束再加载）
-  Duration get initialLoadDelay => Duration.zero;
-
-  @override
-  void onInit() {
-    super.onInit();
-    if (autoLoadOnInit) {
-      loadData();
-    }
-  }
-
-  @override
-  void onReady() {
-    super.onReady();
-    if (!autoLoadOnInit) {
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        if (initialLoadDelay > Duration.zero) {
-          await Future.delayed(initialLoadDelay);
-        }
-        await loadData();
-      });
-    }
-  }
-
   @override
   void onClose() {
     refreshController.dispose();
     super.onClose();
   }
+
+  @override
+  bool get autoLoadOnInit => true;
+
+  @override
+  Duration get initialLoadDelay => const Duration(milliseconds: 100);
+
+  @override
+  Future<void> onLoad() => loadData();
 
   /// 子类必须实现：获取数据的接口
   ///

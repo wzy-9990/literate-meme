@@ -2,17 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_tem/page/index/modules/my/logic.dart';
 import 'package:flutter_tem/routers/app_routes.dart';
+import 'package:flutter_tem/utils/base/delayed_initial_load_mixin.dart';
 import 'package:flutter_tem/utils/storage/index.dart';
 import 'package:get/get.dart';
 
-class ChangePasswordLogic extends GetxController {
+class ChangePasswordLogic extends GetxController with DelayedInitialLoadMixin {
   final myLogic = Get.find<MyLogic>();
 
   RxBool isLoading = false.obs;
   RxMap userInfo = RxMap();
+
   @override
-  void onInit() {
-    super.onInit();
+  bool get autoLoadOnInit => false;
+
+  @override
+  Duration get initialLoadDelay => const Duration(milliseconds: 100);
+
+  @override
+  Future<void> onLoad() async {
     initData();
   }
 
