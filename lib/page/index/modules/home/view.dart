@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_tem/components/BaseAppBar/index.dart';
+import 'package:flutter_tem/components/BaseText/index.dart';
 import 'package:flutter_tem/page/index/modules/home/logic.dart';
 import 'package:flutter_tem/utils/modules/dict/home.dart';
-import 'package:flutter_tem/utils/modules/function/common.dart';
 import 'package:get/get.dart';
 
 class HomeView extends StatelessWidget {
@@ -27,7 +28,12 @@ class HomeView extends StatelessWidget {
               ),
             );
           }),
-          Text(CommonFunction.formaDataString({})),
+          const BaseText('chess'),
+          BaseText(20.sp),
+          const BaseText(
+            'chess',
+          ),
+          const Text('chess'),
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {

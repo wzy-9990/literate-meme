@@ -16,6 +16,9 @@ class BaseText extends StatelessWidget {
   /// 金额模式的字体大小（作为基准，再按长度缩放）
   final double moneyBaseFontSize;
 
+  /// 非金额场景是否也按长度自适应字号
+  final bool autoFit;
+
   /// 透传 Text 相关属性
   final TextStyle? style;
   final StrutStyle? strutStyle;
@@ -35,7 +38,8 @@ class BaseText extends StatelessWidget {
     this.data, {
     super.key,
     this.isMoney = false,
-    this.moneyBaseFontSize = 20,
+    this.moneyBaseFontSize = 14,
+    this.autoFit = false,
     this.style,
     this.strutStyle,
     this.textAlign,
@@ -59,10 +63,19 @@ class BaseText extends StatelessWidget {
 
     TextStyle? effectiveStyle = style;
     if (isMoney) {
+      final hasFontSize = style?.fontSize != null;
       final baseSize = style?.fontSize ?? moneyBaseFontSize;
-      final fontSize = CommonFunction.getMoneyFontSize(baseSize, data).sp;
+      final adjustedSize =
+          CommonFunction.getMoneyFontSize(baseSize, data).toDouble();
+      final fontSize = hasFontSize ? adjustedSize : adjustedSize.sp;
       effectiveStyle =
           (style ?? const TextStyle()).copyWith(fontSize: fontSize);
+    } else if (autoFit) {
+      final baseSize = style?.fontSize ?? 14.sp;
+      final adjustedSize =
+          CommonFunction.getMoneyFontSize(baseSize, text).toDouble();
+      effectiveStyle = (style ?? TextStyle(fontSize: baseSize))
+          .copyWith(fontSize: adjustedSize);
     }
 
     return Text(

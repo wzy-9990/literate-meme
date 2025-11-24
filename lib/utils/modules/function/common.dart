@@ -131,11 +131,11 @@ class CommonFunction {
   /// 根据金额长度收缩字体：
   /// - 先用 formatAmount 格式化，再按数字位数收缩
   /// - 默认返回 basePx（建议传 sp 值）
-  /// - 位数 7-10: 缩小 2；11-14: 缩小 4；>14: 缩小 6；最小 12
+  /// - 位数 <=6 不缩小；7-10: 缩小 2；11-14: 缩小 4；>14: 缩小 6；最小 12
   /// - 若用了 ScreenUtil，可将返回值再 `.sp` 转为实际 px
-  static num getMoneyFontSize(double basePx, dynamic amount) {
+  static double getMoneyFontSize(double basePx, dynamic amount) {
     if (amount == null || (amount is String && amount.trim().isEmpty)) {
-      return basePx * 2; // 对齐原始实现的放大
+      return basePx;
     }
 
     final formatted = formatAmount(amount);
@@ -151,7 +151,11 @@ class CommonFunction {
       shrink = 6;
     }
 
+    if (shrink == 0) {
+      return basePx;
+    }
+
     final finalPx = (basePx - shrink).clamp(12, double.infinity);
-    return finalPx;
+    return finalPx.toDouble();
   }
 }
