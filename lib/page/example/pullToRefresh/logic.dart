@@ -41,12 +41,6 @@ class PullToRefreshExampleLogic
     super.onInit();
   }
 
-  @override
-  bool get autoLoadOnInit => false;
-
-  @override
-  Duration get initialLoadDelay => const Duration(milliseconds: 100);
-
   // 搜索框控制器
   final TextEditingController searchController = TextEditingController();
   @override

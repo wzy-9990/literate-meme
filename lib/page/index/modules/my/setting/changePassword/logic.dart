@@ -13,12 +13,6 @@ class ChangePasswordLogic extends GetxController with DelayedInitialLoadMixin {
   RxMap userInfo = RxMap();
 
   @override
-  bool get autoLoadOnInit => false;
-
-  @override
-  Duration get initialLoadDelay => const Duration(milliseconds: 100);
-
-  @override
   Future<void> onLoad() async {
     initData();
   }

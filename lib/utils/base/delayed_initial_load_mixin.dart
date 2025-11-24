@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 /// - 需要立即加载：保持默认值
 mixin DelayedInitialLoadMixin on GetxController {
   /// 是否在 onInit 里立即加载；false 时改为 onReady 首帧后再调
-  bool get autoLoadOnInit => true;
+  bool get autoLoadOnInit => false;
 
   /// 首次加载前的额外延迟（避免路由动画期间触发）
   Duration get initialLoadDelay => const Duration(milliseconds: 100);
