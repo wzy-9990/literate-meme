@@ -84,8 +84,10 @@ class HomeView extends StatelessWidget {
                 context,
                 multiSelect: true,
                 selectableLevels: {1, 2, 3},
+                initialSelectedIds: const ['330106', '330105'], // 杭州西湖区、拱墅区
               );
               if (result != null) {
+                debugPrint(result.toString());
                 final names = result.map((e) => e.label).join(', ');
                 Get.snackbar('选择结果', names);
               }

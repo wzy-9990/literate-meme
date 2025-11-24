@@ -141,6 +141,32 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
     return result;
   }
 
+  void _applyInitialSelection() {
+    if (widget.initialSelectedIds.isEmpty || _options.isEmpty) return;
+    _selectedIds.addAll(widget.initialSelectedIds);
+    final lastId = widget.initialSelectedIds.last;
+    final path = _findPathById(_options, lastId);
+    if (path != null) {
+      _setPath(path, triggerSetState: false);
+    }
+  }
+
+  List<BaseCascaderNode>? _findPathById(
+      List<BaseCascaderNode> nodes, String targetId,
+      [List<BaseCascaderNode> path = const []]) {
+    for (final node in nodes) {
+      final currentPath = [...path, node];
+      if (node.id == targetId) {
+        return currentPath;
+      }
+      if (node.children.isNotEmpty) {
+        final found = _findPathById(node.children, targetId, currentPath);
+        if (found != null) return found;
+      }
+    }
+    return null;
+  }
+
   void _updateSearch(String value) {
     setState(() {
       _searchText = value.trim();
@@ -157,9 +183,9 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
 
   Future<void> _initOptions() async {
     if (widget.options != null && widget.options!.isNotEmpty) {
-      setState(() {
-        _options = widget.options!;
-      });
+      _options = widget.options!;
+      _applyInitialSelection();
+      setState(() {});
       return;
     }
 
@@ -177,6 +203,7 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
       } else {
         _error = '未获取到地区数据';
       }
+      _applyInitialSelection();
     } catch (e) {
       _error = '获取地区失败';
     } finally {
@@ -520,7 +547,7 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
     );
   }
 
-  void _setPath(List<BaseCascaderNode> path) {
+  void _setPath(List<BaseCascaderNode> path, {bool triggerSetState = true}) {
     if (path.isEmpty) return;
     _provinceIndex = _options.indexWhere((element) => element.id == path[0].id);
     if (_provinceIndex != null && _provinceIndex! >= 0 && path.length > 1) {
@@ -540,7 +567,9 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
     } else {
       _districtIndex = null;
     }
-    setState(() {});
+    if (triggerSetState) {
+      setState(() {});
+    }
   }
 
   Widget _buildHighlightText(
