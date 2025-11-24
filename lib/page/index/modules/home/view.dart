@@ -82,8 +82,8 @@ class HomeView extends StatelessWidget {
             onPressed: () async {
               final result = await showCascaderPicker(
                 context,
-                // multiSelect: true,
-                // showAllEntry: true,
+                multiSelect: true,
+                showAllEntry: true,
                 selectableLevels: {1, 2, 3},
                 // initialSelectedIds: const [
                 //   'all_country',
@@ -92,7 +92,10 @@ class HomeView extends StatelessWidget {
               );
               if (result != null) {
                 debugPrint(result.toString());
-                final names = result.map((e) => e.label).join(', ');
+                final names = result
+                    .map((e) =>
+                        '${e['provinceName'] ?? ''} ${e['cityName'] ?? ''} ${e['districtName'] ?? ''}')
+                    .join('\n');
                 Get.snackbar('选择结果', names);
               }
             },

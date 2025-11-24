@@ -62,7 +62,8 @@ class BaseCascaderPicker extends StatefulWidget {
   final bool showPathBreadcrumb;
 
   /// 确认回调
-  final void Function(List<BaseCascaderNode> selected)? onConfirm;
+  /// 返回的每一项包含：provinceName/provinceCode/cityName/cityCode/districtName/districtCode
+  final void Function(List<Map<String, String?>> selected)? onConfirm;
 
   @override
   State<BaseCascaderPicker> createState() => _BaseCascaderPickerState();
@@ -148,6 +149,47 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
     }
 
     walk(_options);
+    return result;
+  }
+
+  List<List<BaseCascaderNode>> _collectSelectedPaths() {
+    final List<List<BaseCascaderNode>> result = [];
+
+    void walk(List<BaseCascaderNode> list, List<BaseCascaderNode> path) {
+      for (final node in list) {
+        final currentPath = [...path, node];
+        final level = currentPath.length;
+        if (_selectedIds.contains(node.id) && _canSelect(node, level)) {
+          result.add(currentPath);
+        }
+        if (node.children.isNotEmpty) {
+          walk(node.children, currentPath);
+        }
+      }
+    }
+
+    walk(_options, []);
+    return result;
+  }
+
+  List<Map<String, String?>> _collectSelectedObjects() {
+    final paths = _collectSelectedPaths();
+    final List<Map<String, String?>> result = [];
+
+    for (final path in paths) {
+      final province = path.isNotEmpty ? path[0] : null;
+      final city = path.length > 1 ? path[1] : null;
+      final district = path.length > 2 ? path[2] : null;
+      result.add({
+        'provinceName': province?.label,
+        'provinceCode': province?.id,
+        'cityName': city?.label,
+        'cityCode': city?.id,
+        'districtName': district?.label,
+        'districtCode': district?.id,
+      });
+    }
+
     return result;
   }
 
@@ -375,20 +417,24 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
   Widget _buildHeader() {
     final primaryColor = Theme.of(context).colorScheme.primary;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      child: Row(
-        children: [
-          CupertinoButton(
-            padding: EdgeInsets.zero,
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text(
-              '取消',
-              style: TextStyle(color: CupertinoColors.systemGrey),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      child: SizedBox(
+        height: 40,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Align(
+              alignment: Alignment.centerLeft,
+              child: CupertinoButton(
+                padding: EdgeInsets.zero,
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text(
+                  '取消',
+                  style: TextStyle(color: CupertinoColors.systemGrey),
+                ),
+              ),
             ),
-          ),
-          Expanded(
-            child: Align(
-              alignment: Alignment.center,
+            Center(
               child: Text(
                 widget.title,
                 style: const TextStyle(
@@ -397,41 +443,50 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
                 ),
               ),
             ),
-          ),
-          CupertinoButton(
-            padding: EdgeInsets.zero,
-            onPressed: () {
-              setState(() {
-                _provinceIndex = null;
-                _cityIndex = null;
-                _districtIndex = null;
-                _selectedIds.clear();
-                _searchText = '';
-                _searchHits.clear();
-              });
-            },
-            child: const Text(
-              '清空',
-              style: TextStyle(color: CupertinoColors.systemGrey),
+            Align(
+              alignment: Alignment.centerRight,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CupertinoButton(
+                    padding: EdgeInsets.zero,
+                    onPressed: () {
+                      setState(() {
+                        _provinceIndex = null;
+                        _cityIndex = null;
+                        _districtIndex = null;
+                        _selectedIds.clear();
+                        _searchText = '';
+                        _searchHits.clear();
+                      });
+                    },
+                    child: const Text(
+                      '清空',
+                      style: TextStyle(color: CupertinoColors.systemGrey),
+                    ),
+                  ),
+                  CupertinoButton(
+                    padding: EdgeInsets.zero,
+                    onPressed: () {
+                      final selected = _collectSelected();
+                      if (selected.isEmpty) {
+                        EasyLoading.showToast('请至少选择一个地区');
+                        return;
+                      }
+                      final payload = _collectSelectedObjects();
+                      widget.onConfirm?.call(payload);
+                      Navigator.of(context).pop(payload);
+                    },
+                    child: Text(
+                      '完成',
+                      style: TextStyle(color: primaryColor),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          CupertinoButton(
-            padding: EdgeInsets.zero,
-            onPressed: () {
-              final selected = _collectSelected();
-              if (selected.isEmpty) {
-                EasyLoading.showToast('请至少选择一个地区');
-                return;
-              }
-              widget.onConfirm?.call(selected);
-              Navigator.of(context).pop(selected);
-            },
-            child: Text(
-              '完成',
-              style: TextStyle(color: primaryColor),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -772,7 +827,7 @@ class _SearchHit {
 }
 
 /// 便捷方法：展示三级联动弹窗，返回选中的节点
-Future<List<BaseCascaderNode>?> showCascaderPicker(
+Future<List<Map<String, String?>>?> showCascaderPicker(
   BuildContext context, {
   List<BaseCascaderNode>? options,
   bool multiSelect = false,
@@ -781,7 +836,7 @@ Future<List<BaseCascaderNode>?> showCascaderPicker(
   List<String> initialSelectedIds = const [],
   String title = '选择地区',
 }) {
-  return showModalBottomSheet<List<BaseCascaderNode>>(
+  return showModalBottomSheet<List<Map<String, String?>>>(
     context: context,
     isScrollControlled: true,
     builder: (_) {
