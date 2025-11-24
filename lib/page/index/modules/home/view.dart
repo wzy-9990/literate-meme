@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_tem/components/BaseAppBar/index.dart';
+import 'package:flutter_tem/components/BaseCascader/index.dart';
 import 'package:flutter_tem/components/BaseText/index.dart';
 import 'package:flutter_tem/page/index/modules/home/logic.dart';
 import 'package:flutter_tem/utils/modules/dict/home.dart';
@@ -76,6 +77,20 @@ class HomeView extends StatelessWidget {
               logic.appIconExampleView();
             },
             child: const Text('App 图标切换'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              final result = await showCascaderPicker(
+                context,
+                multiSelect: true,
+                selectableLevels: {1, 2, 3},
+              );
+              if (result != null) {
+                final names = result.map((e) => e.label).join(', ');
+                Get.snackbar('选择结果', names);
+              }
+            },
+            child: const Text('测试 BaseCascader'),
           ),
         ],
       ),

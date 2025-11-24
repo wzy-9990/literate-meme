@@ -3,9 +3,24 @@
 set -e
 
 # === 配置项 ===
-API_KEY="d0586c5f9ba20db0a5cf0cab08d39752"
+API_KEY="649e6ec8e43ea014d8e148618745a7b6"
 UPLOAD_URL="https://www.pgyer.com/apiv2/app/upload"
 EXPORT_OPTIONS_PLIST="./sh/exportOptions.plist"
+COMMON_API_FILE="../pinkala_design/lib/api/CommonApi.dart"
+# 从 CommonApi.dart 里解析当前使用的 baseUrl 及其注释，便于上传备注
+BASE_INFO=$(sed -n "s/^[[:space:]]*static const String baseUrl[[:space:]]*=[[:space:]]*'\\([^']*\\)'[[:space:]]*;[[:space:]]*\\/\\/\\s*\\(.*\\)$/\\1|\\2/p" "${COMMON_API_FILE}" 2>/dev/null | head -n1)
+BASE_URL=${BASE_INFO%%|*}
+BASE_LABEL=${BASE_INFO#*|}
+if [ "$BASE_INFO" = "$BASE_LABEL" ]; then BASE_LABEL=""; fi
+PGY_DESCRIPTION="后端接口地址: ${BASE_URL:-未读取到}"
+if [ -n "$BASE_LABEL" ]; then
+  PGY_DESCRIPTION="${PGY_DESCRIPTION} (${BASE_LABEL})"
+fi
+BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || true)
+if [ -n "$BRANCH" ]; then
+  PGY_DESCRIPTION="${PGY_DESCRIPTION} | 前端代码分支: ${BRANCH}"
+fi
+echo "📎 蒲公英备注: ${PGY_DESCRIPTION}"
 
 # === 参数解析 ===
 BUILD_ANDROID=false
@@ -54,6 +69,7 @@ if [ "$BUILD_ANDROID" = true ]; then
   response=$(curl --progress-bar --http1.1 \
     -F "file=@${APK_PATH}" \
     -F "_api_key=${API_KEY}" \
+    --form-string "buildUpdateDescription=${PGY_DESCRIPTION}" \
     "$UPLOAD_URL")
 
   echo "📨 上传响应完成，正在解析响应..."
@@ -63,11 +79,10 @@ if [ "$BUILD_ANDROID" = true ]; then
   if [ "$success" != "" ]; then
     shortcut=$(echo "$response" | grep -o '"buildShortcutUrl":"[^"]*' | cut -d '"' -f4)
     build_key=$(echo "$response" | grep -o '"buildKey":"[^"]*' | cut -d '"' -f4)
-    app_url="https://www.pgyer.com/${shortcut}"
+    app_url="https://www.pgyer.com/${build_key}" # 固定使用 buildKey 对应的安装页
     download_url="https://www.pgyer.com/apiv2/app/install?_api_key=${API_KEY}&buildKey=${build_key}"
-
-    echo "✅ Android 上传成功: $app_url"
-    echo "✅ Android 下载链接: $download_url"
+    echo "✅ Android 上传成功（最新版本）: $app_url"
+    echo "✅ Android 下载链接（直接下载）: $download_url"
     
     if [ "$AUTO_OPEN" = true ]; then
       open "$app_url" 2>/dev/null || xdg-open "$app_url" || start "$app_url"
@@ -109,6 +124,7 @@ if [ "$BUILD_IOS" = true ]; then
   response=$(curl --progress-bar --http1.1 \
     -F "file=@${IPA_UPLOAD_PATH}" \
     -F "_api_key=${API_KEY}" \
+    --form-string "buildUpdateDescription=${PGY_DESCRIPTION}" \
     "$UPLOAD_URL")
 
   echo "📨 上传响应完成，正在解析响应..."
@@ -118,7 +134,7 @@ if [ "$BUILD_IOS" = true ]; then
   if [ "$success" != "" ]; then
     shortcut=$(echo "$response" | grep -o '"buildShortcutUrl":"[^"]*' | cut -d '"' -f4)
     build_key=$(echo "$response" | grep -o '"buildKey":"[^"]*' | cut -d '"' -f4)
-    app_url="https://www.pgyer.com/${shortcut}"
+    app_url="https://www.pgyer.com/${build_key}"
     download_url="https://www.pgyer.com/apiv2/app/install?_api_key=${API_KEY}&buildKey=${build_key}"
 
     echo "✅ iOS 上传成功: $app_url"
