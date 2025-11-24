@@ -82,8 +82,7 @@ class HomeView extends StatelessWidget {
             onPressed: () async {
               final result = await showCascaderPicker(
                 context,
-                multiSelect: true,
-                showAllEntry: true,
+
                 selectableLevels: {1, 2, 3},
                 // initialSelectedIds: const [
                 //   'all_country',

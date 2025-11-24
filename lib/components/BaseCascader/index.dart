@@ -34,8 +34,9 @@ class BaseCascaderPicker extends StatefulWidget {
     this.initialSelectedIds = const [],
     this.showAllEntry = false,
     this.showPathBreadcrumb = false,
+    this.columnCount = 3,
     this.onConfirm,
-  });
+  }) : assert(columnCount >= 1 && columnCount <= 3);
 
   /// 选项数据（省 -> 市 -> 县）
   final List<BaseCascaderNode>? options;
@@ -65,6 +66,9 @@ class BaseCascaderPicker extends StatefulWidget {
   /// 返回的每一项包含：provinceName/provinceCode/cityName/cityCode/districtName/districtCode
   final void Function(List<Map<String, String?>> selected)? onConfirm;
 
+  /// 展示的列数：1=仅省、2=省市、3=省市区
+  final int columnCount;
+
   @override
   State<BaseCascaderPicker> createState() => _BaseCascaderPickerState();
 }
@@ -87,11 +91,13 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
   List<BaseCascaderNode> get _provinces => _options;
 
   List<BaseCascaderNode> get _cities {
+    if (widget.columnCount < 2) return [];
     if (_provinceIndex == null) return [];
     return _provinces[_provinceIndex!].children;
   }
 
   List<BaseCascaderNode> get _districts {
+    if (widget.columnCount < 3) return [];
     if (_cityIndex == null) return [];
     return _cities[_cityIndex!].children;
   }
@@ -106,9 +112,16 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
   List<BaseCascaderNode> get _selectedNodes => _collectSelected();
 
   bool _canSelect(BaseCascaderNode node, int level) {
-    // 仅叶子可选，除非节点 selectable=true 强制允许
-    if (node.children.isNotEmpty) return false;
+    // 节点自定义优先
     if (node.selectable != null) return node.selectable!;
+
+    // 最后展示的列可选（单列/双列时允许省或市可选）
+    if (level == widget.columnCount) {
+      return widget.selectableLevels.contains(level);
+    }
+
+    // 其他层级仅叶子可选
+    if (node.children.isNotEmpty) return false;
     return widget.selectableLevels.contains(level);
   }
 
@@ -396,14 +409,16 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
                             _districtIndex = null;
                           });
                         }),
-                        _buildList(_cities, _cityIndex, 2, onTap: (i) {
-                          setState(() {
-                            _cityIndex = i;
-                            _districtIndex = null;
-                          });
-                        }),
-                        _buildList(_districts, _districtIndex, 3,
-                            onTap: (i) => setState(() => _districtIndex = i)),
+                        if (widget.columnCount >= 2)
+                          _buildList(_cities, _cityIndex, 2, onTap: (i) {
+                            setState(() {
+                              _cityIndex = i;
+                              _districtIndex = null;
+                            });
+                          }),
+                        if (widget.columnCount == 3)
+                          _buildList(_districts, _districtIndex, 3,
+                              onTap: (i) => setState(() => _districtIndex = i)),
                       ],
                     )
                   : _buildSearchResult(),
@@ -502,11 +517,15 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
               children: [
                 _buildPathChip(_provinceLabel,
                     isActive: _provinceIndex != null),
-                const SizedBox(width: 8),
-                _buildPathChip(_cityLabel, isActive: _cityIndex != null),
-                const SizedBox(width: 8),
-                _buildPathChip(_districtLabel,
-                    isActive: _districtIndex != null),
+                if (widget.columnCount >= 2) ...[
+                  const SizedBox(width: 8),
+                  _buildPathChip(_cityLabel, isActive: _cityIndex != null),
+                ],
+                if (widget.columnCount == 3) ...[
+                  const SizedBox(width: 8),
+                  _buildPathChip(_districtLabel,
+                      isActive: _districtIndex != null),
+                ],
               ],
             ),
             const SizedBox(height: 8),
@@ -644,7 +663,8 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
                       ),
                     ),
                   ),
-                  if (node.children.isNotEmpty)
+                  // 只有在非最后一列且有子节点时显示箭头
+                  if (node.children.isNotEmpty && level < widget.columnCount)
                     Icon(
                       Icons.chevron_right,
                       size: 18,
@@ -834,6 +854,7 @@ Future<List<Map<String, String?>>?> showCascaderPicker(
   bool showAllEntry = false,
   Set<int> selectableLevels = const {3},
   List<String> initialSelectedIds = const [],
+  int columnCount = 3,
   String title = '选择地区',
 }) {
   return showModalBottomSheet<List<Map<String, String?>>>(
@@ -846,6 +867,7 @@ Future<List<Map<String, String?>>?> showCascaderPicker(
         showAllEntry: showAllEntry,
         selectableLevels: selectableLevels,
         initialSelectedIds: initialSelectedIds,
+        columnCount: columnCount,
         title: title,
       );
     },
