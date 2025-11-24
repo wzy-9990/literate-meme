@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_tem/api/http.dart';
 import 'package:flutter_tem/components/BaseImage/preview.dart';
+import 'package:flutter_tem/components/BaseInkWell/index.dart';
 import 'package:flutter_tem/config/api/index.dart';
 import 'package:flutter_tem/utils/permission/index.dart';
 import 'package:image_picker/image_picker.dart';
@@ -1111,31 +1112,29 @@ class _BaseUploadState extends State<BaseUpload> {
 
   /// 添加按钮（网格）
   Widget _buildAddButton() {
-    return Material(
-      color: Colors.transparent,
-      child: Ink(
-        width: 100,
-        height: 100,
-        decoration: BoxDecoration(
-          border:
-              Border.all(color: Colors.grey[300]!, style: BorderStyle.solid),
-          borderRadius: BorderRadius.circular(8),
-          color: Colors.grey[50],
-        ),
-        child: InkWell(
-          onTap: _pickFiles,
-          borderRadius: BorderRadius.circular(8),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.add, size: 32, color: Colors.grey[600]),
-              const SizedBox(height: 4),
-              Text(
-                '添加${widget.imageOnly ? "图片" : "文件"}',
-                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-              ),
-            ],
-          ),
+    return Container(
+      width: 100,
+      height: 100,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey[300]!, style: BorderStyle.solid),
+        borderRadius: BorderRadius.circular(8),
+        color: Colors.grey[50],
+      ),
+      child: BaseInkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: _pickFiles,
+        backgroundColor: Colors.transparent,
+        expand: true,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.add, size: 32, color: Colors.grey[600]),
+            const SizedBox(height: 4),
+            Text(
+              '添加${widget.imageOnly ? "图片" : "文件"}',
+              style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+            ),
+          ],
         ),
       ),
     );
@@ -1143,30 +1142,28 @@ class _BaseUploadState extends State<BaseUpload> {
 
   /// 添加按钮（列表）
   Widget _buildAddButtonList() {
-    return Material(
-      color: Colors.transparent,
-      child: Ink(
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey[300]!),
-          borderRadius: BorderRadius.circular(8),
-          color: Colors.grey[50],
-        ),
-        child: InkWell(
-          onTap: _pickFiles,
-          borderRadius: BorderRadius.circular(8),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.add_circle_outline, color: Colors.grey[600]),
-                const SizedBox(width: 8),
-                Text(
-                  '添加${widget.imageOnly ? "图片" : "文件"}',
-                  style: TextStyle(color: Colors.grey[700]),
-                ),
-              ],
-            ),
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey[300]!),
+        borderRadius: BorderRadius.circular(8),
+        color: Colors.grey[50],
+      ),
+      child: BaseInkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: _pickFiles,
+        backgroundColor: Colors.transparent,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.add_circle_outline, color: Colors.grey[600]),
+              const SizedBox(width: 8),
+              Text(
+                '添加${widget.imageOnly ? "图片" : "文件"}',
+                style: TextStyle(color: Colors.grey[700]),
+              ),
+            ],
           ),
         ),
       ),
