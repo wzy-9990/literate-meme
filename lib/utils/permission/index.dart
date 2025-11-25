@@ -1,7 +1,8 @@
 import 'dart:io';
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_tem/components/BaseCupertinoAlertDialog/index.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -265,23 +266,16 @@ class PermissionUtil {
 
     // 统一使用 iOS 风格的弹窗
     return Get.dialog(
-      CupertinoAlertDialog(
-        title: Text('需要$permissionType权限'),
-        content: Text(guidanceText),
-        actions: [
-          CupertinoDialogAction(
-            onPressed: () => Get.back(),
-            child: const Text('取消'),
-          ),
-          CupertinoDialogAction(
-            isDefaultAction: true,
-            onPressed: () {
-              Get.back();
-              openAppSettings();
-            },
-            child: const Text('去设置'),
-          ),
-        ],
+      BaseCupertinoAlertDialog(
+        title: '需要$permissionType权限',
+        subtitle: guidanceText,
+        cancelText: '取消',
+        confirmText: '去设置',
+        onCancel: () => Get.back(),
+        onConfirm: () {
+          Get.back();
+          openAppSettings();
+        },
       ),
       barrierDismissible: false,
     );

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_tem/components/BaseCupertinoAlertDialog/index.dart';
 import 'package:flutter_tem/routers/app_routes.dart';
 import 'package:flutter_tem/routers/index.dart';
 import 'package:flutter_tem/utils/storage/index.dart';
@@ -24,45 +25,28 @@ class BaseAuthDialog {
 
     final completer = Completer<Map<String, dynamic>?>();
 
-    showCupertinoDialog(
-      context: Get.context!,
-      builder: (_) {
-        return CupertinoAlertDialog(
-          title: Text(checkIsExpired ? '登录已过期' : '未登录'),
-          content: Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: Text(
-              checkIsExpired ? '您的登录身份已过期，请重新登录。' : '您还未登录，请先登录。',
-            ),
-          ),
-          actions: [
-            if (!checkIsExpired)
-              CupertinoDialogAction(
-                child: const Text('取消'),
-                onPressed: () {
-                  Navigator.pop(Get.context!);
-                  _isShowingAuthDialog = false;
-                  completer.complete(null);
-                },
-              ),
-            CupertinoDialogAction(
-              isDefaultAction: true,
-              child: const Text('去登录'),
-              onPressed: () async {
-                Navigator.pop(Get.context!);
-                _isShowingAuthDialog = false;
+    showBaseCupertinoAlertDialog(
+      Get.context!,
+      title: checkIsExpired ? '登录已过期' : '未登录',
+      subtitle: checkIsExpired ? '您的登录身份已过期，请重新登录。' : '您还未登录，请先登录。',
+      cancelText: checkIsExpired ? '' : '取消',
+      confirmText: '去登录',
+      onCancel: () {
+        Navigator.pop(Get.context!);
+        _isShowingAuthDialog = false;
+        completer.complete(null);
+      },
+      onConfirm: () async {
+        Navigator.pop(Get.context!);
+        _isShowingAuthDialog = false;
 
-                // 跳转登录页并等待返回结果
-                final res = await NavigationUtils.toNamed(AppRoutes.login);
-                if (res != null && res is Map<String, dynamic>) {
-                  completer.complete(res);
-                } else {
-                  completer.complete(null);
-                }
-              },
-            ),
-          ],
-        );
+        // 跳转登录页并等待返回结果
+        final res = await NavigationUtils.toNamed(AppRoutes.login);
+        if (res != null && res is Map<String, dynamic>) {
+          completer.complete(res);
+        } else {
+          completer.complete(null);
+        }
       },
     );
 
