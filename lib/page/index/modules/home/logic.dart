@@ -11,6 +11,7 @@ class HomeLogic extends GetxController {
       ((directionTypeEnum['add_points']?['value'] as int)).obs;
   final RxList<int> selectedDirectionMulti = <int>[].obs;
   final RxBool privacyAgree = false.obs;
+  final RxInt tabValue = 1.obs;
 
   void initData() {
     debugPrint('首页页面初始化');
@@ -60,5 +61,9 @@ class HomeLogic extends GetxController {
 
   void updatePrivacyAgree(bool agree) {
     privacyAgree.value = agree;
+  }
+
+  void updateTabValue(int value) {
+    tabValue.value = value;
   }
 }

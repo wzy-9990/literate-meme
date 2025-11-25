@@ -7,6 +7,7 @@ import 'package:flutter_tem/components/BaseCascader/index.dart';
 import 'package:flutter_tem/components/BaseCheckbox/index.dart';
 import 'package:flutter_tem/components/BaseCupertinoAlertDialog/index.dart';
 import 'package:flutter_tem/components/BaseRadio/index.dart';
+import 'package:flutter_tem/components/BaseTab/index.dart';
 import 'package:flutter_tem/components/BaseText/index.dart';
 import 'package:flutter_tem/page/index/modules/home/logic.dart';
 import 'package:flutter_tem/utils/modules/dict/home.dart';
@@ -103,6 +104,15 @@ class HomeView extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(height: 20),
+            const Text('Tab 示例'),
+            Obx(() => BaseTab(
+                  options: directionTypeEnum.allItems,
+                  labelField: 'label',
+                  valueField: 'value',
+                  value: logic.tabValue.value,
+                  onChanged: (v) => logic.updateTabValue(v),
+                )),
             const SizedBox(height: 20),
             const Text('单选（普通）'),
             Obx(() => BaseRadioGroup<int>(
