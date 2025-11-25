@@ -12,6 +12,8 @@ Future<Map<String, dynamic>?> showBasePicker(
   String title = '请选择',
   String cancelText = '取消',
   String confirmText = '完成',
+  TextStyle? itemTextStyle,
+  TextStyle? selectedTextStyle,
 }) {
   if (options.isEmpty) return Future.value(null);
   final safeIndex = initialIndex.clamp(0, options.length - 1);
@@ -55,11 +57,19 @@ Future<Map<String, dynamic>?> showBasePicker(
                   },
                   children: options
                       .map((e) => Center(
-                              child: Text(
-                            e[labelField]?.toString() ?? '',
-                            style: const TextStyle(
-                                fontSize: 16, color: Colors.black87),
-                          )))
+                            child: _PickerItem(
+                              label: e[labelField]?.toString() ?? '',
+                              textStyle: itemTextStyle ??
+                                  const TextStyle(
+                                      fontSize: 16, color: Colors.black87),
+                              selectedTextStyle: selectedTextStyle ??
+                                  const TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                            ),
+                          ))
                       .toList(),
                 ),
               ),
@@ -120,6 +130,28 @@ class _PickerHeader extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _PickerItem extends StatelessWidget {
+  const _PickerItem({
+    required this.label,
+    required this.textStyle,
+    required this.selectedTextStyle,
+  });
+
+  final String label;
+  final TextStyle textStyle;
+  final TextStyle selectedTextStyle;
+
+  @override
+  Widget build(BuildContext context) {
+    final selected =
+        DefaultTextStyle.of(context).style.fontWeight == FontWeight.w600;
+    return Text(
+      label,
+      style: selected ? selectedTextStyle : textStyle,
     );
   }
 }

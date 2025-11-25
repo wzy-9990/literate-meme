@@ -5,6 +5,7 @@ import 'package:flutter_tem/components/BaseAppBar/index.dart';
 import 'package:flutter_tem/components/BaseButton/index.dart';
 import 'package:flutter_tem/components/BaseCascader/index.dart';
 import 'package:flutter_tem/components/BaseCheckbox/index.dart';
+import 'package:flutter_tem/components/BaseCupertinoAlertDialog/index.dart';
 import 'package:flutter_tem/components/BaseRadio/index.dart';
 import 'package:flutter_tem/components/BaseText/index.dart';
 import 'package:flutter_tem/page/index/modules/home/logic.dart';
@@ -232,6 +233,17 @@ class HomeView extends StatelessWidget {
                 }
               },
               child: const Text('测试 Picker'),
+            ),
+            const SizedBox(height: 12),
+            ElevatedButton(
+              onPressed: () {
+                showBaseCupertinoAlertDialog(
+                  context,
+                  title: '提示',
+                  subtitle: '是否确认当前操作？',
+                );
+              },
+              child: const Text('测试 CupertinoAlert'),
             ),
           ],
         ),
