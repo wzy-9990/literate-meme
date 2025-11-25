@@ -6,6 +6,7 @@ import 'package:flutter_tem/components/BaseButton/index.dart';
 import 'package:flutter_tem/components/BaseCascader/index.dart';
 import 'package:flutter_tem/components/BaseCheckbox/index.dart';
 import 'package:flutter_tem/components/BaseCupertinoAlertDialog/index.dart';
+import 'package:flutter_tem/components/BaseDatePicker/index.dart';
 import 'package:flutter_tem/components/BaseRadio/index.dart';
 import 'package:flutter_tem/components/BaseTab/index.dart';
 import 'package:flutter_tem/components/BaseText/index.dart';
@@ -229,6 +230,20 @@ class HomeView extends StatelessWidget {
                 }
               },
               child: const Text('测试 BaseCascader'),
+            ),
+            const SizedBox(height: 12),
+            ElevatedButton(
+              onPressed: () async {
+                final res = await showBaseDatePicker(
+                  context,
+                  title: '选择日期',
+                  mode: BaseDatePickerMode.date,
+                );
+                if (res != null) {
+                  Get.snackbar('日期', res.toString());
+                }
+              },
+              child: const Text('测试 Date Picker'),
             ),
             const SizedBox(height: 12),
             ElevatedButton(
