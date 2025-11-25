@@ -16,6 +16,7 @@ class ApiService {
   static bool _proxyEnabled = false;
   static String? _proxyHost;
   static int? _proxyPort;
+  static bool _showAuthDialogOn401 = true;
 
   // -------------------- 初始化配置 --------------------
   static Future<void> init() async {
@@ -35,6 +36,11 @@ class ApiService {
     } else {
       debugPrint('🔒 生产环境：代理功能已禁用');
     }
+  }
+
+  /// 配置 401 时是否弹出登录框
+  static void setAuthDialogEnabled(bool enabled) {
+    _showAuthDialogOn401 = enabled;
   }
 
   // -------------------- 构造函数 --------------------
@@ -84,54 +90,71 @@ class ApiService {
           if (response.statusCode == 200) {
             final data = response.data;
 
-            if (ApiConfig.getCode(data) == ApiConfig.unauthorizedCode) {
-              final loginResult = await BaseAuthDialog.showAuthDialog();
-              final msg = ApiConfig.getMessage(data) ?? '接口返回异常';
+            final allowAuthDialog =
+                response.requestOptions.extra['showAuthDialogOn401'] ??
+                    _showAuthDialogOn401;
+            final code = ApiConfig.getCode(data);
 
-              if (loginResult != null && loginResult['login'] == true) {
-                // 登录成功，重发请求
-                final opts = response.requestOptions;
-                final newToken = await Storage.getString(StorageKeys.token);
+            if (code == ApiConfig.unauthorizedCode) {
+              if (allowAuthDialog == true) {
+                final loginResult = await BaseAuthDialog.showAuthDialog();
+                final msg = ApiConfig.getMessage(data) ?? '接口返回异常';
 
-                // 对于包含FormData的请求，我们不自动重试，因为FormData不能重复使用
-                if (opts.data is FormData) {
-                  // 如果是FormData请求（如文件上传），我们返回一个特殊的错误
-                  // 让调用方知道需要重新准备FormData并重新发起请求
-                  return handler.reject(
-                    DioException(
-                      requestOptions: opts,
-                      error:
-                          'Login required for FormData request, please re-initiate the upload',
-                      type: DioExceptionType.badResponse,
-                    ),
+                if (loginResult != null && loginResult['login'] == true) {
+                  // 登录成功，重发请求
+                  final opts = response.requestOptions;
+                  final newToken = await Storage.getString(StorageKeys.token);
+
+                  // 对于包含FormData的请求，我们不自动重试，因为FormData不能重复使用
+                  if (opts.data is FormData) {
+                    // 如果是FormData请求（如文件上传），我们返回一个特殊的错误
+                    // 让调用方知道需要重新准备FormData并重新发起请求
+                    return handler.reject(
+                      DioException(
+                        requestOptions: opts,
+                        error:
+                            'Login required for FormData request, please re-initiate the upload',
+                        type: DioExceptionType.badResponse,
+                      ),
+                    );
+                  }
+
+                  // 非FormData请求可以安全重试
+                  final cloneOpts = opts.copyWith(
+                    headers: {
+                      ...opts.headers,
+                      if (newToken != null && newToken.isNotEmpty)
+                        'accesstoken': newToken,
+                    },
                   );
+
+                  try {
+                    final newResponse = await _dio.fetch(cloneOpts);
+                    return handler.resolve(newResponse);
+                  } on DioException catch (e) {
+                    return handler.reject(e);
+                  }
                 }
 
-                // 非FormData请求可以安全重试
-                final cloneOpts = opts.copyWith(
-                  headers: {
-                    ...opts.headers,
-                    if (newToken != null && newToken.isNotEmpty)
-                      'accesstoken': newToken,
-                  },
+                return handler.reject(
+                  DioException(
+                    requestOptions: response.requestOptions,
+                    response: response,
+                    error: '接口返回错误: $msg',
+                    type: DioExceptionType.badResponse,
+                  ),
                 );
-
-                try {
-                  final newResponse = await _dio.fetch(cloneOpts);
-                  return handler.resolve(newResponse);
-                } on DioException catch (e) {
-                  return handler.reject(e);
-                }
+              } else {
+                // 调用方不需要弹窗，直接抛出未授权错误，不提示
+                return handler.reject(
+                  DioException(
+                    requestOptions: response.requestOptions,
+                    response: response,
+                    error: 'unauthorized',
+                    type: DioExceptionType.badResponse,
+                  ),
+                );
               }
-
-              return handler.reject(
-                DioException(
-                  requestOptions: response.requestOptions,
-                  response: response,
-                  error: '接口返回错误: $msg',
-                  type: DioExceptionType.badResponse,
-                ),
-              );
             }
 
             if (data is Map<String, dynamic> && !ApiConfig.isSuccess(data)) {
@@ -151,6 +174,7 @@ class ApiService {
           }
 
           if (response.statusCode == ApiConfig.unauthorizedCode) {
+            EasyLoading.dismiss();
             await BaseAuthDialog.showAuthDialog();
           } else {
             EasyLoading.showToast('请求异常：${response.statusCode}');
@@ -177,9 +201,19 @@ class ApiService {
   }
 
   // -------------------- GET --------------------
-  Future<dynamic> get(String path, {Map<String, dynamic>? params}) async {
+  Future<dynamic> get(
+    String path, {
+    Map<String, dynamic>? params,
+    bool? showAuthDialogOn401,
+  }) async {
     try {
-      final response = await _dio.get(path, queryParameters: params);
+      final response = await _dio.get(
+        path,
+        queryParameters: params,
+        options: Options(
+          extra: {'showAuthDialogOn401': showAuthDialogOn401},
+        ),
+      );
       return ApiConfig.getData(response.data);
     } on DioException {
       rethrow;
@@ -195,11 +229,13 @@ class ApiService {
     void Function(int sent, int total)? onProgress,
     Duration? sendTimeout,
     Duration? receiveTimeout,
+    bool? showAuthDialogOn401,
   }) async {
     try {
       final Options options = Options(
         sendTimeout: sendTimeout ?? const Duration(seconds: 5),
         receiveTimeout: receiveTimeout ?? const Duration(seconds: 3),
+        extra: {'showAuthDialogOn401': showAuthDialogOn401},
       );
 
       Response response;
@@ -213,6 +249,7 @@ class ApiService {
           options: Options(
             sendTimeout: sendTimeout ?? const Duration(seconds: 60),
             receiveTimeout: receiveTimeout ?? const Duration(seconds: 60),
+            extra: {'showAuthDialogOn401': showAuthDialogOn401},
           ),
         );
       } else {

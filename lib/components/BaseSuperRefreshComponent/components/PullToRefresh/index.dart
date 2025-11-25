@@ -149,7 +149,7 @@ class BasePullToRefreshList extends StatefulWidget {
     this.noDataText = '暂无数据',
     this.noMoreText = '没有更多了～',
     this.scrollController,
-    this.requireAuth = true,
+    this.requireAuth = false,
     this.isUnAuth,
     this.unAuthImagePath,
     this.unAuthTitle,
@@ -245,7 +245,13 @@ class _BasePullToRefreshListState extends State<BasePullToRefreshList> {
         title: widget.unAuthTitle ?? '未登录',
         subtitle: widget.unAuthSubtitle ?? '登录后查看内容',
         buttonText: widget.unAuthButtonText ?? '去登录',
-        onButtonPressed: widget.onEmptyButtonPressed ?? widget.onRefresh,
+        onButtonPressed: widget.onEmptyButtonPressed ??
+            () {
+              // 跳转登录页
+              if (Get.currentRoute != '/login') {
+                Get.toNamed('/login');
+              }
+            },
       );
     }
 

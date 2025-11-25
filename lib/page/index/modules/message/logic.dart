@@ -53,7 +53,7 @@ class MessageLogic extends BasePaginationLogic<Map<String, dynamic>> {
       'organizationId': '0',
       ...?_currentParams,
     };
-    final response = await listPageUserByOrganizationIdApi(params);
+    final response = await listPageUserByOrganizationIdApi222(params);
     return PaginationResponse.fromMap(response);
   }
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_tem/components/BaseSuperRefreshComponent/components/PullToRefresh/index.dart';
 import 'package:flutter_tem/components/BaseTab/index.dart';
-import 'package:flutter_tem/page/index/logic.dart';
 import 'package:flutter_tem/page/index/modules/message/logic.dart';
 import 'package:get/get.dart';
 
@@ -12,7 +11,6 @@ class MessageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final logic = Get.find<MessageLogic>();
-    final indexLogic = Get.find<IndexLogic>();
     const tabOptions = [
       BaseTabItem(label: '全部', value: ''),
       BaseTabItem(label: '未读', value: '王'),
@@ -42,11 +40,10 @@ class MessageView extends StatelessWidget {
                 onLoadMore: logic.onLoadMore,
                 isLoading: logic.isLoading.value,
                 isSearching: logic.isSearching,
-                isUnAuth: !indexLogic.isLoggedIn,
+                requireAuth: true,
                 emptyTitle: '暂无消息',
                 emptySubtitle: '稍后再来看看',
                 emptyButtonText: '刷新',
-                onEmptyButtonPressed: logic.onRefresh,
                 children: logic.items
                     .map(
                       (item) => ListTile(

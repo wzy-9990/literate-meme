@@ -33,8 +33,7 @@ class IndexLogic extends GetxController {
     if (currentIndex.value == 0) {
       homeLogic.initData();
     } else if (currentIndex.value == 1) {
-      messageLogic ??= Get.find<MessageLogic>();
-      messageLogic!.initData();
+      _getMessageLogic()?.initData();
     } else if (currentIndex.value == 2) {
       myLogic.initData();
     }
@@ -45,7 +44,20 @@ class IndexLogic extends GetxController {
   }
 
   void updateToken(String? value) async {
-    token.value = value ?? '';
-    await Storage.setString(StorageKeys.token, value ?? '');
+    final newToken = value ?? '';
+    final wasEmpty = token.value.isEmpty;
+    token.value = newToken;
+    await Storage.setString(StorageKeys.token, newToken);
+
+    // 登录后，自动刷新消息列表（若已初始化）
+    if (newToken.isNotEmpty && wasEmpty) {
+      _getMessageLogic()?.initData();
+    }
+  }
+
+  MessageLogic? _getMessageLogic() {
+    messageLogic ??=
+        Get.isRegistered<MessageLogic>() ? Get.find<MessageLogic>() : null;
+    return messageLogic;
   }
 }
