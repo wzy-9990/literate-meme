@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_tem/components/BaseAppBar/index.dart';
+import 'package:flutter_tem/components/BaseButton/index.dart';
 import 'package:flutter_tem/components/BaseCascader/index.dart';
 import 'package:flutter_tem/components/BaseText/index.dart';
 import 'package:flutter_tem/page/index/modules/home/logic.dart';
@@ -35,6 +36,42 @@ class HomeView extends StatelessWidget {
             'chess',
           ),
           const Text('chess'),
+          const SizedBox(height: 20),
+          Wrap(
+            spacing: 12,
+            runSpacing: 8,
+            children: [
+              BaseButton(
+                text: '主题按钮',
+                onTap: () => Get.snackbar('BaseButton', '点击主题按钮'),
+              ),
+              BaseButton(
+                type: BaseButtonType.outline,
+                text: '镂空按钮',
+                onTap: () => Get.snackbar('BaseButton', '点击镂空按钮'),
+              ),
+              BaseButton(
+                type: BaseButtonType.text,
+                text: '文本按钮',
+                onTap: () => Get.snackbar('BaseButton', '点击文本按钮'),
+              ),
+              BaseButton(
+                type: BaseButtonType.gradient,
+                text: '渐变按钮',
+                onTap: () => Get.snackbar('BaseButton', '点击渐变按钮'),
+              ),
+              BaseButton(
+                type: BaseButtonType.normal,
+                text: '常规按钮',
+                onTap: () => Get.snackbar('BaseButton', '点击常规按钮'),
+              ),
+              BaseButton(
+                type: BaseButtonType.ghost,
+                text: '朴素按钮',
+                onTap: () => Get.snackbar('BaseButton', '点击朴素按钮'),
+              ),
+            ],
+          ),
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
