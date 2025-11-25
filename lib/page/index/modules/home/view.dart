@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_tem/components/BaseAppBar/index.dart';
 import 'package:flutter_tem/components/BaseButton/index.dart';
 import 'package:flutter_tem/components/BaseCascader/index.dart';
+import 'package:flutter_tem/components/BaseCheckbox/index.dart';
 import 'package:flutter_tem/components/BaseRadio/index.dart';
 import 'package:flutter_tem/components/BaseText/index.dart';
 import 'package:flutter_tem/page/index/modules/home/logic.dart';
@@ -104,6 +105,19 @@ class HomeView extends StatelessWidget {
                   onChanged: (v) => logic.updateDirection(v),
                   onChangedWithItem: (item) {
                     Get.snackbar('按钮组', '选择了 ${item['label']}');
+                  },
+                )),
+            const SizedBox(height: 20),
+            const Text('多选（按钮组）'),
+            Obx(() => BaseCheckboxGroup<int>(
+                  asButton: true,
+                  options: directionTypeEnum.allItems,
+                  values: logic.selectedDirectionMulti.toList(),
+                  valueField: 'value',
+                  labelField: 'label',
+                  onChanged: (list) => logic.updateDirectionMulti(list),
+                  onChangedWithItem: (item) {
+                    Get.snackbar('多选', '选择了 ${item['label']}');
                   },
                 )),
             const SizedBox(height: 20),

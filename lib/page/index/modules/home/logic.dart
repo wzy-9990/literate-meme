@@ -9,6 +9,7 @@ class HomeLogic extends GetxController {
   /// 当前选中的方向（默认取枚举 add_points 对应的值，否则为 1）
   final RxInt selectedDirection =
       ((directionTypeEnum['add_points']?['value'] as int)).obs;
+  final RxList<int> selectedDirectionMulti = <int>[].obs;
 
   void initData() {
     debugPrint('首页页面初始化');
@@ -50,5 +51,9 @@ class HomeLogic extends GetxController {
 
   void updateDirection(int value) {
     selectedDirection.value = value;
+  }
+
+  void updateDirectionMulti(List<int> values) {
+    selectedDirectionMulti.value = values;
   }
 }
