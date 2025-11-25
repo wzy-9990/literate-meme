@@ -80,6 +80,25 @@ class HomeView extends StatelessWidget {
                   text: '朴素按钮',
                   onTap: () => Get.snackbar('BaseButton', '点击朴素按钮'),
                 ),
+                BaseButton(
+                  text: '短字',
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                  ),
+                  onTap: () => Get.snackbar('BaseButton', '短字'),
+                ),
+                BaseButton(
+                  text: '较长一些的',
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  onTap: () => Get.snackbar('BaseButton', '较长一些'),
+                ),
+                BaseButton(
+                  text: '超长按钮',
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  onTap: () => Get.snackbar('BaseButton', '超长文字'),
+                ),
               ],
             ),
             const SizedBox(height: 20),

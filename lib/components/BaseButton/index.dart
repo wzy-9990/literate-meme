@@ -18,7 +18,7 @@ class BaseButton extends StatelessWidget {
   final Alignment? gradientEnd;
   final List<double>? gradientStops;
   final double borderWidth;
-  final double width;
+  final double? width;
   final double height;
   final VoidCallback? onTap;
   final String text;
@@ -32,6 +32,7 @@ class BaseButton extends StatelessWidget {
   final double bottomRightRadius;
   final bool enableRipple;
   final Color? splashColor;
+  final EdgeInsetsGeometry? padding;
 
   const BaseButton({
     super.key,
@@ -43,7 +44,7 @@ class BaseButton extends StatelessWidget {
     this.gradientEnd,
     this.gradientStops,
     this.borderWidth = 1,
-    this.width = 80,
+    this.width,
     this.height = 40,
     this.onTap,
     this.text = '按钮',
@@ -53,6 +54,7 @@ class BaseButton extends StatelessWidget {
     this.child,
     this.enableRipple = true,
     this.splashColor,
+    this.padding,
     double borderRadius = AppRadius.button,
     double? topLeftRadius,
     double? topRightRadius,
@@ -81,16 +83,32 @@ class BaseButton extends StatelessWidget {
           enableRipple: enableRipple,
           splashColor: rippleColor,
           highlightColor: Colors.transparent,
-          child: Container(
-            width: size.width.w,
-            height: size.height.w,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(borderRadius: _borderRadius),
-            child: child ?? _buildText(colors.border),
-          ),
+          child: _buildSizedChild(size, colors),
         ),
       ),
     );
+  }
+
+  Widget _buildSizedChild(_ButtonSize size, _ButtonColors colors) {
+    final hasWidth = size.width != null;
+    final core = Container(
+      width: hasWidth ? size.width!.w : null,
+      height: size.height.h,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(borderRadius: _borderRadius),
+      padding: padding,
+      child: child ?? _buildText(colors.border),
+    );
+    if (hasWidth) return core;
+    return IntrinsicWidth(child: core);
+  }
+
+  bool get _hasHorizontalPadding {
+    if (padding is EdgeInsets) {
+      final p = padding as EdgeInsets;
+      return p.left != 0 || p.right != 0;
+    }
+    return false;
   }
 
   void _handleTap() {
@@ -121,15 +139,18 @@ class BaseButton extends StatelessWidget {
   }
 
   _ButtonSize _resolveSize() {
-    if (type == BaseButtonType.normal ||
+    double? w = _hasHorizontalPadding ? null : width;
+    double h = height;
+    final shrinkForBorder = type == BaseButtonType.normal ||
         type == BaseButtonType.outline ||
-        type == BaseButtonType.ghost) {
-      return _ButtonSize(
-        width: width - borderWidth * 2,
-        height: height - borderWidth * 2,
-      );
+        type == BaseButtonType.ghost;
+    if (shrinkForBorder) {
+      if (w != null) {
+        w = w - borderWidth * 2;
+      }
+      h = h - borderWidth * 2;
     }
-    return _ButtonSize(width: width, height: height);
+    return _ButtonSize(width: w, height: h);
   }
 
   Color _resolveRippleColor() {
@@ -239,7 +260,7 @@ class _ButtonColors {
 }
 
 class _ButtonSize {
-  final double width;
+  final double? width;
   final double height;
 
   _ButtonSize({required this.width, required this.height});
