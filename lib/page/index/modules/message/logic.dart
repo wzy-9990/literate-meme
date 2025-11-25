@@ -1,3 +1,4 @@
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_tem/api/modules/my.dart';
 import 'package:flutter_tem/utils/base/base_pagination_logic.dart';
 import 'package:get/get.dart';
@@ -31,11 +32,9 @@ class MessageLogic extends BasePaginationLogic<Map<String, dynamic>> {
   /// 切换 Tab，并根据 Tab 值过滤数据
   void changeTab(String value, {String? type}) {
     tabValue.value = value;
-    _currentParams = value.isEmpty
-        ? (type == null ? null : {'userName': value})
-        : {
-            if (type != null) 'userName': value,
-          };
+    _currentParams = {'userName': tabValue.value};
+
+    EasyLoading.show();
     onRefresh();
   }
 
