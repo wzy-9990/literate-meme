@@ -120,6 +120,26 @@ class HomeView extends StatelessWidget {
                     Get.snackbar('多选', '选择了 ${item['label']}');
                   },
                 )),
+            const SizedBox(height: 12),
+            const Text('隐私协议（勾选框）'),
+            Obx(() {
+              final agreed = logic.privacyAgree.value;
+              return BaseCheckboxGroup<int>(
+                asButton: false,
+                options: const [
+                  {'label': '已阅读并同意隐私协议', 'value': 1},
+                ],
+                values: agreed ? const [1] : const [],
+                valueField: 'value',
+                labelField: 'label',
+                iconSize: 22,
+                iconOnly: false,
+                removeChipBorder: true,
+                disableInk: true,
+                showLabel: true,
+                onChanged: (list) => logic.updatePrivacyAgree(list.contains(1)),
+              );
+            }),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {

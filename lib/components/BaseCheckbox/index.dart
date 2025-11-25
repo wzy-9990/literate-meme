@@ -31,6 +31,11 @@ class BaseCheckboxGroup<T> extends StatelessWidget {
   final double? buttonFontSize;
   final Color? selectedTextColor;
   final Color? unselectedTextColor;
+  final double iconSize;
+  final bool iconOnly;
+  final bool removeChipBorder;
+  final bool disableInk;
+  final bool showLabel;
   final BaseButton Function(
     bool selected,
     BaseCheckboxOption<T> option,
@@ -56,6 +61,11 @@ class BaseCheckboxGroup<T> extends StatelessWidget {
     this.buttonFontSize,
     this.selectedTextColor,
     this.unselectedTextColor,
+    this.iconSize = 18,
+    this.iconOnly = false,
+    this.removeChipBorder = false,
+    this.disableInk = false,
+    this.showLabel = true,
     this.buttonBuilder,
   });
 
@@ -101,6 +111,11 @@ class BaseCheckboxGroup<T> extends StatelessWidget {
             : _CheckboxChip(
                 label: opt.option.label,
                 selected: selected,
+                iconSize: iconSize,
+                removeBorder: removeChipBorder,
+                disableInk: disableInk,
+                iconOnly: iconOnly,
+                showLabel: showLabel,
                 onTap: () => _toggle(opt),
               );
       }).toList(),
@@ -125,37 +140,50 @@ class _CheckboxChip extends StatelessWidget {
   final String label;
   final bool selected;
   final VoidCallback? onTap;
+  final double iconSize;
+  final bool iconOnly;
+  final bool removeBorder;
+  final bool disableInk;
+  final bool showLabel;
 
   const _CheckboxChip({
     required this.label,
     required this.selected,
+    required this.iconSize,
+    required this.iconOnly,
+    this.removeBorder = false,
+    this.disableInk = false,
+    this.showLabel = true,
     this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     const primary = AppColors.primary;
-    return BaseInkWell(
-      borderRadius: BorderRadius.circular(AppRadius.button),
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        decoration: BoxDecoration(
-          color: selected ? primary.withOpacity(0.1) : Colors.grey.shade200,
-          border: Border.all(
-            color: selected ? primary : Colors.transparent,
-            width: 1,
+    final bgColor = (removeBorder || iconOnly)
+        ? Colors.transparent
+        : (selected ? primary.withOpacity(0.1) : Colors.grey.shade200);
+    final content = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: bgColor,
+        border: removeBorder
+            ? null
+            : Border.all(
+                color: selected ? primary : Colors.transparent,
+                width: 1,
+              ),
+        borderRadius: BorderRadius.circular(AppRadius.button),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            selected ? Icons.check_box : Icons.check_box_outline_blank,
+            size: iconSize,
+            color: selected ? primary : Colors.grey,
           ),
-          borderRadius: BorderRadius.circular(AppRadius.button),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              selected ? Icons.check_box : Icons.check_box_outline_blank,
-              size: 18,
-              color: selected ? primary : Colors.grey,
-            ),
+          if (showLabel && !iconOnly) ...[
             const SizedBox(width: 6),
             Text(
               label,
@@ -165,8 +193,25 @@ class _CheckboxChip extends StatelessWidget {
               ),
             ),
           ],
-        ),
+        ],
       ),
+    );
+
+    if (disableInk) {
+      return GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: onTap,
+        child: content,
+      );
+    }
+
+    return BaseInkWell(
+      borderRadius: BorderRadius.circular(AppRadius.button),
+      onTap: onTap,
+      backgroundColor: Colors.transparent,
+      splashColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      child: content,
     );
   }
 }
