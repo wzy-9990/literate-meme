@@ -37,6 +37,7 @@ Future<DateTime?> showBaseDatePicker(
                 onCancel: () => Navigator.of(context).pop(),
                 onConfirm: () => Navigator.of(context).pop(current),
               ),
+              const Divider(height: 1),
               SizedBox(
                 height: 250,
                 child: Transform.scale(
