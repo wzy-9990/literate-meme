@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_tem/components/BaseActionSheet/index.dart';
 import 'package:flutter_tem/components/BaseAppBar/index.dart';
 import 'package:flutter_tem/components/BaseButton/index.dart';
 import 'package:flutter_tem/components/BaseCascader/index.dart';
@@ -217,6 +218,20 @@ class HomeView extends StatelessWidget {
                 }
               },
               child: const Text('测试 BaseCascader'),
+            ),
+            const SizedBox(height: 12),
+            ElevatedButton(
+              onPressed: () async {
+                final selected = await showBasePicker(
+                  context,
+                  title: '请选择方向',
+                  options: directionTypeEnum.allItems,
+                );
+                if (selected != null) {
+                  Get.snackbar('Picker', '选择了 ${selected['label']}');
+                }
+              },
+              child: const Text('测试 Picker'),
             ),
           ],
         ),
