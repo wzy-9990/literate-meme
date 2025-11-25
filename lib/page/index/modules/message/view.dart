@@ -12,9 +12,9 @@ class MessageView extends StatelessWidget {
   Widget build(BuildContext context) {
     final logic = Get.find<MessageLogic>();
     const tabOptions = [
-      BaseTabItem(label: '全部', value: 0),
-      BaseTabItem(label: '未读', value: 1),
-      BaseTabItem(label: '已读', value: 2),
+      BaseTabItem(label: '全部', value: ''),
+      BaseTabItem(label: '未读', value: '王'),
+      BaseTabItem(label: '已读', value: '张'),
     ];
 
     return Scaffold(
@@ -26,7 +26,8 @@ class MessageView extends StatelessWidget {
           Obx(() => BaseTab(
                 options: tabOptions,
                 value: logic.tabValue.value,
-                onChanged: (v) => logic.changeTab(v as int, type: 'message'),
+                onChanged: (v) =>
+                    logic.changeTab(v.toString(), type: 'message'),
                 alignment: MainAxisAlignment.spaceEvenly,
                 indicatorColor: Theme.of(context).colorScheme.primary,
               )),

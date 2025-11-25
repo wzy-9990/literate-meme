@@ -26,7 +26,7 @@ class IndexLogic extends GetxController {
     if (currentIndex.value == 0) {
       homeLogic.initData();
     } else if (currentIndex.value == 1) {
-      messageLogic.refresh();
+      messageLogic.initData();
     } else if (currentIndex.value == 2) {
       myLogic.initData();
     }
