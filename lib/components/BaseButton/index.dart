@@ -33,6 +33,7 @@ class BaseButton extends StatelessWidget {
   final bool enableRipple;
   final Color? splashColor;
   final EdgeInsetsGeometry? padding;
+  final bool fullWidth;
 
   const BaseButton({
     super.key,
@@ -54,6 +55,7 @@ class BaseButton extends StatelessWidget {
     this.child,
     this.enableRipple = true,
     this.splashColor,
+    this.fullWidth = true,
     this.padding,
     double borderRadius = AppRadius.button,
     double? topLeftRadius,
@@ -91,7 +93,7 @@ class BaseButton extends StatelessWidget {
 
   Widget _buildSizedChild(_ButtonSize size, _ButtonColors colors) {
     final hasWidth = size.width != null;
-    final core = Container(
+    final base = Container(
       width: hasWidth ? size.width!.w : null,
       height: size.height.h,
       alignment: Alignment.center,
@@ -99,8 +101,11 @@ class BaseButton extends StatelessWidget {
       padding: padding,
       child: child ?? _buildText(colors.border),
     );
-    if (hasWidth) return core;
-    return IntrinsicWidth(child: core);
+    if (hasWidth) return base;
+    if (fullWidth && padding == null) {
+      return SizedBox(width: double.infinity, child: base);
+    }
+    return IntrinsicWidth(child: base);
   }
 
   bool get _hasHorizontalPadding {

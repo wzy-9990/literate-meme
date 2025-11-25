@@ -57,7 +57,7 @@ class BaseRadioGroup<T> extends StatelessWidget {
     this.unselectedButtonType = BaseButtonType.info,
     this.buttonWidth,
     this.buttonHeight,
-    this.buttonEnableRipple = false,
+    this.buttonEnableRipple = true,
     this.buttonBuilder,
     this.buttonFontSize,
     this.selectedTextColor,
