@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_tem/page/index/logic.dart';
 import 'package:flutter_tem/utils/base/delayed_initial_load_mixin.dart';
 import 'package:get/get.dart';
@@ -151,7 +150,6 @@ abstract class BasePaginationLogic<T> extends GetxController
 
       // 加载完成后隐藏 loading
       isLoading.value = false;
-      EasyLoading.dismiss();
     } catch (e) {
       debugPrint('❌ 加载数据失败: $e');
       isLoading.value = false;

@@ -49,61 +49,29 @@ class PullToRefreshExampleLogic
     int pageSize,
     Map<String, dynamic>? searchParams,
   ) async {
-    // 1️⃣ 构建请求参数（根据你的接口要求调整）
     final params = {
       'pageNo': page,
       'pageSize': pageSize,
-      'organizationId': '0', // 示例：固定的业务参数
+      'organizationId': '0',
       ...?searchParams, // 合并搜索参数（可以是任意字段）
     };
-
-    // 2️⃣ 调用你的业务接口（替换为你自己的接口）
     final response = await listPageUserByOrganizationIdApi(params);
-
-    // 3️⃣ 一行代码搞定（自动处理所有转换）
     return PaginationResponse.fromMap(response);
   }
 
-  // 💡 自定义搜索方法示例
-  // 方法名、参数名都可以根据你的需求自定义
-  // 例如：
-  // - searchByName(String name) -> {'name': name}
-  // - filterByStatus(String status) -> {'status': status}
-  // - searchByKeyword(String kw) -> {'keyword': kw}
-
   /// 示例：按用户名搜索
-  /// 💡 你可以改成自己需要的方法名和参数
   void searchUser(String keyword) {
-    final params = keyword.trim().isEmpty
-        ? null
-        : {'userName': keyword.trim()}; // 👈 这里的 'userName' 是示例，改成你的字段名
-
-    search(params); // 调用基类的 search 方法
+    final params = keyword.trim().isEmpty ? null : {'userName': keyword.trim()};
+    search(params);
   }
 
   /// 清空搜索
   void clearSearch() {
     searchController.clear();
-    search(null); // 传 null 清空搜索参数
+    search(null);
   }
 
-  // 💡 你还可以添加更多自定义搜索方法，例如：
-  //
-  // void searchByPhone(String phone) {
-  //   search({'mobile': phone});
-  // }
-  //
-  // void filterByPosition(String position) {
-  //   search({'position': position});
-  // }
-  //
-  // void searchWithMultipleParams(String name, String status) {
-  //   search({
-  //     'userName': name,
-  //     'status': status,
-  //   });
-  // }
-
+  @override
   @override
   void onClose() {
     searchController.dispose();

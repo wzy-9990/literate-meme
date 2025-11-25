@@ -54,6 +54,7 @@ class MessageLogic extends BasePaginationLogic<Map<String, dynamic>> {
       ...?_currentParams,
     };
     final response = await listPageUserByOrganizationIdApi222(params);
+    EasyLoading.dismiss();
     return PaginationResponse.fromMap(response);
   }
 }

@@ -16,7 +16,7 @@ class ApiService {
   static bool _proxyEnabled = false;
   static String? _proxyHost;
   static int? _proxyPort;
-  static bool _showAuthDialogOn401 = true;
+  static bool _showAuthDialog = true;
 
   // -------------------- 初始化配置 --------------------
   static Future<void> init() async {
@@ -40,7 +40,7 @@ class ApiService {
 
   /// 配置 401 时是否弹出登录框
   static void setAuthDialogEnabled(bool enabled) {
-    _showAuthDialogOn401 = enabled;
+    _showAuthDialog = enabled;
   }
 
   // -------------------- 构造函数 --------------------
@@ -91,13 +91,15 @@ class ApiService {
             final data = response.data;
 
             final allowAuthDialog =
-                response.requestOptions.extra['showAuthDialogOn401'] ??
-                    _showAuthDialogOn401;
+                response.requestOptions.extra['showAuthDialog'] ??
+                    _showAuthDialog;
             final code = ApiConfig.getCode(data);
 
             if (code == ApiConfig.unauthorizedCode) {
+              EasyLoading.dismiss();
               if (allowAuthDialog == true) {
                 final loginResult = await BaseAuthDialog.showAuthDialog();
+
                 final msg = ApiConfig.getMessage(data) ?? '接口返回异常';
 
                 if (loginResult != null && loginResult['login'] == true) {
@@ -204,14 +206,14 @@ class ApiService {
   Future<dynamic> get(
     String path, {
     Map<String, dynamic>? params,
-    bool? showAuthDialogOn401,
+    bool? showAuthDialog,
   }) async {
     try {
       final response = await _dio.get(
         path,
         queryParameters: params,
         options: Options(
-          extra: {'showAuthDialogOn401': showAuthDialogOn401},
+          extra: {'showAuthDialog': showAuthDialog},
         ),
       );
       return ApiConfig.getData(response.data);
@@ -229,13 +231,13 @@ class ApiService {
     void Function(int sent, int total)? onProgress,
     Duration? sendTimeout,
     Duration? receiveTimeout,
-    bool? showAuthDialogOn401,
+    bool? showAuthDialog,
   }) async {
     try {
       final Options options = Options(
         sendTimeout: sendTimeout ?? const Duration(seconds: 5),
         receiveTimeout: receiveTimeout ?? const Duration(seconds: 3),
-        extra: {'showAuthDialogOn401': showAuthDialogOn401},
+        extra: {'showAuthDialog': showAuthDialog},
       );
 
       Response response;
@@ -249,7 +251,7 @@ class ApiService {
           options: Options(
             sendTimeout: sendTimeout ?? const Duration(seconds: 60),
             receiveTimeout: receiveTimeout ?? const Duration(seconds: 60),
-            extra: {'showAuthDialogOn401': showAuthDialogOn401},
+            extra: {'showAuthDialog': showAuthDialog},
           ),
         );
       } else {
