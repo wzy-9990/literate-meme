@@ -121,7 +121,9 @@ class BaseButton extends StatelessWidget {
   }
 
   _ButtonSize _resolveSize() {
-    if (type == BaseButtonType.normal || type == BaseButtonType.ghost) {
+    if (type == BaseButtonType.normal ||
+        type == BaseButtonType.outline ||
+        type == BaseButtonType.ghost) {
       return _ButtonSize(
         width: width - borderWidth * 2,
         height: height - borderWidth * 2,
@@ -134,6 +136,10 @@ class BaseButton extends StatelessWidget {
     if (splashColor != null) return splashColor!;
     if (type == BaseButtonType.normal || type == BaseButtonType.ghost) {
       return Colors.grey.withOpacity(0.5);
+    }
+
+    if (type == BaseButtonType.info) {
+      return Colors.grey.withOpacity(0.3);
     }
     if (type == BaseButtonType.text) {
       return Colors.grey.withOpacity(0.3);

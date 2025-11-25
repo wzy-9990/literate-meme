@@ -28,6 +28,19 @@ class BaseRadioGroup<T> extends StatelessWidget {
   final double runSpacing;
   final String valueField;
   final String labelField;
+  final BaseButtonType selectedButtonType;
+  final BaseButtonType unselectedButtonType;
+  final double? buttonWidth;
+  final double? buttonHeight;
+  final bool buttonEnableRipple;
+  final BaseButton Function(
+    bool selected,
+    BaseRadioOption<T> option,
+    Map<String, dynamic>? raw,
+  )? buttonBuilder;
+  final double? buttonFontSize;
+  final Color? selectedTextColor;
+  final Color? unselectedTextColor;
 
   const BaseRadioGroup({
     super.key,
@@ -40,6 +53,15 @@ class BaseRadioGroup<T> extends StatelessWidget {
     this.runSpacing = 8,
     this.valueField = 'value',
     this.labelField = 'label',
+    this.selectedButtonType = BaseButtonType.outline,
+    this.unselectedButtonType = BaseButtonType.info,
+    this.buttonWidth,
+    this.buttonHeight,
+    this.buttonEnableRipple = false,
+    this.buttonBuilder,
+    this.buttonFontSize,
+    this.selectedTextColor,
+    this.unselectedTextColor,
   });
 
   @override
@@ -67,16 +89,24 @@ class BaseRadioGroup<T> extends StatelessWidget {
       children: parsedOptions.map((opt) {
         final bool selected = opt.option.value == value;
         return asButton
-            ? BaseButton(
-                type: selected ? BaseButtonType.outline : BaseButtonType.info,
-                text: opt.option.label,
-                onTap: () {
-                  onChanged?.call(opt.option.value);
-                  if (onChangedWithItem != null && opt.raw != null) {
-                    onChangedWithItem!(opt.raw!);
-                  }
-                },
-              )
+            ? (buttonBuilder != null
+                ? buttonBuilder!(selected, opt.option, opt.raw)
+                : BaseButton(
+                    type: selected ? selectedButtonType : unselectedButtonType,
+                    text: opt.option.label,
+                    width: buttonWidth ?? 80,
+                    height: buttonHeight ?? 40,
+                    enableRipple: buttonEnableRipple,
+                    fontSize: buttonFontSize ?? 14,
+                    textColor:
+                        selected ? selectedTextColor : unselectedTextColor,
+                    onTap: () {
+                      onChanged?.call(opt.option.value);
+                      if (onChangedWithItem != null && opt.raw != null) {
+                        onChangedWithItem!(opt.raw!);
+                      }
+                    },
+                  ))
             : _RadioChip(
                 label: opt.option.label,
                 selected: selected,
