@@ -1,5 +1,6 @@
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_tem/components/BaseDeveloperOptions/index.dart';
+import 'package:flutter_tem/page/index/logic.dart';
 import 'package:flutter_tem/page/index/modules/my/logic.dart';
 import 'package:flutter_tem/routers/app_routes.dart';
 import 'package:flutter_tem/routers/index.dart';
@@ -28,7 +29,9 @@ class MySettingLogic extends GetxController {
   }
 
   void logout() async {
+    final indexLogic = Get.find<IndexLogic>();
     await Storage.clear();
+    indexLogic.updateToken('');
     Get.toNamed(AppRoutes.login);
   }
 

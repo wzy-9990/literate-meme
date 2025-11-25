@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_tem/api/modules/user.dart';
+import 'package:flutter_tem/page/index/logic.dart';
 import 'package:flutter_tem/routers/app_routes.dart';
 import 'package:flutter_tem/utils/storage/index.dart';
 import 'package:get/get.dart';
@@ -18,8 +19,11 @@ class LoginLogic extends GetxController {
     };
     final data = await loginApi(params);
 
-    await Storage.setString(StorageKeys.token, data['accessToken']);
     await Storage.setMap(StorageKeys.userInfo, data);
+    // 同步更新首页 token
+    if (Get.isRegistered<IndexLogic>()) {
+      Get.find<IndexLogic>().updateToken(data['accessToken']?.toString());
+    }
     EasyLoading.showToast('登录成功');
     Get.previousRoute.isEmpty
         ? Get.offAllNamed(AppRoutes.index)

@@ -9,6 +9,9 @@ class MessageLogic extends BasePaginationLogic<Map<String, dynamic>> {
   bool _initialized = false;
   Map<String, dynamic>? _currentParams;
 
+  @override
+  bool get clearOnLogout => true;
+
   /// 消息页手动触发加载，避免未进入即请求
   @override
   bool get autoLoadOnInit => false;

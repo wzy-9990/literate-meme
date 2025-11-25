@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_tem/page/index/logic.dart';
 import 'package:flutter_tem/utils/base/delayed_initial_load_mixin.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -27,6 +30,8 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 /// ```
 abstract class BasePaginationLogic<T> extends GetxController
     with DelayedInitialLoadMixin {
+  StreamSubscription<String>? _tokenSub;
+
   /// 刷新控制器
   final RefreshController refreshController =
       RefreshController(initialRefresh: false);
@@ -70,8 +75,12 @@ abstract class BasePaginationLogic<T> extends GetxController
   /// 是否处于搜索状态
   bool get isSearching => _searchParams != null && _searchParams!.isNotEmpty;
 
+  /// 登出时是否自动清空列表（子类可覆盖）
+  bool get clearOnLogout => false;
+
   @override
   void onClose() {
+    _tokenSub?.cancel();
     refreshController.dispose();
     super.onClose();
   }
@@ -84,6 +93,19 @@ abstract class BasePaginationLogic<T> extends GetxController
 
   @override
   Future<void> onLoad() => loadData();
+
+  @override
+  void onInit() {
+    super.onInit();
+    if (clearOnLogout && Get.isRegistered<IndexLogic>()) {
+      final indexLogic = Get.find<IndexLogic>();
+      _tokenSub = indexLogic.token.listen((value) {
+        if (value.isEmpty) {
+          _resetPaginationState();
+        }
+      });
+    }
+  }
 
   /// 子类必须实现：获取数据的接口
   ///
@@ -160,6 +182,16 @@ abstract class BasePaginationLogic<T> extends GetxController
     if (items.isEmpty) {
       refreshController.resetNoData();
     }
+  }
+
+  /// 清空分页状态
+  void _resetPaginationState() {
+    _page = 1;
+    _total = 0;
+    _totalPages = 0;
+    items.clear();
+    isLoading.value = false;
+    refreshController.resetNoData();
   }
 
   /// 上拉加载更多

@@ -1,7 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_tem/components/BaseEmpty/index.dart';
 import 'package:flutter_tem/components/BaseLoading/index.dart';
 import 'package:flutter_tem/components/BaseSuperRefreshComponent/components/WaterDropHeader/index.dart';
+import 'package:flutter_tem/page/index/logic.dart';
+import 'package:flutter_tem/utils/storage/index.dart';
+import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class PullToRefresh extends StatefulWidget {
@@ -87,6 +92,18 @@ class BasePullToRefreshList extends StatefulWidget {
   final String? noMoreText;
   final ScrollController? scrollController;
 
+  /// 是否需要登录才能查看列表（默认需要）
+  final bool requireAuth;
+
+  /// 未登录状态（null 时自动根据 token 判断）
+  final bool? isUnAuth;
+
+  /// 未登录空页面配置
+  final String? unAuthImagePath;
+  final String? unAuthTitle;
+  final String? unAuthSubtitle;
+  final String? unAuthButtonText;
+
   // 空页面相关配置
   /// 是否正在加载（用于判断是否显示空页面）
   final bool isLoading;
@@ -132,6 +149,12 @@ class BasePullToRefreshList extends StatefulWidget {
     this.noDataText = '暂无数据',
     this.noMoreText = '没有更多了～',
     this.scrollController,
+    this.requireAuth = true,
+    this.isUnAuth,
+    this.unAuthImagePath,
+    this.unAuthTitle,
+    this.unAuthSubtitle,
+    this.unAuthButtonText,
     // 空页面配置
     this.isLoading = false,
     this.isSearching = false,
@@ -154,8 +177,78 @@ class BasePullToRefreshList extends StatefulWidget {
 }
 
 class _BasePullToRefreshListState extends State<BasePullToRefreshList> {
+  bool? _autoUnAuth;
+  StreamSubscription<String>? _tokenSub;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.requireAuth && widget.isUnAuth == null) {
+      _setupAuthListener();
+    }
+  }
+
+  void _setupAuthListener() {
+    if (Get.isRegistered<IndexLogic>()) {
+      final indexLogic = Get.find<IndexLogic>();
+      _autoUnAuth = !indexLogic.isLoggedIn;
+      _tokenSub = indexLogic.token.listen((value) {
+        if (!mounted) {
+          return;
+        }
+        setState(() {
+          _autoUnAuth = value.isEmpty;
+        });
+      });
+    } else {
+      _loadTokenStatus();
+    }
+  }
+
+  Future<void> _loadTokenStatus() async {
+    final token = await Storage.getString(StorageKeys.token);
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _autoUnAuth = token == null || token.isEmpty;
+    });
+  }
+
+  @override
+  void dispose() {
+    _tokenSub?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    // 计算未登录态
+    final bool resolvedUnAuth;
+    if (!widget.requireAuth) {
+      // 不需要登录，直接视为已登录
+      _autoUnAuth = false;
+    }
+
+    if (widget.isUnAuth != null) {
+      resolvedUnAuth = widget.isUnAuth!;
+    } else if (_autoUnAuth == null) {
+      return const BaseLoading();
+    } else {
+      resolvedUnAuth = _autoUnAuth!;
+    }
+
+    // 未登录态优先展示
+    if (resolvedUnAuth) {
+      return BaseEmpty(
+        imagePath: widget.unAuthImagePath,
+        title: widget.unAuthTitle ?? '未登录',
+        subtitle: widget.unAuthSubtitle ?? '登录后查看内容',
+        buttonText: widget.unAuthButtonText ?? '去登录',
+        onButtonPressed: widget.onEmptyButtonPressed ?? widget.onRefresh,
+      );
+    }
+
     // 加载中且暂无数据时，直接显示 loading
     if (widget.isLoading && widget.children.isEmpty) {
       return const BaseLoading();

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_tem/page/index/logic.dart';
 import 'package:flutter_tem/routers/app_routes.dart';
 import 'package:flutter_tem/utils/storage/index.dart';
 import 'package:get/get.dart';
@@ -377,6 +378,9 @@ class BaseDeveloperOptions {
     Future.delayed(const Duration(seconds: 1), () async {
       await Storage.remove(StorageKeys.token);
       await Storage.remove(StorageKeys.userInfo);
+      if (Get.isRegistered<IndexLogic>()) {
+        Get.find<IndexLogic>().updateToken('');
+      }
 
       // 重启应用以使新配置生效
       Get.offAllNamed(AppRoutes.guide);
@@ -398,6 +402,9 @@ class BaseDeveloperOptions {
     Future.delayed(const Duration(seconds: 1), () async {
       await Storage.remove(StorageKeys.token);
       await Storage.remove(StorageKeys.userInfo);
+      if (Get.isRegistered<IndexLogic>()) {
+        Get.find<IndexLogic>().updateToken('');
+      }
 
       // 重启应用
       Get.offAllNamed(AppRoutes.guide);
