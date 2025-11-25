@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tem/components/BasePhoneCall/index.dart';
 import 'package:flutter_tem/routers/app_routes.dart';
 import 'package:flutter_tem/routers/index.dart';
+import 'package:flutter_tem/utils/modules/dict/home.dart';
 import 'package:get/get.dart';
 
 class HomeLogic extends GetxController {
+  /// 当前选中的方向（默认取枚举 add_points 对应的值，否则为 1）
+  final RxInt selectedDirection =
+      ((directionTypeEnum['add_points']?['value'] as int)).obs;
+
   void initData() {
     debugPrint('首页页面初始化');
   }
@@ -41,5 +46,9 @@ class HomeLogic extends GetxController {
 
   void appIconExampleView() {
     NavigationUtils.toNamed(AppRoutes.appIconExample);
+  }
+
+  void updateDirection(int value) {
+    selectedDirection.value = value;
   }
 }

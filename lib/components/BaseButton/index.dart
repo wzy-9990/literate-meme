@@ -115,7 +115,7 @@ class BaseButton extends StatelessWidget {
     final bg = backgroundColor ?? primaryColor;
     return _ButtonColors(
       border: border,
-      background: bg,
+      background: type == BaseButtonType.info ? Colors.grey.shade200 : bg,
       text: textColor,
     );
   }
@@ -144,6 +144,11 @@ class BaseButton extends StatelessWidget {
   BoxDecoration _buildDecoration(_ButtonColors colors) {
     switch (type) {
       case BaseButtonType.primary:
+        return BoxDecoration(
+          color: colors.background,
+          borderRadius: _borderRadius,
+        );
+      case BaseButtonType.info:
         return BoxDecoration(
           color: colors.background,
           borderRadius: _borderRadius,
@@ -195,6 +200,8 @@ class BaseButton extends StatelessWidget {
         type == BaseButtonType.outline ||
         type == BaseButtonType.ghost) {
       colorToUse = fallbackBorderColor;
+    } else if (type == BaseButtonType.info) {
+      colorToUse = AppColors.textPrimary;
     } else {
       colorToUse = Colors.white;
     }
@@ -234,6 +241,7 @@ class _ButtonSize {
 
 enum BaseButtonType {
   primary, // 主题
+  info, // 信息色（灰底黑字）
   normal, // 常规
   ghost, // 边框+文字中性色
   text, // 文本
