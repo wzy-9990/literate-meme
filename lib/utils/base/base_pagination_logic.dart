@@ -151,6 +151,7 @@ abstract class BasePaginationLogic<T> extends GetxController
   /// 下拉刷新
   void onRefresh() async {
     _page = 1;
+    refreshController.position?.jumpTo(0);
     await loadData();
     refreshController.refreshCompleted();
 
