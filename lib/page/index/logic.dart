@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 class IndexLogic extends GetxController {
   final currentIndex = 0.obs;
   final homeLogic = Get.find<HomeLogic>();
-  final messageLogic = Get.find<MessageLogic>();
+  MessageLogic? messageLogic;
   final myLogic = Get.find<MyLogic>();
   @override
   void onInit() {
@@ -18,7 +18,7 @@ class IndexLogic extends GetxController {
   void initData() {
     debugPrint('tab页面初始化');
     homeLogic.initData();
-    messageLogic.refresh();
+    // 消息页首屏不主动加载，等切换到消息时再加载
   }
 
   void changeTab(int index) {
@@ -26,7 +26,8 @@ class IndexLogic extends GetxController {
     if (currentIndex.value == 0) {
       homeLogic.initData();
     } else if (currentIndex.value == 1) {
-      messageLogic.initData();
+      messageLogic ??= Get.find<MessageLogic>();
+      messageLogic!.initData();
     } else if (currentIndex.value == 2) {
       myLogic.initData();
     }

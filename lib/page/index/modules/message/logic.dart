@@ -8,6 +8,14 @@ class MessageLogic extends BasePaginationLogic<Map<String, dynamic>> {
   bool _initialized = false;
   Map<String, dynamic>? _currentParams;
 
+  /// 消息页手动触发加载，避免未进入即请求
+  @override
+  bool get autoLoadOnInit => false;
+
+  /// 跳过 onReady 的自动加载，完全由 initData 控制
+  @override
+  bool get skipDelayedOnReady => true;
+
   /// 外部调用入口：首次进入显示 loading，后续无感刷新
   void initData() {
     if (_initialized) {
@@ -16,7 +24,8 @@ class MessageLogic extends BasePaginationLogic<Map<String, dynamic>> {
     }
     _initialized = true;
     isLoading.value = true;
-    refresh();
+    refreshController.resetNoData();
+    onRefresh();
   }
 
   /// 切换 Tab，并根据 Tab 值过滤数据

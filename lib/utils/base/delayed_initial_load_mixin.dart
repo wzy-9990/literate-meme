@@ -13,6 +13,9 @@ mixin DelayedInitialLoadMixin on GetxController {
   /// 首次加载前的额外延迟（避免路由动画期间触发）
   Duration get initialLoadDelay => const Duration(milliseconds: 100);
 
+  /// 是否跳过 onReady 的延迟加载（用于 Tab 顶级页面等场景）
+  bool get skipDelayedOnReady => false;
+
   /// 具体的加载逻辑
   Future<void> onLoad();
 
@@ -27,7 +30,7 @@ mixin DelayedInitialLoadMixin on GetxController {
   @override
   void onReady() {
     super.onReady();
-    if (!autoLoadOnInit) {
+    if (!autoLoadOnInit && !skipDelayedOnReady) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         if (initialLoadDelay > Duration.zero) {
           await Future.delayed(initialLoadDelay);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tem/components/BaseEmpty/index.dart';
+import 'package:flutter_tem/components/BaseLoading/index.dart';
 import 'package:flutter_tem/components/BaseSuperRefreshComponent/components/WaterDropHeader/index.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -155,6 +156,11 @@ class BasePullToRefreshList extends StatefulWidget {
 class _BasePullToRefreshListState extends State<BasePullToRefreshList> {
   @override
   Widget build(BuildContext context) {
+    // 加载中且暂无数据时，直接显示 loading
+    if (widget.isLoading && widget.children.isEmpty) {
+      return const BaseLoading();
+    }
+
     // 如果数据为空且不在加载中，显示空页面
     if (widget.children.isEmpty && !widget.isLoading) {
       // 根据是否搜索状态显示不同的空页面
