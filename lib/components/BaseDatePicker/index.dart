@@ -24,45 +24,51 @@ Future<DateTime?> showBaseDatePicker(
   return showCupertinoModalPopup<DateTime>(
     context: context,
     builder: (_) {
-      return Container(
-        color: Colors.white,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _PickerHeader(
-              title: title,
-              cancelText: cancelText,
-              confirmText: confirmText,
-              onCancel: () => Navigator.of(context).pop(),
-              onConfirm: () => Navigator.of(context).pop(current),
-            ),
-            const Divider(height: 1),
-            SizedBox(
-              height: 250,
-              child: Transform.scale(
-                scale: scale,
-                child: CupertinoTheme(
-                  data: CupertinoTheme.of(context).copyWith(
-                    primaryColor: Theme.of(context).colorScheme.primary,
-                    textTheme: const CupertinoTextThemeData(
-                      dateTimePickerTextStyle: TextStyle(
-                          fontSize: 16,
-                          color: Colors.black87,
-                          fontWeight: FontWeight.w600),
+      return ClipRRect(
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+        child: Container(
+          color: Colors.white,
+          child: SafeArea(
+            top: false,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _PickerHeader(
+                  title: title,
+                  cancelText: cancelText,
+                  confirmText: confirmText,
+                  onCancel: () => Navigator.of(context).pop(),
+                  onConfirm: () => Navigator.of(context).pop(current),
+                ),
+                const Divider(height: 1),
+                SizedBox(
+                  height: 250,
+                  child: Transform.scale(
+                    scale: scale,
+                    child: CupertinoTheme(
+                      data: CupertinoTheme.of(context).copyWith(
+                        primaryColor: Theme.of(context).colorScheme.primary,
+                        textTheme: const CupertinoTextThemeData(
+                          dateTimePickerTextStyle: TextStyle(
+                              fontSize: 16,
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                      child: CupertinoDatePicker(
+                        initialDateTime: init,
+                        minimumDate: minimumDate,
+                        maximumDate: maximumDate,
+                        mode: _convertMode(mode),
+                        use24hFormat: true,
+                        onDateTimeChanged: (dt) => current = dt,
+                      ),
                     ),
                   ),
-                  child: CupertinoDatePicker(
-                    initialDateTime: init,
-                    minimumDate: minimumDate,
-                    maximumDate: maximumDate,
-                    mode: _convertMode(mode),
-                    use24hFormat: true,
-                    onDateTimeChanged: (dt) => current = dt,
-                  ),
                 ),
-              ),
+              ],
             ),
-          ],
+          ),
         ),
       );
     },

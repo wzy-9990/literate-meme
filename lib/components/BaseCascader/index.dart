@@ -381,16 +381,11 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
       );
     }
 
-    return Container(
-      color: Colors.white,
-      child: SafeArea(
-        child: Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(16),
-            ),
-          ),
+    return ClipRRect(
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+      child: Container(
+        color: Colors.white,
+        child: SafeArea(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -864,6 +859,7 @@ Future<List<Map<String, String?>>?> showCascaderPicker(
   return showModalBottomSheet<List<Map<String, String?>>>(
     context: context,
     isScrollControlled: true,
+    backgroundColor: Colors.transparent,
     builder: (_) {
       return BaseCascaderPicker(
         options: options,
