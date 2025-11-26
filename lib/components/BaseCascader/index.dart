@@ -381,49 +381,53 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
       );
     }
 
-    return SafeArea(
-      child: Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(16),
+    return Container(
+      color: Colors.white,
+      child: SafeArea(
+        child: Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(16),
+            ),
           ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _buildHeader(),
-            const Divider(height: 1),
-            _buildPathBar(),
-            _buildSearchBar(),
-            const Divider(height: 1),
-            SizedBox(
-              height: 360,
-              child: _searchText.isEmpty
-                  ? Row(
-                      children: [
-                        _buildList(_provinces, _provinceIndex, 1, onTap: (i) {
-                          setState(() {
-                            _provinceIndex = i;
-                            _cityIndex = null;
-                            _districtIndex = null;
-                          });
-                        }),
-                        if (widget.columnCount >= 2)
-                          _buildList(_cities, _cityIndex, 2, onTap: (i) {
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildHeader(),
+              const Divider(height: 1),
+              _buildPathBar(),
+              _buildSearchBar(),
+              const Divider(height: 1),
+              SizedBox(
+                height: 360,
+                child: _searchText.isEmpty
+                    ? Row(
+                        children: [
+                          _buildList(_provinces, _provinceIndex, 1, onTap: (i) {
                             setState(() {
-                              _cityIndex = i;
+                              _provinceIndex = i;
+                              _cityIndex = null;
                               _districtIndex = null;
                             });
                           }),
-                        if (widget.columnCount == 3)
-                          _buildList(_districts, _districtIndex, 3,
-                              onTap: (i) => setState(() => _districtIndex = i)),
-                      ],
-                    )
-                  : _buildSearchResult(),
-            ),
-          ],
+                          if (widget.columnCount >= 2)
+                            _buildList(_cities, _cityIndex, 2, onTap: (i) {
+                              setState(() {
+                                _cityIndex = i;
+                                _districtIndex = null;
+                              });
+                            }),
+                          if (widget.columnCount == 3)
+                            _buildList(_districts, _districtIndex, 3,
+                                onTap: (i) =>
+                                    setState(() => _districtIndex = i)),
+                        ],
+                      )
+                    : _buildSearchResult(),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -24,41 +24,39 @@ Future<DateTime?> showBaseDatePicker(
   return showCupertinoModalPopup<DateTime>(
     context: context,
     builder: (_) {
-      return SafeArea(
-        child: Container(
-          color: Colors.white,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _PickerHeader(
-                title: title,
-                cancelText: cancelText,
-                confirmText: confirmText,
-                onCancel: () => Navigator.of(context).pop(),
-                onConfirm: () => Navigator.of(context).pop(current),
-              ),
-              const Divider(height: 1),
-              SizedBox(
-                height: 250,
-                child: Transform.scale(
-                  scale: scale,
-                  child: CupertinoTheme(
-                    data: CupertinoTheme.of(context).copyWith(
-                      primaryColor: Theme.of(context).colorScheme.primary,
-                    ),
-                    child: CupertinoDatePicker(
-                      initialDateTime: init,
-                      minimumDate: minimumDate,
-                      maximumDate: maximumDate,
-                      mode: _convertMode(mode),
-                      use24hFormat: true,
-                      onDateTimeChanged: (dt) => current = dt,
-                    ),
+      return Container(
+        color: Colors.white,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _PickerHeader(
+              title: title,
+              cancelText: cancelText,
+              confirmText: confirmText,
+              onCancel: () => Navigator.of(context).pop(),
+              onConfirm: () => Navigator.of(context).pop(current),
+            ),
+            const Divider(height: 1),
+            SizedBox(
+              height: 250,
+              child: Transform.scale(
+                scale: scale,
+                child: CupertinoTheme(
+                  data: CupertinoTheme.of(context).copyWith(
+                    primaryColor: Theme.of(context).colorScheme.primary,
+                  ),
+                  child: CupertinoDatePicker(
+                    initialDateTime: init,
+                    minimumDate: minimumDate,
+                    maximumDate: maximumDate,
+                    mode: _convertMode(mode),
+                    use24hFormat: true,
+                    onDateTimeChanged: (dt) => current = dt,
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
     },

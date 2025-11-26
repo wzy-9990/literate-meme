@@ -25,58 +25,55 @@ Future<Map<String, dynamic>?> showBasePicker(
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     builder: (_) {
-      return SafeArea(
-        child: Container(
-          margin: const EdgeInsets.all(0),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _PickerHeader(
-                title: title,
-                cancelText: cancelText,
-                confirmText: confirmText,
-                onCancel: () => Navigator.of(context).pop(),
-                onConfirm: () =>
-                    Navigator.of(context).pop(options[currentIndex]),
-              ),
-              const Divider(height: 1),
-              SizedBox(
-                height: 220,
-                child: CupertinoPicker(
-                  scrollController: controller,
-                  magnification: 1.05,
-                  squeeze: 1.1,
-                  useMagnifier: true,
-                  itemExtent: 44,
-                  onSelectedItemChanged: (index) {
-                    currentIndex = index;
-                  },
-                  children: options
-                      .map((e) => Center(
-                            child: _PickerItem(
-                              label: e[labelField]?.toString() ?? '',
-                              textStyle: itemTextStyle ??
-                                  const TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.black87,
-                                      fontWeight: FontWeight.w500),
-                              selectedTextStyle: selectedTextStyle ??
-                                  const TextStyle(
+      return Container(
+        margin: const EdgeInsets.all(0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _PickerHeader(
+              title: title,
+              cancelText: cancelText,
+              confirmText: confirmText,
+              onCancel: () => Navigator.of(context).pop(),
+              onConfirm: () => Navigator.of(context).pop(options[currentIndex]),
+            ),
+            const Divider(height: 1),
+            SizedBox(
+              height: 220,
+              child: CupertinoPicker(
+                scrollController: controller,
+                magnification: 1.05,
+                squeeze: 1.1,
+                useMagnifier: true,
+                itemExtent: 44,
+                onSelectedItemChanged: (index) {
+                  currentIndex = index;
+                },
+                children: options
+                    .map((e) => Center(
+                          child: _PickerItem(
+                            label: e[labelField]?.toString() ?? '',
+                            textStyle: itemTextStyle ??
+                                const TextStyle(
                                     fontSize: 18,
                                     color: Colors.black87,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                            ),
-                          ))
-                      .toList(),
-                ),
+                                    fontWeight: FontWeight.w500),
+                            selectedTextStyle: selectedTextStyle ??
+                                const TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                          ),
+                        ))
+                    .toList(),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
     },

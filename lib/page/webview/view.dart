@@ -132,35 +132,38 @@ class _WebViewPageState extends State<WebViewPageView> {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: const Icon(Icons.refresh),
-                title: const Text('刷新'),
-                onTap: () {
-                  Navigator.pop(context);
-                  _refresh();
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.open_in_browser),
-                title: const Text('在浏览器中打开'),
-                onTap: () async {
-                  Navigator.pop(context);
-                  await _openInBrowser();
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.copy),
-                title: const Text('复制链接'),
-                onTap: () {
-                  Navigator.pop(context);
-                  _copyLink();
-                },
-              ),
-            ],
+        return Container(
+          color: Colors.white,
+          child: SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.refresh),
+                  title: const Text('刷新'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _refresh();
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.open_in_browser),
+                  title: const Text('在浏览器中打开'),
+                  onTap: () async {
+                    Navigator.pop(context);
+                    await _openInBrowser();
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.copy),
+                  title: const Text('复制链接'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _copyLink();
+                  },
+                ),
+              ],
+            ),
           ),
         );
       },
