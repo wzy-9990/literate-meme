@@ -44,6 +44,12 @@ Future<DateTime?> showBaseDatePicker(
                 child: CupertinoTheme(
                   data: CupertinoTheme.of(context).copyWith(
                     primaryColor: Theme.of(context).colorScheme.primary,
+                    textTheme: const CupertinoTextThemeData(
+                      dateTimePickerTextStyle: TextStyle(
+                          fontSize: 16,
+                          color: Colors.black87,
+                          fontWeight: FontWeight.w600),
+                    ),
                   ),
                   child: CupertinoDatePicker(
                     initialDateTime: init,

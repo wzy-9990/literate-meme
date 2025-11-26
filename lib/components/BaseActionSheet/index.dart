@@ -59,14 +59,14 @@ Future<Map<String, dynamic>?> showBasePicker(
                             label: e[labelField]?.toString() ?? '',
                             textStyle: itemTextStyle ??
                                 const TextStyle(
-                                    fontSize: 18,
+                                    fontSize: 14,
                                     color: Colors.black87,
-                                    fontWeight: FontWeight.w500),
+                                    fontWeight: FontWeight.w600),
                             selectedTextStyle: selectedTextStyle ??
                                 const TextStyle(
-                                  fontSize: 18,
+                                  fontSize: 14,
                                   color: Colors.black87,
-                                  fontWeight: FontWeight.w600,
+                                  fontWeight: FontWeight.w700,
                                 ),
                           ),
                         ))
