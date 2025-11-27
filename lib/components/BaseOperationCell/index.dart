@@ -33,6 +33,7 @@ class BaseOperationCell extends StatelessWidget {
     this.labelMaxLines = 20,
     this.labelMaxWidth = 120,
     this.labelMinWidth = 120,
+    this.rightWidget,
     this.contentPadding =
         const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     this.showBottomDivider = true,
@@ -104,6 +105,9 @@ class BaseOperationCell extends StatelessWidget {
 
   /// 左侧 label 最小宽度
   final double labelMinWidth;
+
+  /// 自定义右侧内容（传入则覆盖默认输入/选择区域）
+  final Widget? rightWidget;
 
   /// 右侧文案样式（输入文本或选择结果）
   final TextStyle? valueTextStyle;
@@ -244,6 +248,15 @@ class BaseOperationCell extends StatelessWidget {
     TextStyle hintStyle,
     String effectiveHint,
   ) {
+    Widget buildRight() {
+      if (rightWidget != null) {
+        return rightWidget!;
+      }
+      return _isSelectMode
+          ? _buildSelect(valueStyle, hintStyle, effectiveHint)
+          : _buildInput(valueStyle, hintStyle, effectiveHint);
+    }
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -256,9 +269,10 @@ class BaseOperationCell extends StatelessWidget {
               _buildLabel(labelTextStyle, reqStyle),
               const SizedBox(width: 12),
               Expanded(
-                child: _isSelectMode
-                    ? _buildSelect(valueStyle, hintStyle, effectiveHint)
-                    : _buildInput(valueStyle, hintStyle, effectiveHint),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: buildRight(),
+                ),
               ),
             ],
           ),
@@ -338,6 +352,7 @@ class BaseOperationCellGroup extends StatelessWidget {
             arrowIconData: child.arrowIconData,
             arrowIconSize: child.arrowIconSize,
             arrowIconColor: child.arrowIconColor,
+            rightWidget: child.rightWidget,
             valueMaxLines: child.valueMaxLines,
             contentPadding: child.contentPadding,
             showBottomDivider: showDivider,

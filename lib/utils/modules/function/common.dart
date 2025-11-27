@@ -158,4 +158,37 @@ class CommonFunction {
     final finalPx = (basePx - shrink).clamp(12, double.infinity);
     return finalPx.toDouble();
   }
+
+  /// 通用空值判断
+  /// [treatZeroAsEmpty] 控制是否将 0/0.00 视为“空”（默认 false）
+  /// 返回 true 的情况：null、空字符串（含纯空格）、'[]'/'{}' 字符串、NaN、空列表、空 Map、（可选）0/0.00
+  /// 其他值返回 false
+  static bool isEmpty(
+    dynamic val, {
+    bool treatZeroAsEmpty = false,
+  }) {
+    if (val == null) return true;
+    if (val is String) {
+      final trimmed = val.trim();
+      if (trimmed.isEmpty) return true;
+      if (trimmed == '[]' || trimmed == '{}') return true;
+      if (treatZeroAsEmpty && RegExp(r'^[-+]?0*(\.0+)?$').hasMatch(trimmed)) {
+        return true;
+      }
+    }
+    if (val is num) {
+      if (val.isNaN) return true;
+      if (treatZeroAsEmpty && val == 0) return true;
+    }
+    if (val is Iterable && val.isEmpty) return true;
+    if (val is Map && val.isEmpty) return true;
+    return false;
+  }
+
+  /// 通用非空判断（与 [isEmpty] 相反）
+  static bool isNotEmpty(
+    dynamic val, {
+    bool treatZeroAsEmpty = false,
+  }) =>
+      !isEmpty(val, treatZeroAsEmpty: treatZeroAsEmpty);
 }

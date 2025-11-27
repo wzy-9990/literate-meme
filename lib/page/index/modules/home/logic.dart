@@ -20,6 +20,13 @@ class HomeLogic extends GetxController {
   final RxString addressValue = ''.obs;
   final TextEditingController nameController = TextEditingController();
 
+  /// 判断示例表单数据是否为空
+  bool get isOperationDataEmpty =>
+      name.value.isEmpty &&
+      selected.value.isEmpty &&
+      selectDate.value.isEmpty &&
+      addressValue.value.isEmpty;
+
   void updateName(String value) {
     name.value = value;
   }

@@ -14,6 +14,7 @@ import 'package:flutter_tem/components/BaseTab/index.dart';
 import 'package:flutter_tem/components/BaseText/index.dart';
 import 'package:flutter_tem/page/index/modules/home/logic.dart';
 import 'package:flutter_tem/utils/modules/dict/home.dart';
+import 'package:flutter_tem/utils/modules/function/common.dart';
 import 'package:get/get.dart';
 
 class HomeView extends StatelessWidget {
@@ -109,7 +110,7 @@ class HomeView extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 20),
-            const Text('Tab 示例'),
+            Text(CommonFunction.formaDataString(CommonFunction.isEmpty([]))),
             Obx(() => BaseTab(
                   options: directionTypeEnum.allItems,
                   labelField: 'label',
@@ -118,44 +119,6 @@ class HomeView extends StatelessWidget {
                   onChanged: (v) => logic.updateTabValue(v),
                 )),
             const SizedBox(height: 20),
-            const Text('单选（普通）'),
-            Obx(() => BaseRadioGroup<int>(
-                  options: directionTypeEnum.allItems,
-                  value: logic.selectedDirection.value,
-                  valueField: 'value',
-                  labelField: 'label',
-                  onChanged: (v) => logic.updateDirection(v),
-                  onChangedWithItem: (item) {
-                    Get.snackbar('单选', '选择了 ${item['label']}');
-                  },
-                )),
-            const SizedBox(height: 12),
-            const Text('单选（按钮组）'),
-            Obx(() => BaseRadioGroup<int>(
-                  asButton: true,
-                  options: directionTypeEnum.allItems,
-                  value: logic.selectedDirection.value,
-                  valueField: 'value',
-                  labelField: 'label',
-                  onChanged: (v) => logic.updateDirection(v),
-                  onChangedWithItem: (item) {
-                    Get.snackbar('按钮组', '选择了 ${item['label']}');
-                  },
-                )),
-            const SizedBox(height: 20),
-            const Text('多选（按钮组）'),
-            Obx(() => BaseCheckboxGroup<int>(
-                  asButton: true,
-                  options: directionTypeEnum.allItems,
-                  values: logic.selectedDirectionMulti.toList(),
-                  valueField: 'value',
-                  labelField: 'label',
-                  onChanged: (list) => logic.updateDirectionMulti(list),
-                  onChangedWithItem: (item) {
-                    Get.snackbar('多选', '选择了 ${item['label']}');
-                  },
-                )),
-            const SizedBox(height: 12),
             const Text('隐私协议（勾选框）'),
             Obx(() {
               final agreed = logic.privacyAgree.value;
@@ -231,6 +194,7 @@ class HomeView extends StatelessWidget {
                     value: logic.name.value,
                     controller: logic.nameController,
                     onChanged: logic.updateName,
+                    showBottomDivider: true,
                   ),
                   BaseOperationCell(
                     label: '下拉选择',
@@ -246,6 +210,7 @@ class HomeView extends StatelessWidget {
                         logic.updateSelectValue(selected['label']);
                       }
                     },
+                    showBottomDivider: true,
                   ),
                   BaseOperationCell(
                     label: '日期',
@@ -261,6 +226,7 @@ class HomeView extends StatelessWidget {
                         logic.updateDate(res.toIso8601String());
                       }
                     },
+                    showBottomDivider: true,
                   ),
                   BaseOperationCell(
                     label: '地区',
@@ -279,6 +245,47 @@ class HomeView extends StatelessWidget {
                         logic.updateAddress(names);
                       }
                     },
+                    showBottomDivider: true,
+                  ),
+                  BaseOperationCell(
+                    label: '单选',
+                    rightWidget: Obx(
+                      () => ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 220),
+                        child: BaseRadioGroup<int>(
+                          buttonWidth: 60,
+                          buttonHeight: 20,
+                          buttonFontSize: 12,
+                          asButton: true,
+                          options: directionTypeEnum.allItems,
+                          value: logic.selectedDirection.value,
+                          valueField: 'value',
+                          labelField: 'label',
+                          onChanged: logic.updateDirection,
+                        ),
+                      ),
+                    ),
+                    showBottomDivider: true,
+                  ),
+                  BaseOperationCell(
+                    label: '多选',
+                    rightWidget: Obx(
+                      () => ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 240),
+                        child: BaseCheckboxGroup<int>(
+                          asButton: true,
+                          buttonWidth: 60,
+                          buttonHeight: 20,
+                          buttonFontSize: 12,
+                          options: directionTypeEnum.allItems,
+                          values: logic.selectedDirectionMulti.toList(),
+                          valueField: 'value',
+                          labelField: 'label',
+                          onChanged: logic.updateDirectionMulti,
+                        ),
+                      ),
+                    ),
+                    showBottomDivider: false,
                   ),
                 ],
               ),
