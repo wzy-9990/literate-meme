@@ -237,7 +237,7 @@ class BaseOperationCell extends StatelessWidget {
   Widget _buildSelect(
       TextStyle valueStyle, TextStyle hintStyle, String effectiveHint) {
     final bool hasValue = (value ?? '').isNotEmpty;
-    final int? maxLinesToUse = valueMaxLines ?? maxLines;
+    final int? maxLinesToUse = valueMaxLines;
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       mainAxisSize: MainAxisSize.max,

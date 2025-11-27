@@ -5,6 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_tem/api/http.dart';
 import 'package:flutter_tem/components/BaseImage/preview.dart';
 import 'package:flutter_tem/components/BaseInkWell/index.dart';
@@ -796,8 +797,8 @@ class _BaseUploadState extends State<BaseUpload> {
   /// 网格模式
   Widget _buildGridMode() {
     return Wrap(
-      spacing: 10,
-      runSpacing: 10,
+      spacing: 10.w,
+      runSpacing: 10.w,
       children: [
         ..._uploadItems.map((item) => _buildGridItem(item)),
         if (_uploadItems.length < widget.maxCount) _buildAddButton(),
@@ -844,26 +845,26 @@ class _BaseUploadState extends State<BaseUpload> {
   /// 网格项
   Widget _buildGridItem(UploadItem item) {
     return Container(
-      width: 100,
-      height: 100,
+      width: 100.w,
+      height: 100.w,
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey[300]!),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(8.r),
       ),
       child: Stack(
         children: [
           // 图片预览
           if (item.fileInfo.isImage)
             ClipRRect(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(8.r),
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
                   onTap: () => _openImagePreview(item),
                   child: Ink.image(
                     image: FileImage(File(item.fileInfo.filePath)),
-                    width: 100,
-                    height: 100,
+                    width: 100.w,
+                    height: 100.w,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -877,30 +878,30 @@ class _BaseUploadState extends State<BaseUpload> {
             Container(
               decoration: BoxDecoration(
                 color: Colors.black54,
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(8.r),
               ),
               child: Center(
                 child: item.progress >= 1.0
                     ? // 文件已上传，等待服务器处理
-                    const Column(
+                    Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           SizedBox(
-                            width: 40,
-                            height: 40,
-                            child: CircularProgressIndicator(
+                            width: 40.w,
+                            height: 40.w,
+                            child: const CircularProgressIndicator(
                               backgroundColor: Colors.white30,
                               valueColor:
                                   AlwaysStoppedAnimation<Color>(Colors.white),
                               strokeWidth: 4,
                             ),
                           ),
-                          SizedBox(height: 8),
+                          SizedBox(height: 8.h),
                           Text(
                             '上传中...',
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 12,
+                              fontSize: 12.sp,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -912,22 +913,22 @@ class _BaseUploadState extends State<BaseUpload> {
                         children: [
                           // 进度圆圈
                           SizedBox(
-                            width: 50,
-                            height: 50,
+                            width: 50.w,
+                            height: 50.w,
                             child: CircularProgressIndicator(
                               value: item.progress,
                               backgroundColor: Colors.white30,
                               valueColor: const AlwaysStoppedAnimation<Color>(
                                   Colors.white),
-                              strokeWidth: 4,
+                              strokeWidth: 4.w,
                             ),
                           ),
                           // 百分比文字
                           Text(
                             '${(item.progress * 100).toInt()}%',
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: Colors.white,
-                              fontSize: 14,
+                              fontSize: 14.sp,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -941,17 +942,17 @@ class _BaseUploadState extends State<BaseUpload> {
             Container(
               decoration: BoxDecoration(
                 color: Colors.red.withOpacity(0.8),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(8.r),
               ),
-              child: const Center(
+              child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.error_outline, color: Colors.white),
-                    SizedBox(height: 4),
+                    const Icon(Icons.error_outline, color: Colors.white),
+                    SizedBox(height: 4.h),
                     Text(
                       '上传失败',
-                      style: TextStyle(color: Colors.white, fontSize: 12),
+                      style: TextStyle(color: Colors.white, fontSize: 12.sp),
                     ),
                   ],
                 ),
@@ -961,19 +962,19 @@ class _BaseUploadState extends State<BaseUpload> {
           // 删除按钮
           if (widget.showDelete)
             Positioned(
-              top: 4,
-              right: 4,
+              top: 4.w,
+              right: 4.w,
               child: GestureDetector(
                 onTap: () => _removeFile(item),
                 child: Container(
-                  padding: const EdgeInsets.all(2),
+                  padding: EdgeInsets.all(2.w),
                   decoration: const BoxDecoration(
                     color: Colors.black54,
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.close,
-                    size: 16,
+                    size: 16.w,
                     color: Colors.white,
                   ),
                 ),
@@ -987,26 +988,26 @@ class _BaseUploadState extends State<BaseUpload> {
   /// 列表项
   Widget _buildListItem(UploadItem item) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(12),
+      margin: EdgeInsets.only(bottom: 10.h),
+      padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey[300]!),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(8.r),
       ),
       child: Row(
         children: [
           // 文件图标/缩略图
           if (item.fileInfo.isImage)
             ClipRRect(
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: BorderRadius.circular(4.r),
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
                   onTap: () => _openImagePreview(item),
                   child: Ink.image(
                     image: FileImage(File(item.fileInfo.filePath)),
-                    width: 50,
-                    height: 50,
+                    width: 50.w,
+                    height: 50.w,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -1014,16 +1015,17 @@ class _BaseUploadState extends State<BaseUpload> {
             )
           else
             Container(
-              width: 50,
-              height: 50,
+              width: 50.w,
+              height: 50.w,
               decoration: BoxDecoration(
                 color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(4.r),
               ),
-              child: Icon(Icons.insert_drive_file, color: Colors.grey[600]),
+              child: Icon(Icons.insert_drive_file,
+                  color: Colors.grey[600], size: 24.w),
             ),
 
-          const SizedBox(width: 12),
+          SizedBox(width: 12.w),
 
           // 文件信息
           Expanded(
@@ -1034,22 +1036,23 @@ class _BaseUploadState extends State<BaseUpload> {
                   item.fileInfo.fileName,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontWeight: FontWeight.w500),
+                  style:
+                      TextStyle(fontWeight: FontWeight.w500, fontSize: 14.sp),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 Text(
                   item.fileInfo.fileSizeFormatted,
-                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                  style: TextStyle(fontSize: 12.sp, color: Colors.grey[600]),
                 ),
                 if (item.status == UploadStatus.uploading) ...[
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4.h),
                   LinearProgressIndicator(value: item.progress),
                 ],
               ],
             ),
           ),
 
-          const SizedBox(width: 12),
+          SizedBox(width: 12.w),
 
           // 状态图标
           _buildStatusIcon(item),
@@ -1069,17 +1072,17 @@ class _BaseUploadState extends State<BaseUpload> {
   Widget _buildStatusIcon(UploadItem item) {
     switch (item.status) {
       case UploadStatus.ready:
-        return const Icon(Icons.schedule, color: Colors.grey);
+        return Icon(Icons.schedule, color: Colors.grey, size: 20.w);
       case UploadStatus.uploading:
-        return const SizedBox(
-          width: 20,
-          height: 20,
-          child: CircularProgressIndicator(strokeWidth: 2),
+        return SizedBox(
+          width: 20.w,
+          height: 20.w,
+          child: CircularProgressIndicator(strokeWidth: 2.w),
         );
       case UploadStatus.success:
-        return const Icon(Icons.check_circle, color: Colors.green);
+        return Icon(Icons.check_circle, color: Colors.green, size: 20.w);
       case UploadStatus.failed:
-        return const Icon(Icons.error, color: Colors.red);
+        return Icon(Icons.error, color: Colors.red, size: 20.w);
     }
   }
 
@@ -1088,21 +1091,21 @@ class _BaseUploadState extends State<BaseUpload> {
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey[100],
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(8.r),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.insert_drive_file, size: 40, color: Colors.grey[600]),
-          const SizedBox(height: 4),
+          Icon(Icons.insert_drive_file, size: 40.w, color: Colors.grey[600]),
+          SizedBox(height: 4.h),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
+            padding: EdgeInsets.symmetric(horizontal: 4.w),
             child: Text(
               fileInfo.fileName,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 10, color: Colors.grey[700]),
+              style: TextStyle(fontSize: 10.sp, color: Colors.grey[700]),
             ),
           ),
         ],
@@ -1113,26 +1116,26 @@ class _BaseUploadState extends State<BaseUpload> {
   /// 添加按钮（网格）
   Widget _buildAddButton() {
     return Container(
-      width: 100,
-      height: 100,
+      width: 100.w,
+      height: 100.w,
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey[300]!, style: BorderStyle.solid),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(8.r),
         color: Colors.grey[50],
       ),
       child: BaseInkWell(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(8.r),
         onTap: _pickFiles,
         backgroundColor: Colors.transparent,
         expand: true,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.add, size: 32, color: Colors.grey[600]),
-            const SizedBox(height: 4),
+            Icon(Icons.add, size: 32.w, color: Colors.grey[600]),
+            SizedBox(height: 4.h),
             Text(
               '添加${widget.imageOnly ? "图片" : "文件"}',
-              style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+              style: TextStyle(fontSize: 12.sp, color: Colors.grey[600]),
             ),
           ],
         ),
@@ -1145,23 +1148,24 @@ class _BaseUploadState extends State<BaseUpload> {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey[300]!),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(8.r),
         color: Colors.grey[50],
       ),
       child: BaseInkWell(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(8.r),
         onTap: _pickFiles,
         backgroundColor: Colors.transparent,
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12),
+          padding: EdgeInsets.symmetric(vertical: 12.h),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.add_circle_outline, color: Colors.grey[600]),
-              const SizedBox(width: 8),
+              Icon(Icons.add_circle_outline,
+                  color: Colors.grey[600], size: 24.w),
+              SizedBox(width: 8.w),
               Text(
                 '添加${widget.imageOnly ? "图片" : "文件"}',
-                style: TextStyle(color: Colors.grey[700]),
+                style: TextStyle(color: Colors.grey[700], fontSize: 14.sp),
               ),
             ],
           ),

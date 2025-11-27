@@ -189,7 +189,7 @@ class HomeView extends StatelessWidget {
                 backgroundColor: Colors.white,
                 children: [
                   BaseOperationCell(
-                    label: '姓名',
+                    label: '姓名姓名',
                     required: true,
                     value: logic.name.value,
                     controller: logic.nameController,
