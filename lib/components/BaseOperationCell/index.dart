@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_tem/components/BaseInkWell/index.dart';
 
 /// 操作单元格
@@ -151,18 +152,30 @@ class BaseOperationCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final labelTextStyle =
-        labelStyle ?? const TextStyle(fontSize: 14, color: Colors.black87);
+        labelStyle ?? TextStyle(fontSize: 14.sp, color: Colors.black87);
     final reqStyle = requiredStyle ??
-        const TextStyle(fontSize: 14, color: Colors.red, height: 1.1);
+        TextStyle(fontSize: 14.sp, color: Colors.red, height: 1.1);
     final valueStyle =
-        valueTextStyle ?? const TextStyle(fontSize: 14, color: Colors.black87);
+        valueTextStyle ?? TextStyle(fontSize: 14.sp, color: Colors.black87);
     final hintStyle = hintTextStyle ??
-        const TextStyle(fontSize: 14, color: Colors.grey, height: 1.2);
+        TextStyle(fontSize: 14.sp, color: Colors.grey, height: 1.2);
     final effectiveHint =
         hintText ?? (_isSelectMode ? '请选择$label' : '请输入$label');
+    final EdgeInsets scaledPadding = EdgeInsets.only(
+      left: contentPadding.left.w,
+      right: contentPadding.right.w,
+      top: contentPadding.top.h,
+      bottom: contentPadding.bottom.h,
+    );
 
     final body = _buildBody(
-        labelTextStyle, reqStyle, valueStyle, hintStyle, effectiveHint);
+      labelTextStyle,
+      reqStyle,
+      valueStyle,
+      hintStyle,
+      effectiveHint,
+      scaledPadding: scaledPadding,
+    );
 
     return BaseInkWell(
       enableRipple: _isInteractiveSelect,
@@ -176,7 +189,7 @@ class BaseOperationCell extends StatelessWidget {
   Widget _buildLabel(TextStyle style, TextStyle reqStyle) {
     return ConstrainedBox(
       constraints:
-          BoxConstraints(maxWidth: labelMaxWidth, minWidth: labelMinWidth),
+          BoxConstraints(maxWidth: labelMaxWidth.w, minWidth: labelMinWidth.w),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -192,7 +205,7 @@ class BaseOperationCell extends StatelessWidget {
             ),
           ),
           if (required) ...[
-            const SizedBox(width: 2),
+            SizedBox(width: 2.w),
             Text('*', style: reqStyle),
           ],
         ],
@@ -224,7 +237,7 @@ class BaseOperationCell extends StatelessWidget {
   Widget _buildSelect(
       TextStyle valueStyle, TextStyle hintStyle, String effectiveHint) {
     final bool hasValue = (value ?? '').isNotEmpty;
-    final int? maxLinesToUse = valueMaxLines;
+    final int? maxLinesToUse = valueMaxLines ?? maxLines;
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       mainAxisSize: MainAxisSize.max,
@@ -241,12 +254,12 @@ class BaseOperationCell extends StatelessWidget {
             softWrap: true,
           ),
         ),
-        const SizedBox(width: 2),
+        SizedBox(width: 2.w),
         if (_isInteractiveSelect)
           arrowIcon ??
               Icon(
                 arrowIconData ?? Icons.chevron_right,
-                size: arrowIconSize ?? 18,
+                size: (arrowIconSize ?? 18).w,
                 color: arrowIconColor ?? Colors.grey.shade500,
               ),
       ],
@@ -258,8 +271,14 @@ class BaseOperationCell extends StatelessWidget {
     TextStyle reqStyle,
     TextStyle valueStyle,
     TextStyle hintStyle,
-    String effectiveHint,
-  ) {
+    String effectiveHint, {
+    required EdgeInsets scaledPadding,
+  }) {
+    final double indentValue =
+        dividerIndent == 0 ? scaledPadding.left : dividerIndent.w;
+    final double endIndentValue =
+        dividerIndent == 0 ? scaledPadding.right : dividerIndent.w;
+
     Widget buildRight() {
       if (rightWidget != null) {
         return rightWidget!;
@@ -273,42 +292,45 @@ class BaseOperationCell extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Padding(
-            padding: contentPadding,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _buildLabel(labelTextStyle, reqStyle),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: buildRight(),
-                      ),
-                    ),
-                  ],
-                ),
-                if (tip?.trim().isNotEmpty ?? false)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 2, bottom: 0),
-                    child: Text(
-                      tip!,
-                      style: tipStyle ??
-                          const TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey,
-                          ),
+          padding: scaledPadding,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _buildLabel(labelTextStyle, reqStyle),
+                  SizedBox(width: 12.w),
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: buildRight(),
                     ),
                   ),
-              ],
-            )),
+                ],
+              ),
+              if (tip?.trim().isNotEmpty ?? false)
+                Padding(
+                  padding: EdgeInsets.only(top: 2.h),
+                  child: Text(
+                    tip!,
+                    style: tipStyle ??
+                        TextStyle(
+                          fontSize: 12.sp,
+                          color: Colors.grey,
+                        ),
+                  ),
+                ),
+            ],
+          ),
+        ),
         if (showBottomDivider)
           Divider(
             height: 1,
             thickness: 0.6,
+            indent: indentValue,
+            endIndent: endIndentValue,
             color: Colors.grey.shade300,
           ),
       ],
@@ -341,7 +363,7 @@ class BaseOperationCellGroup extends StatelessWidget {
       padding: padding,
       decoration: BoxDecoration(
         color: backgroundColor,
-        borderRadius: BorderRadius.circular(radius),
+        borderRadius: BorderRadius.circular(radius.r),
       ),
       child: Column(
         children: List.generate(children.length, (index) {
@@ -351,10 +373,10 @@ class BaseOperationCellGroup extends StatelessWidget {
 
           final BorderRadius effectiveRadius = child.borderRadius ??
               BorderRadius.only(
-                topLeft: Radius.circular(isFirst ? radius : 0),
-                topRight: Radius.circular(isFirst ? radius : 0),
-                bottomLeft: Radius.circular(isLast ? radius : 0),
-                bottomRight: Radius.circular(isLast ? radius : 0),
+                topLeft: Radius.circular(isFirst ? radius.r : 0),
+                topRight: Radius.circular(isFirst ? radius.r : 0),
+                bottomLeft: Radius.circular(isLast ? radius.r : 0),
+                bottomRight: Radius.circular(isLast ? radius.r : 0),
               );
 
           final bool showDivider = child.showBottomDivider && !isLast;

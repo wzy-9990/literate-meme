@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_tem/components/BaseImage/preview.dart';
 import 'package:flutter_tem/utils/base/image_saver.dart';
 
@@ -87,9 +88,11 @@ class BaseImage extends StatelessWidget {
       return placeholder!;
     }
 
+    final double? w = width?.w;
+    final double? h = height?.h;
     return _ShimmerPlaceholder(
-      width: width,
-      height: height,
+      width: w,
+      height: h,
       baseColor: placeholderColor ?? Colors.grey[200]!,
     );
   }
@@ -100,25 +103,25 @@ class BaseImage extends StatelessWidget {
       return errorWidget!;
     }
 
+    final double? w = width?.w;
+    final double? h = height?.h;
     return Container(
-      width: width,
-      height: height,
+      width: w,
+      height: h,
       color: placeholderColor ?? Colors.grey[200],
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
             Icons.broken_image_outlined,
-            size: (width != null && height != null)
-                ? (width! < height! ? width! * 0.4 : height! * 0.4)
-                : 40,
+            size: (w != null && h != null) ? (w < h ? w * 0.4 : h * 0.4) : 40.w,
             color: Colors.grey[400],
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: 4.h),
           Text(
             '加载失败',
             style: TextStyle(
-              fontSize: 12,
+              fontSize: 12.sp,
               color: Colors.grey[500],
             ),
           ),
@@ -137,7 +140,7 @@ class BaseImage extends StatelessWidget {
 
     if (borderRadius > 0) {
       return ClipRRect(
-        borderRadius: BorderRadius.circular(borderRadius),
+        borderRadius: BorderRadius.circular(borderRadius.r),
         child: child,
       );
     }
@@ -213,6 +216,8 @@ class BaseImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double? w = width?.w;
+    final double? h = height?.h;
     Widget imageWidget;
 
     // 网络图片
@@ -220,8 +225,8 @@ class BaseImage extends StatelessWidget {
       imageWidget = _wrapImage(
         CachedNetworkImage(
           imageUrl: imageUrl,
-          width: width,
-          height: height,
+          width: w,
+          height: h,
           fit: fit,
           fadeInDuration: enableFadeIn
               ? Duration(milliseconds: fadeInDuration)
@@ -235,8 +240,8 @@ class BaseImage extends StatelessWidget {
       imageWidget = _wrapImage(
         _LocalImage(
           imageUrl: imageUrl,
-          width: width,
-          height: height,
+          width: w,
+          height: h,
           fit: fit,
           enableFadeIn: enableFadeIn,
           fadeInDuration: fadeInDuration,

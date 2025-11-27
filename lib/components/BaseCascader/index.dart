@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_tem/api/modules/common.dart';
 import 'package:flutter_tem/components/BaseEmpty/index.dart';
 import 'package:flutter_tem/components/BaseLoading/index.dart';
@@ -359,18 +360,18 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
 
     if (_options.isEmpty && _error.isEmpty) {
       // 初始未加载
-      return const SizedBox(
-        height: 420,
+      return SizedBox(
+        height: 420.h,
         child: ClipRRect(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-          child: BaseLoading(message: '加载中...'),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
+          child: const BaseLoading(message: '加载中...'),
         ),
       );
     }
 
     if (_error.isNotEmpty) {
       return SizedBox(
-        height: 420,
+        height: 420.h,
         child: Center(
           child: BaseEmpty(
             title: _error,
@@ -382,7 +383,7 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
     }
 
     return ClipRRect(
-      borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+      borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
       child: Container(
         color: Colors.white,
         child: SafeArea(
@@ -390,12 +391,12 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
             mainAxisSize: MainAxisSize.min,
             children: [
               _buildHeader(),
-              const Divider(height: 1),
+              Divider(height: 1.h),
               _buildPathBar(),
               _buildSearchBar(),
-              const Divider(height: 1),
+              Divider(height: 1.h),
               SizedBox(
-                height: 360,
+                height: 360.h,
                 child: _searchText.isEmpty
                     ? Row(
                         children: [
@@ -431,9 +432,9 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
   Widget _buildHeader() {
     final primaryColor = Theme.of(context).colorScheme.primary;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
       child: SizedBox(
-        height: 40,
+        height: 40.h,
         child: Stack(
           alignment: Alignment.center,
           children: [
@@ -442,17 +443,20 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
               child: CupertinoButton(
                 padding: EdgeInsets.zero,
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text(
+                child: Text(
                   '取消',
-                  style: TextStyle(color: CupertinoColors.systemGrey),
+                  style: TextStyle(
+                    color: CupertinoColors.systemGrey,
+                    fontSize: 14.sp,
+                  ),
                 ),
               ),
             ),
             Center(
               child: Text(
                 widget.title,
-                style: const TextStyle(
-                  fontSize: 17,
+                style: TextStyle(
+                  fontSize: 17.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -474,9 +478,12 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
                         _searchHits.clear();
                       });
                     },
-                    child: const Text(
+                    child: Text(
                       '清空',
-                      style: TextStyle(color: CupertinoColors.systemGrey),
+                      style: TextStyle(
+                        color: CupertinoColors.systemGrey,
+                        fontSize: 14.sp,
+                      ),
                     ),
                   ),
                   CupertinoButton(
@@ -493,7 +500,10 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
                     },
                     child: Text(
                       '完成',
-                      style: TextStyle(color: primaryColor),
+                      style: TextStyle(
+                        color: primaryColor,
+                        fontSize: 14.sp,
+                      ),
                     ),
                   ),
                 ],
@@ -507,7 +517,7 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
 
   Widget _buildPathBar() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -517,32 +527,32 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
                 _buildPathChip(_provinceLabel,
                     isActive: _provinceIndex != null),
                 if (widget.columnCount >= 2) ...[
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8.w),
                   _buildPathChip(_cityLabel, isActive: _cityIndex != null),
                 ],
                 if (widget.columnCount == 3) ...[
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8.w),
                   _buildPathChip(_districtLabel,
                       isActive: _districtIndex != null),
                 ],
               ],
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
           ],
           if (_selectedNodes.isNotEmpty)
             Align(
               alignment: Alignment.centerLeft,
               child: Wrap(
-                spacing: 8,
-                runSpacing: 8,
+                spacing: 8.w,
+                runSpacing: 8.h,
                 children: _selectedNodes
                     .map(
                       (node) => Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 8),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 12.w, vertical: 8.h),
                         decoration: BoxDecoration(
                           color: CupertinoColors.systemGrey6,
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(16.r),
                           border:
                               Border.all(color: CupertinoColors.systemGrey4),
                         ),
@@ -551,10 +561,10 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
                           children: [
                             Text(
                               node.label,
-                              style: const TextStyle(
-                                  fontSize: 13, color: Colors.black87),
+                              style: TextStyle(
+                                  fontSize: 13.sp, color: Colors.black87),
                             ),
-                            const SizedBox(width: 6),
+                            SizedBox(width: 6.w),
                             GestureDetector(
                               onTap: () {
                                 setState(() {
@@ -582,24 +592,24 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
   Widget _buildPathChip(String text, {bool isActive = false}) {
     final primaryColor = Theme.of(context).colorScheme.primary;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
       decoration: BoxDecoration(
         color: isActive ? primaryColor.withOpacity(0.15) : Colors.grey.shade200,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         border: Border.all(
           color: isActive ? primaryColor : Colors.transparent,
         ),
       ),
       child: Text(
         text,
-        style: const TextStyle(fontSize: 13, color: Colors.black87),
+        style: TextStyle(fontSize: 13.sp, color: Colors.black87),
       ),
     );
   }
 
   Widget _buildSearchBar() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
       child: CupertinoSearchTextField(
         placeholder: '搜索省/市/县',
         onChanged: _updateSearch,
@@ -635,7 +645,7 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
             },
             child: Container(
               color: isActive ? CupertinoColors.systemGrey6 : null,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -650,7 +660,7 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
                         color: canSelect
                             ? primaryColor
                             : CupertinoColors.systemGrey,
-                        size: 20,
+                        size: 20.w,
                       ),
                     ),
                   Expanded(
@@ -659,6 +669,7 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
                       style: TextStyle(
                         color: canSelect ? Colors.black87 : Colors.grey,
                         fontWeight: selected ? FontWeight.w600 : null,
+                        fontSize: 14.sp,
                       ),
                     ),
                   ),
@@ -666,7 +677,7 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
                   if (node.children.isNotEmpty && level < widget.columnCount)
                     Icon(
                       Icons.chevron_right,
-                      size: 18,
+                      size: 18.w,
                       color: Colors.grey.shade500,
                     ),
                 ],
@@ -717,6 +728,12 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
             color: Colors.black87,
             highlightColor: Colors.orange,
             isBold: false,
+          ),
+          contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+          trailing: Icon(
+            Icons.chevron_right,
+            size: 18.w,
+            color: Colors.grey.shade500,
           ),
         );
       },
@@ -777,6 +794,7 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
           style: TextStyle(
             color: color,
             fontWeight: isBold ? FontWeight.w600 : null,
+            fontSize: 14.sp,
           ),
         ));
       }
@@ -785,6 +803,7 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
         style: TextStyle(
           color: highlightColor,
           fontWeight: FontWeight.w700,
+          fontSize: 14.sp,
         ),
       ));
       start = index + lowerKey.length;
@@ -796,6 +815,7 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
         style: TextStyle(
           color: color,
           fontWeight: isBold ? FontWeight.w600 : null,
+          fontSize: 14.sp,
         ),
       ));
     }

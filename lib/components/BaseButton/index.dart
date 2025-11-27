@@ -125,10 +125,10 @@ class BaseButton extends StatelessWidget {
   }
 
   BorderRadius get _borderRadius => BorderRadius.only(
-        topLeft: Radius.circular(topLeftRadius.w),
-        topRight: Radius.circular(topRightRadius.w),
-        bottomLeft: Radius.circular(bottomLeftRadius.w),
-        bottomRight: Radius.circular(bottomRightRadius.w),
+        topLeft: Radius.circular(topLeftRadius.r),
+        topRight: Radius.circular(topRightRadius.r),
+        bottomLeft: Radius.circular(bottomLeftRadius.r),
+        bottomRight: Radius.circular(bottomRightRadius.r),
       );
 
   _ButtonColors _resolveColors() {

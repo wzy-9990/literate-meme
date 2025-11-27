@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// 电话拨打组件
@@ -41,7 +42,7 @@ class BasePhoneCall extends StatelessWidget {
     switch (type) {
       case BasePhoneCallType.icon:
         return IconButton(
-          icon: Icon(icon, size: iconSize),
+          icon: Icon(icon, size: (iconSize ?? 24).w),
           onPressed: () => _makePhoneCall(context, cleanNumber),
         );
       case BasePhoneCallType.text:
@@ -50,9 +51,10 @@ class BasePhoneCall extends StatelessWidget {
           child: Text(
             displayText,
             style: style ??
-                const TextStyle(
+                TextStyle(
                   color: Colors.blue,
                   decoration: TextDecoration.underline,
+                  fontSize: 14.sp,
                 ),
           ),
         );
@@ -62,9 +64,12 @@ class BasePhoneCall extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, size: iconSize),
-              const SizedBox(width: 8),
-              Text(displayText),
+              Icon(icon, size: (iconSize ?? 20).w),
+              SizedBox(width: 8.w),
+              Text(
+                displayText,
+                style: TextStyle(fontSize: 14.sp),
+              ),
             ],
           ),
         );
@@ -105,8 +110,8 @@ class BasePhoneCall extends StatelessWidget {
         title: const Text('拨打电话'),
         message: Text(
           phoneNumber,
-          style: const TextStyle(
-            fontSize: 18,
+          style: TextStyle(
+            fontSize: 18.sp,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -116,7 +121,10 @@ class BasePhoneCall extends StatelessWidget {
               Navigator.pop(context);
               _launchPhoneCall(phoneNumber);
             },
-            child: const Text('拨打'),
+            child: Text(
+              '拨打',
+              style: TextStyle(fontSize: 14.sp),
+            ),
           ),
         ],
         cancelButton: CupertinoActionSheetAction(
@@ -124,7 +132,10 @@ class BasePhoneCall extends StatelessWidget {
           onPressed: () {
             Navigator.pop(context);
           },
-          child: const Text('取消'),
+          child: Text(
+            '取消',
+            style: TextStyle(fontSize: 14.sp),
+          ),
         ),
       ),
     );

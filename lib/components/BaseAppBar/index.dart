@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// 通用 AppBar 组件
 ///
@@ -95,6 +96,7 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double? effectiveToolbarHeight = toolbarHeight?.h;
     return AppBar(
       title: titleWidget ?? (title != null ? Text(title!) : null),
       leading: leading,
@@ -103,7 +105,7 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: backgroundColor,
       foregroundColor: foregroundColor,
       centerTitle: centerTitle,
-      toolbarHeight: toolbarHeight,
+      toolbarHeight: effectiveToolbarHeight,
       elevation: elevation,
       systemOverlayStyle: systemOverlayStyle,
       bottom: bottom,
@@ -112,6 +114,7 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Size get preferredSize => Size.fromHeight(
-        (toolbarHeight ?? kToolbarHeight) + (bottom?.preferredSize.height ?? 0),
+        (toolbarHeight?.h ?? kToolbarHeight) +
+            (bottom?.preferredSize.height ?? 0),
       );
 }

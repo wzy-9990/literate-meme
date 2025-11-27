@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// iOS 风格弹窗封装
 /// 支持自定义标题/内容/按钮文字及样式，支持单/多按钮
@@ -54,7 +55,10 @@ class BaseCupertinoAlertDialog extends StatelessWidget {
                   text: cancelText,
                   isCancel: true,
                   textStyle: cancelTextStyle ??
-                      const TextStyle(color: CupertinoColors.systemGrey),
+                      TextStyle(
+                        color: CupertinoColors.systemGrey,
+                        fontSize: 14.sp,
+                      ),
                   onPressed: onCancel ??
                       () {
                         Navigator.of(context).pop();
@@ -64,7 +68,11 @@ class BaseCupertinoAlertDialog extends StatelessWidget {
                   text: confirmText,
                   isDefault: true,
                   textStyle: confirmTextStyle ??
-                      TextStyle(color: primary, fontWeight: FontWeight.w600),
+                      TextStyle(
+                        color: primary,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
                   onPressed: onConfirm ??
                       () {
                         Navigator.of(context).pop();
@@ -76,15 +84,15 @@ class BaseCupertinoAlertDialog extends StatelessWidget {
     return CupertinoAlertDialog(
       title: Text(
         title,
-        style: titleStyle,
+        style: titleStyle ?? TextStyle(fontSize: 16.sp),
       ),
       content: subtitle == null
           ? null
           : Padding(
-              padding: const EdgeInsets.only(top: 8.0),
+              padding: EdgeInsets.only(top: 8.h),
               child: Text(
                 subtitle!,
-                style: subtitleStyle,
+                style: subtitleStyle ?? TextStyle(fontSize: 14.sp),
               ),
             ),
       actions: mergedActions
@@ -103,6 +111,7 @@ class BaseCupertinoAlertDialog extends StatelessWidget {
                       color: a.isCancel
                           ? CupertinoColors.systemGrey
                           : CupertinoColors.activeBlue,
+                      fontSize: 14.sp,
                     ),
               ),
             ),

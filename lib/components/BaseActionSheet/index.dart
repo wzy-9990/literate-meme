@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// iOS 风格 Picker 选择器（单列）
 /// 支持传入字典列表（默认字段 label/value），返回选中的 Map
@@ -26,10 +27,10 @@ Future<Map<String, dynamic>?> showBasePicker(
     backgroundColor: Colors.transparent,
     builder: (_) {
       return Container(
-        margin: const EdgeInsets.all(0),
+        margin: EdgeInsets.zero,
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -41,15 +42,15 @@ Future<Map<String, dynamic>?> showBasePicker(
               onCancel: () => Navigator.of(context).pop(),
               onConfirm: () => Navigator.of(context).pop(options[currentIndex]),
             ),
-            const Divider(height: 1),
+            Divider(height: 1.h),
             SizedBox(
-              height: 220,
+              height: 220.h,
               child: CupertinoPicker(
                 scrollController: controller,
                 magnification: 1.05,
                 squeeze: 1.1,
                 useMagnifier: true,
-                itemExtent: 44,
+                itemExtent: 44.h,
                 onSelectedItemChanged: (index) {
                   currentIndex = index;
                 },
@@ -58,13 +59,13 @@ Future<Map<String, dynamic>?> showBasePicker(
                           child: _PickerItem(
                             label: e[labelField]?.toString() ?? '',
                             textStyle: itemTextStyle ??
-                                const TextStyle(
-                                    fontSize: 14,
+                                TextStyle(
+                                    fontSize: 14.sp,
                                     color: Colors.black87,
                                     fontWeight: FontWeight.w600),
                             selectedTextStyle: selectedTextStyle ??
-                                const TextStyle(
-                                  fontSize: 14,
+                                TextStyle(
+                                  fontSize: 14.sp,
                                   color: Colors.black87,
                                   fontWeight: FontWeight.w700,
                                 ),
@@ -99,23 +100,28 @@ class _PickerHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
       child: Row(
         children: [
           CupertinoButton(
             padding: EdgeInsets.zero,
             onPressed: onCancel,
-            child: const Text(
+            child: Text(
               '取消',
-              style: TextStyle(color: CupertinoColors.systemGrey),
+              style: TextStyle(
+                color: CupertinoColors.systemGrey,
+                fontSize: 14.sp,
+              ),
             ),
           ),
           Expanded(
             child: Center(
               child: Text(
                 title,
-                style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ),
@@ -124,7 +130,10 @@ class _PickerHeader extends StatelessWidget {
             onPressed: onConfirm,
             child: Text(
               confirmText,
-              style: TextStyle(color: primary),
+              style: TextStyle(
+                color: primary,
+                fontSize: 14.sp,
+              ),
             ),
           ),
         ],

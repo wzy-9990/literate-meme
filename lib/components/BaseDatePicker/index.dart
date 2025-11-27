@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 enum BaseDatePickerMode { date, time, dateTime }
 
@@ -25,7 +26,7 @@ Future<DateTime?> showBaseDatePicker(
     context: context,
     builder: (_) {
       return ClipRRect(
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
         child: Container(
           color: Colors.white,
           child: SafeArea(
@@ -40,9 +41,9 @@ Future<DateTime?> showBaseDatePicker(
                   onCancel: () => Navigator.of(context).pop(),
                   onConfirm: () => Navigator.of(context).pop(current),
                 ),
-                const Divider(height: 1),
+                Divider(height: 1.h),
                 SizedBox(
-                  height: 250,
+                  height: 250.h,
                   child: Transform.scale(
                     scale: scale,
                     child: CupertinoTheme(
@@ -107,23 +108,26 @@ class _PickerHeader extends StatelessWidget {
     final primary = Theme.of(context).colorScheme.primary;
     return Container(
       color: Colors.white,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
       child: Row(
         children: [
           CupertinoButton(
             padding: EdgeInsets.zero,
             onPressed: onCancel,
-            child: const Text(
+            child: Text(
               '取消',
-              style: TextStyle(color: CupertinoColors.systemGrey),
+              style: TextStyle(
+                color: CupertinoColors.systemGrey,
+                fontSize: 14.sp,
+              ),
             ),
           ),
           Expanded(
             child: Center(
               child: Text(
                 title,
-                style: const TextStyle(
-                  fontSize: 16,
+                style: TextStyle(
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
                   color: Colors.black87,
                 ),
@@ -137,6 +141,7 @@ class _PickerHeader extends StatelessWidget {
               confirmText,
               style: TextStyle(
                 color: primary,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
               ),
             ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:skeleton_text/skeleton_text.dart';
 
 /// 通用骨架屏组件
@@ -33,62 +34,36 @@ class BaseSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final placeholderColor = color ?? Colors.grey[300]!;
+    final double h = height.h;
+    final double? w = width?.w;
+    final EdgeInsetsGeometry? m = margin is EdgeInsets
+        ? EdgeInsets.fromLTRB(
+            (margin as EdgeInsets).left.w,
+            (margin as EdgeInsets).top.h,
+            (margin as EdgeInsets).right.w,
+            (margin as EdgeInsets).bottom.h,
+          )
+        : margin;
+    final BorderRadiusGeometry scaledRadius = borderRadius is BorderRadius
+        ? BorderRadius.only(
+            topLeft: (borderRadius as BorderRadius).topLeft * (1.r),
+            topRight: (borderRadius as BorderRadius).topRight * (1.r),
+            bottomLeft: (borderRadius as BorderRadius).bottomLeft * (1.r),
+            bottomRight: (borderRadius as BorderRadius).bottomRight * (1.r),
+          )
+        : borderRadius;
     return Container(
-      margin: margin,
-      height: height,
-      width: width,
-      decoration: BoxDecoration(borderRadius: borderRadius),
+      margin: m,
+      height: h,
+      width: w,
+      decoration: BoxDecoration(borderRadius: scaledRadius),
       child: SkeletonAnimation(
         child: Container(
           decoration: BoxDecoration(
             color: placeholderColor,
-            borderRadius: borderRadius,
+            borderRadius: scaledRadius,
           ),
         ),
-      ),
-    );
-  }
-}
-
-/// 快速生成多行骨架列表
-class BaseSkeletonList extends StatelessWidget {
-  const BaseSkeletonList({
-    super.key,
-    this.itemCount = 3,
-    this.itemHeight = 14,
-    this.itemWidth,
-    this.spacing = 12,
-    this.color,
-    this.borderRadius = const BorderRadius.all(Radius.circular(8)),
-    this.padding = EdgeInsets.zero,
-  });
-
-  final int itemCount;
-  final double itemHeight;
-  final double? itemWidth;
-  final double spacing;
-  final Color? color;
-  final BorderRadiusGeometry borderRadius;
-  final EdgeInsetsGeometry padding;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: padding,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: List.generate(itemCount, (index) {
-          return Padding(
-            padding:
-                EdgeInsets.only(bottom: index == itemCount - 1 ? 0 : spacing),
-            child: BaseSkeleton(
-              height: itemHeight,
-              width: itemWidth,
-              color: color,
-              borderRadius: borderRadius,
-            ),
-          );
-        }),
       ),
     );
   }

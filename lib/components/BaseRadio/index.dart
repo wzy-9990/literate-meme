@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_tem/components/BaseButton/index.dart';
 import 'package:flutter_tem/components/BaseInkWell/index.dart';
 import 'package:flutter_tem/config/styles/colors.dart';
@@ -84,8 +85,8 @@ class BaseRadioGroup<T> extends StatelessWidget {
     }).toList();
 
     return Wrap(
-      spacing: spacing,
-      runSpacing: runSpacing,
+      spacing: spacing.w,
+      runSpacing: runSpacing.h,
       children: parsedOptions.map((opt) {
         final bool selected = opt.option.value == value;
         return asButton
@@ -94,8 +95,8 @@ class BaseRadioGroup<T> extends StatelessWidget {
                 : BaseButton(
                     type: selected ? selectedButtonType : unselectedButtonType,
                     text: opt.option.label,
-                    width: buttonWidth ?? 80,
-                    height: buttonHeight ?? 40,
+                    width: (buttonWidth ?? 80),
+                    height: (buttonHeight ?? 40),
                     enableRipple: buttonEnableRipple,
                     fontSize: buttonFontSize ?? 14,
                     textColor:
@@ -137,36 +138,36 @@ class _RadioChip extends StatelessWidget {
   Widget build(BuildContext context) {
     const primary = AppColors.primary;
     return BaseInkWell(
-      borderRadius: BorderRadius.circular(AppRadius.button),
+      borderRadius: BorderRadius.circular(AppRadius.button.r),
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
         decoration: BoxDecoration(
           color: selected ? primary.withOpacity(0.1) : Colors.grey.shade200,
           border: Border.all(
             color: selected ? primary : Colors.transparent,
-            width: 1,
+            width: 1.w,
           ),
-          borderRadius: BorderRadius.circular(AppRadius.button),
+          borderRadius: BorderRadius.circular(AppRadius.button.r),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 16,
-              height: 16,
+              width: 16.w,
+              height: 16.w,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
                   color: selected ? primary : Colors.grey,
-                  width: 1.5,
+                  width: 1.5.w,
                 ),
               ),
               child: selected
                   ? Center(
                       child: Container(
-                        width: 8,
-                        height: 8,
+                        width: 8.w,
+                        height: 8.w,
                         decoration: const BoxDecoration(
                           color: primary,
                           shape: BoxShape.circle,
@@ -175,12 +176,13 @@ class _RadioChip extends StatelessWidget {
                     )
                   : null,
             ),
-            const SizedBox(width: 6),
+            SizedBox(width: 6.w),
             Text(
               label,
               style: TextStyle(
                 color: selected ? primary : AppColors.textPrimary,
                 fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+                fontSize: 14.sp,
               ),
             ),
           ],

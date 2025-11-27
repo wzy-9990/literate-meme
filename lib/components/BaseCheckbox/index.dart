@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_tem/components/BaseButton/index.dart';
 import 'package:flutter_tem/components/BaseInkWell/index.dart';
 import 'package:flutter_tem/config/styles/colors.dart';
@@ -90,8 +91,8 @@ class BaseCheckboxGroup<T> extends StatelessWidget {
     }).toList();
 
     return Wrap(
-      spacing: spacing,
-      runSpacing: runSpacing,
+      spacing: spacing.w,
+      runSpacing: runSpacing.h,
       children: parsedOptions.map((opt) {
         final bool selected = values.contains(opt.option.value);
         return asButton
@@ -100,8 +101,8 @@ class BaseCheckboxGroup<T> extends StatelessWidget {
                 : BaseButton(
                     type: selected ? selectedButtonType : unselectedButtonType,
                     text: opt.option.label,
-                    width: buttonWidth ?? 80,
-                    height: buttonHeight ?? 40,
+                    width: (buttonWidth ?? 80),
+                    height: (buttonHeight ?? 40),
                     enableRipple: buttonEnableRipple,
                     fontSize: buttonFontSize ?? 14,
                     textColor:
@@ -164,32 +165,33 @@ class _CheckboxChip extends StatelessWidget {
         ? Colors.transparent
         : (selected ? primary.withOpacity(0.1) : Colors.grey.shade200);
     final content = Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
       decoration: BoxDecoration(
         color: bgColor,
         border: removeBorder
             ? null
             : Border.all(
                 color: selected ? primary : Colors.transparent,
-                width: 1,
+                width: 1.w,
               ),
-        borderRadius: BorderRadius.circular(AppRadius.button),
+        borderRadius: BorderRadius.circular(AppRadius.button.r),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
             selected ? Icons.check_box : Icons.check_box_outline_blank,
-            size: iconSize,
+            size: iconSize.w,
             color: selected ? primary : Colors.grey,
           ),
           if (showLabel && !iconOnly) ...[
-            const SizedBox(width: 6),
+            SizedBox(width: 6.w),
             Text(
               label,
               style: TextStyle(
                 color: selected ? primary : AppColors.textPrimary,
                 fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+                fontSize: 14.sp,
               ),
             ),
           ],

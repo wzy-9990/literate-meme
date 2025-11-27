@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_tem/config/styles/index.dart';
 
 /// 基础水波纹组件
@@ -72,7 +73,7 @@ class BaseInkWell extends StatelessWidget {
   });
 
   /// 快捷构造函数 - 圆角卡片样式
-  const BaseInkWell.card({
+  BaseInkWell.card({
     required this.child,
     super.key,
     this.onTap,
@@ -85,10 +86,10 @@ class BaseInkWell extends StatelessWidget {
     this.margin,
     this.backgroundColor,
     this.expand = false,
-  }) : borderRadius = const BorderRadius.all(Radius.circular(AppRadius.card));
+  }) : borderRadius = BorderRadius.all(Radius.circular(AppRadius.card.r));
 
   /// 快捷构造函数 - 圆形样式
-  const BaseInkWell.circle({
+  BaseInkWell.circle({
     required this.child,
     super.key,
     this.onTap,
@@ -101,13 +102,13 @@ class BaseInkWell extends StatelessWidget {
     this.margin,
     this.backgroundColor,
     this.expand = false,
-  }) : borderRadius = const BorderRadius.all(Radius.circular(AppRadius.circle));
+  }) : borderRadius = BorderRadius.all(Radius.circular(AppRadius.circle.r));
 
   @override
   Widget build(BuildContext context) {
     // 默认圆角为 0（方形）
     final BorderRadius effectiveBorderRadius =
-        borderRadius ?? BorderRadius.circular(0);
+        borderRadius ?? BorderRadius.circular(0.r);
 
     // 默认水波纹颜色为黑色 6% 透明度
     final Color effectiveSplashColor =
