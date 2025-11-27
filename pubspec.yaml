@@ -65,6 +65,7 @@ dependencies:
 
   # 动态图标
   flutter_dynamic_icon: ^2.1.0  # 动态切换 app 图标
+  skeleton_text: ^3.0.1 # 骨架屏
 
 dev_dependencies:
   flutter_test:

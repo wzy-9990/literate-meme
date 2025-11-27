@@ -8,6 +8,7 @@ import 'package:flutter_tem/components/BaseCheckbox/index.dart';
 import 'package:flutter_tem/components/BaseCupertinoAlertDialog/index.dart';
 import 'package:flutter_tem/components/BaseDatePicker/index.dart';
 import 'package:flutter_tem/components/BaseRadio/index.dart';
+import 'package:flutter_tem/components/BaseSkeleton/index.dart';
 import 'package:flutter_tem/components/BaseTab/index.dart';
 import 'package:flutter_tem/components/BaseText/index.dart';
 import 'package:flutter_tem/page/index/modules/home/logic.dart';
@@ -45,6 +46,7 @@ class HomeView extends StatelessWidget {
               'chess',
             ),
             const Text('chess'),
+            const BaseSkeleton(),
             const SizedBox(height: 20),
             Wrap(
               spacing: 12,
