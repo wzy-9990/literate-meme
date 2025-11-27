@@ -195,6 +195,7 @@ class HomeView extends StatelessWidget {
                     controller: logic.nameController,
                     onChanged: logic.updateName,
                     showBottomDivider: true,
+                    tip: '请输入基础信息',
                   ),
                   BaseOperationCell(
                     label: '下拉选择',

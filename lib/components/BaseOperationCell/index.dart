@@ -33,6 +33,9 @@ class BaseOperationCell extends StatelessWidget {
     this.labelMaxLines = 20,
     this.labelMaxWidth = 120,
     this.labelMinWidth = 120,
+    this.tip,
+    this.tipStyle,
+    this.showTip = false,
     this.rightWidget,
     this.contentPadding =
         const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -105,6 +108,15 @@ class BaseOperationCell extends StatelessWidget {
 
   /// 左侧 label 最小宽度
   final double labelMinWidth;
+
+  /// 上方提示文案
+  final String? tip;
+
+  /// 提示文案样式
+  final TextStyle? tipStyle;
+
+  /// 是否显示提示文案
+  final bool showTip;
 
   /// 自定义右侧内容（传入则覆盖默认输入/选择区域）
   final Widget? rightWidget;
@@ -261,27 +273,42 @@ class BaseOperationCell extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Padding(
-          padding: contentPadding,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _buildLabel(labelTextStyle, reqStyle),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: buildRight(),
+            padding: contentPadding,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _buildLabel(labelTextStyle, reqStyle),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: buildRight(),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          ),
-        ),
+                if (tip?.trim().isNotEmpty ?? false)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2, bottom: 0),
+                    child: Text(
+                      tip!,
+                      style: tipStyle ??
+                          const TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey,
+                          ),
+                    ),
+                  ),
+              ],
+            )),
         if (showBottomDivider)
           Divider(
             height: 1,
             thickness: 0.6,
-            indent: dividerIndent,
             color: Colors.grey.shade300,
           ),
       ],
@@ -352,6 +379,9 @@ class BaseOperationCellGroup extends StatelessWidget {
             arrowIconData: child.arrowIconData,
             arrowIconSize: child.arrowIconSize,
             arrowIconColor: child.arrowIconColor,
+            tip: child.tip,
+            tipStyle: child.tipStyle,
+            showTip: child.showTip,
             rightWidget: child.rightWidget,
             valueMaxLines: child.valueMaxLines,
             contentPadding: child.contentPadding,

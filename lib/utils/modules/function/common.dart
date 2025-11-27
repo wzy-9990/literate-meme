@@ -167,21 +167,35 @@ class CommonFunction {
     dynamic val, {
     bool treatZeroAsEmpty = false,
   }) {
-    if (val == null) return true;
+    if (val == null) {
+      return true;
+    }
     if (val is String) {
       final trimmed = val.trim();
-      if (trimmed.isEmpty) return true;
-      if (trimmed == '[]' || trimmed == '{}') return true;
+      if (trimmed.isEmpty) {
+        return true;
+      }
+      if (trimmed == '[]' || trimmed == '{}') {
+        return true;
+      }
       if (treatZeroAsEmpty && RegExp(r'^[-+]?0*(\.0+)?$').hasMatch(trimmed)) {
         return true;
       }
     }
     if (val is num) {
-      if (val.isNaN) return true;
-      if (treatZeroAsEmpty && val == 0) return true;
+      if (val.isNaN) {
+        return true;
+      }
+      if (treatZeroAsEmpty && val == 0) {
+        return true;
+      }
     }
-    if (val is Iterable && val.isEmpty) return true;
-    if (val is Map && val.isEmpty) return true;
+    if (val is Iterable && val.isEmpty) {
+      return true;
+    }
+    if (val is Map && val.isEmpty) {
+      return true;
+    }
     return false;
   }
 
