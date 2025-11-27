@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_tem/components/BaseInkWell/index.dart';
 import 'package:flutter_tem/config/styles/colors.dart';
 
@@ -95,28 +96,29 @@ class BaseTab extends StatelessWidget {
           TextStyle(
             color: selected ? selectedClr : unselectedClr,
             fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+            fontSize: 14.sp,
           );
 
       final tabCore = Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           BaseInkWell(
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(4.r),
             onTap: () => onChanged(item.value),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+              padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 6.h),
               child: Center(child: Text(item.label, style: textStyle)),
             ),
           ),
           AnimatedContainer(
             duration: const Duration(milliseconds: 180),
             curve: Curves.easeInOut,
-            margin: const EdgeInsets.only(top: 4),
-            height: indicatorHeight,
-            width: selected ? 20 : 0,
+            margin: EdgeInsets.only(top: 4.h),
+            height: indicatorHeight.h,
+            width: selected ? 20.w : 0,
             decoration: BoxDecoration(
               color: selected ? indicatorClr : Colors.transparent,
-              borderRadius: BorderRadius.circular(indicatorHeight),
+              borderRadius: BorderRadius.circular(indicatorHeight.r),
             ),
           ),
         ],
@@ -128,7 +130,7 @@ class BaseTab extends StatelessWidget {
 
       return Padding(
         padding: EdgeInsets.only(
-            right: entry.key == parsed.length - 1 ? 0 : spacing),
+            right: entry.key == parsed.length - 1 ? 0 : spacing.w),
         child: tabCore,
       );
     }).toList();
@@ -146,8 +148,17 @@ class BaseTab extends StatelessWidget {
       );
     }
 
+    final EdgeInsets resolvedPadding =
+        padding is EdgeInsets ? padding as EdgeInsets : EdgeInsets.zero;
+    final scaledPadding = EdgeInsets.fromLTRB(
+      resolvedPadding.left.w,
+      resolvedPadding.top.h,
+      resolvedPadding.right.w,
+      resolvedPadding.bottom.h,
+    );
+
     return Padding(
-      padding: padding,
+      padding: scaledPadding,
       child: row,
     );
   }

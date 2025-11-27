@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_tem/components/BaseSuperRefreshComponent/components/WaterDropHeader/index.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -78,23 +79,26 @@ class _SuperRefreshComponentState extends State<SuperRefreshComponent> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.inbox_outlined,
-                    size: 60,
+                    size: 60.w,
                     color: Colors.grey,
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   Text(
                     widget.noDataText,
-                    style: const TextStyle(
-                      fontSize: 16,
+                    style: TextStyle(
+                      fontSize: 16.sp,
                       color: Colors.grey,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   ElevatedButton(
                     onPressed: widget.onRefresh,
-                    child: const Text('重新加载'),
+                    child: Text(
+                      '重新加载',
+                      style: TextStyle(fontSize: 14.sp),
+                    ),
                   ),
                 ],
               ),
@@ -114,29 +118,29 @@ class _SuperRefreshComponentState extends State<SuperRefreshComponent> {
         builder: (BuildContext context, LoadStatus? mode) {
           Widget body;
           if (mode == LoadStatus.idle) {
-            body = Text(widget.noMoreText);
+            body = Text(widget.noMoreText, style: TextStyle(fontSize: 14.sp));
           } else if (mode == LoadStatus.loading) {
-            body = const Row(
+            body = Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2),
+                  width: 20.w,
+                  height: 20.w,
+                  child: CircularProgressIndicator(strokeWidth: 2.w),
                 ),
-                SizedBox(width: 10),
-                Text('加载中...'),
+                SizedBox(width: 10.w),
+                Text('加载中...', style: TextStyle(fontSize: 14.sp)),
               ],
             );
           } else if (mode == LoadStatus.failed) {
-            body = const Text('加载失败！');
+            body = Text('加载失败！', style: TextStyle(fontSize: 14.sp));
           } else if (mode == LoadStatus.canLoading) {
-            body = const Text('释放加载...');
+            body = Text('释放加载...', style: TextStyle(fontSize: 14.sp));
           } else {
-            body = Text(widget.noMoreText);
+            body = Text(widget.noMoreText, style: TextStyle(fontSize: 14.sp));
           }
           return SizedBox(
-            height: 55.0,
+            height: 55.h,
             child: Center(child: body),
           );
         },
@@ -228,23 +232,26 @@ class _SuperRefreshListComponentState extends State<SuperRefreshListComponent> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.inbox_outlined,
-                    size: 60,
+                    size: 60.w,
                     color: Colors.grey,
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   Text(
                     widget.noDataText,
-                    style: const TextStyle(
-                      fontSize: 16,
+                    style: TextStyle(
+                      fontSize: 16.sp,
                       color: Colors.grey,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   ElevatedButton(
                     onPressed: widget.onRefresh,
-                    child: const Text('重新加载'),
+                    child: Text(
+                      '重新加载',
+                      style: TextStyle(fontSize: 14.sp),
+                    ),
                   ),
                 ],
               ),
@@ -266,29 +273,29 @@ class _SuperRefreshListComponentState extends State<SuperRefreshListComponent> {
           builder: (BuildContext context, LoadStatus? mode) {
             Widget body;
             if (mode == LoadStatus.idle) {
-              body = Text(widget.noMoreText);
+              body = Text(widget.noMoreText, style: TextStyle(fontSize: 14.sp));
             } else if (mode == LoadStatus.loading) {
-              body = const Row(
+              body = Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
+                    width: 20.w,
+                    height: 20.w,
+                    child: CircularProgressIndicator(strokeWidth: 2.w),
                   ),
-                  SizedBox(width: 10),
-                  Text('加载中...'),
+                  SizedBox(width: 10.w),
+                  Text('加载中...', style: TextStyle(fontSize: 14.sp)),
                 ],
               );
             } else if (mode == LoadStatus.failed) {
-              body = const Text('加载失败！');
+              body = Text('加载失败！', style: TextStyle(fontSize: 14.sp));
             } else if (mode == LoadStatus.canLoading) {
-              body = const Text('释放加载');
+              body = Text('释放加载', style: TextStyle(fontSize: 14.sp));
             } else {
-              body = Text(widget.noMoreText);
+              body = Text(widget.noMoreText, style: TextStyle(fontSize: 14.sp));
             }
             return SizedBox(
-              height: 55.0,
+              height: 55.h,
               child: Center(child: body),
             );
           },
@@ -309,23 +316,26 @@ class _SuperRefreshListComponentState extends State<SuperRefreshListComponent> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.inbox_outlined,
-                    size: 60,
+                    size: 60.w,
                     color: Colors.grey,
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   Text(
                     widget.noDataText,
-                    style: const TextStyle(
-                      fontSize: 16,
+                    style: TextStyle(
+                      fontSize: 16.sp,
                       color: Colors.grey,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   ElevatedButton(
                     onPressed: widget.onRefresh,
-                    child: const Text('重新加载'),
+                    child: Text(
+                      '重新加载',
+                      style: TextStyle(fontSize: 14.sp),
+                    ),
                   ),
                 ],
               ),
@@ -345,29 +355,29 @@ class _SuperRefreshListComponentState extends State<SuperRefreshListComponent> {
         builder: (BuildContext context, LoadStatus? mode) {
           Widget body;
           if (mode == LoadStatus.idle) {
-            body = Text(widget.noMoreText);
+            body = Text(widget.noMoreText, style: TextStyle(fontSize: 14.sp));
           } else if (mode == LoadStatus.loading) {
-            body = const Row(
+            body = Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2),
+                  width: 20.w,
+                  height: 20.w,
+                  child: CircularProgressIndicator(strokeWidth: 2.w),
                 ),
-                SizedBox(width: 10),
-                Text('加载中...'),
+                SizedBox(width: 10.w),
+                Text('加载中...', style: TextStyle(fontSize: 14.sp)),
               ],
             );
           } else if (mode == LoadStatus.failed) {
-            body = const Text('加载失败！');
+            body = Text('加载失败！', style: TextStyle(fontSize: 14.sp));
           } else if (mode == LoadStatus.canLoading) {
-            body = const Text('释放加载');
+            body = Text('释放加载', style: TextStyle(fontSize: 14.sp));
           } else {
-            body = Text(widget.noMoreText);
+            body = Text(widget.noMoreText, style: TextStyle(fontSize: 14.sp));
           }
           return SizedBox(
-            height: 55.0,
+            height: 55.h,
             child: Center(child: body),
           );
         },

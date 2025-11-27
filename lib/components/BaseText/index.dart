@@ -64,7 +64,7 @@ class BaseText extends StatelessWidget {
     TextStyle? effectiveStyle = style;
     if (isMoney) {
       final hasFontSize = style?.fontSize != null;
-      final baseSize = style?.fontSize ?? moneyBaseFontSize;
+      final baseSize = style?.fontSize ?? moneyBaseFontSize.sp;
       final adjustedSize =
           CommonFunction.getMoneyFontSize(baseSize, data).toDouble();
       final fontSize = hasFontSize ? adjustedSize : adjustedSize.sp;
