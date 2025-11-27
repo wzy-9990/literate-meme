@@ -12,6 +12,7 @@ pre-commit:
         echo "自动修复常见 lint（导入排序、单行控制体、冗余 const、局部变量 final 等）..."
         dart fix --apply \
           --code=directives_ordering \
+          --code=always_put_required_named_parameters_first \
           --code=always_put_control_body_on_new_line \
           --code=unnecessary_const \
           --code=prefer_final_locals
