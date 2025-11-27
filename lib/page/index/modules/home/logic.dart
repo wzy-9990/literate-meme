@@ -12,6 +12,25 @@ class HomeLogic extends GetxController {
   final RxList<int> selectedDirectionMulti = <int>[].obs;
   final RxBool privacyAgree = false.obs;
   final RxInt tabValue = 1.obs;
+  final RxString name = ''.obs;
+  final RxString selectValue = ''.obs;
+  final TextEditingController nameController = TextEditingController();
+
+  void updateName(String value) {
+    name.value = value;
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    nameController.text = name.value;
+  }
+
+  @override
+  void onClose() {
+    nameController.dispose();
+    super.onClose();
+  }
 
   void initData() {
     debugPrint('首页页面初始化');

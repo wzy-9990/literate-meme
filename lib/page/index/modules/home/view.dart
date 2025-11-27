@@ -7,6 +7,7 @@ import 'package:flutter_tem/components/BaseCascader/index.dart';
 import 'package:flutter_tem/components/BaseCheckbox/index.dart';
 import 'package:flutter_tem/components/BaseCupertinoAlertDialog/index.dart';
 import 'package:flutter_tem/components/BaseDatePicker/index.dart';
+import 'package:flutter_tem/components/BaseOperationCell/index.dart';
 import 'package:flutter_tem/components/BaseRadio/index.dart';
 import 'package:flutter_tem/components/BaseSkeleton/index.dart';
 import 'package:flutter_tem/components/BaseTab/index.dart';
@@ -17,6 +18,118 @@ import 'package:get/get.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
+
+  void _showOperationSheet(BuildContext context) {
+    final nameController = TextEditingController();
+    String city = '';
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return SafeArea(
+              top: false,
+              child: Container(
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+                  top: 12,
+                ),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(16),
+                  ),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        children: [
+                          const Text(
+                            '操作设置',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const Spacer(),
+                          IconButton(
+                            icon: const Icon(Icons.close),
+                            onPressed: () => Navigator.of(context).pop(),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: BaseOperationCellGroup(
+                        radius: 12,
+                        backgroundColor: const Color(0xFFF7F7F7),
+                        children: [
+                          BaseOperationCell(
+                            label: '姓名',
+                            required: true,
+                            hintText: '请输入姓名',
+                            controller: nameController,
+                            onChanged: (v) =>
+                                Get.find<HomeLogic>().updateName(v),
+                          ),
+                          BaseOperationCell(
+                            label: '城市',
+                            mode: BaseOperationCellMode.select,
+                            hintText: '请选择城市',
+                            value: city,
+                            onSelect: () {
+                              setState(() {
+                                city = city == '上海' ? '北京' : '上海';
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: const Text('取消'),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                Get.snackbar(
+                                  '提交',
+                                  '姓名：${nameController.text}，城市：${city.isEmpty ? '未选择' : city}',
+                                );
+                              },
+                              child: const Text('保存'),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -217,6 +330,33 @@ class HomeView extends StatelessWidget {
               },
               child: const Text('App 图标切换'),
             ),
+            const SizedBox(height: 20),
+            const Text('Operation Cell 示例'),
+            BaseOperationCellGroup(
+              radius: 12,
+              backgroundColor: Colors.white,
+              children: [
+                BaseOperationCell(
+                  label: '姓名',
+                  required: true,
+                  value: logic.name.value,
+                  controller: logic.nameController,
+                  onChanged: logic.updateName,
+                ),
+                BaseOperationCell(
+                  label: '城市',
+                  mode: BaseOperationCellMode.select,
+                  value: logic.selectValue.value,
+                  onSelect: () => Get.snackbar('选择', '点击了城市选择'),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            ElevatedButton(
+              onPressed: () => _showOperationSheet(context),
+              child: const Text('打开操作单元格弹窗'),
+            ),
+            const SizedBox(height: 12),
             ElevatedButton(
               onPressed: () async {
                 final result = await showCascaderPicker(
