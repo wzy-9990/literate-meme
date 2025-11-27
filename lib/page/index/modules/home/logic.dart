@@ -14,10 +14,26 @@ class HomeLogic extends GetxController {
   final RxInt tabValue = 1.obs;
   final RxString name = ''.obs;
   final RxString selectValue = ''.obs;
+  final RxString selectDate = ''.obs;
+  final RxString selected = ''.obs;
+
+  final RxString addressValue = ''.obs;
   final TextEditingController nameController = TextEditingController();
 
   void updateName(String value) {
     name.value = value;
+  }
+
+  void updateDate(String value) {
+    selectDate.value = value;
+  }
+
+  void updateAddress(String value) {
+    addressValue.value = value;
+  }
+
+  void updateSelectValue(String value) {
+    selected.value = value;
   }
 
   @override

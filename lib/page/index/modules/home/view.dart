@@ -332,24 +332,68 @@ class HomeView extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             const Text('Operation Cell 示例'),
-            BaseOperationCellGroup(
-              radius: 12,
-              backgroundColor: Colors.white,
-              children: [
-                BaseOperationCell(
-                  label: '姓名',
-                  required: true,
-                  value: logic.name.value,
-                  controller: logic.nameController,
-                  onChanged: logic.updateName,
-                ),
-                BaseOperationCell(
-                  label: '城市',
-                  mode: BaseOperationCellMode.select,
-                  value: logic.selectValue.value,
-                  onSelect: () => Get.snackbar('选择', '点击了城市选择'),
-                ),
-              ],
+            Obx(
+              () => BaseOperationCellGroup(
+                radius: 12,
+                backgroundColor: Colors.white,
+                children: [
+                  BaseOperationCell(
+                    label: '姓名',
+                    required: true,
+                    value: logic.name.value,
+                    controller: logic.nameController,
+                    onChanged: logic.updateName,
+                  ),
+                  BaseOperationCell(
+                    label: '下拉选择',
+                    mode: BaseOperationCellMode.select,
+                    value: logic.selected.value,
+                    onSelect: () async {
+                      final selected = await showBasePicker(
+                        context,
+                        title: '请选择方向',
+                        options: directionTypeEnum.allItems,
+                      );
+                      if (selected != null) {
+                        logic.updateSelectValue(selected['label']);
+                      }
+                    },
+                  ),
+                  BaseOperationCell(
+                    label: '日期',
+                    mode: BaseOperationCellMode.select,
+                    value: logic.selectDate.value,
+                    onSelect: () async {
+                      final res = await showBaseDatePicker(
+                        context,
+                        title: '选择日期',
+                        mode: BaseDatePickerMode.date,
+                      );
+                      if (res != null) {
+                        logic.updateDate(res.toIso8601String());
+                      }
+                    },
+                  ),
+                  BaseOperationCell(
+                    label: '地区',
+                    mode: BaseOperationCellMode.select,
+                    value: logic.addressValue.value,
+                    onSelect: () async {
+                      final result = await showCascaderPicker(
+                        context,
+                        selectableLevels: {1, 2, 3},
+                      );
+                      if (result != null) {
+                        final names = result
+                            .map((e) =>
+                                '${e['provinceName'] ?? ''} ${e['cityName'] ?? ''} ${e['districtName'] ?? ''}')
+                            .join('\n');
+                        logic.updateAddress(names);
+                      }
+                    },
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 12),
             ElevatedButton(
@@ -357,50 +401,6 @@ class HomeView extends StatelessWidget {
               child: const Text('打开操作单元格弹窗'),
             ),
             const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: () async {
-                final result = await showCascaderPicker(
-                  context,
-                  selectableLevels: {1, 2, 3},
-                );
-                if (result != null) {
-                  final names = result
-                      .map((e) =>
-                          '${e['provinceName'] ?? ''} ${e['cityName'] ?? ''} ${e['districtName'] ?? ''}')
-                      .join('\n');
-                  Get.snackbar('选择结果', names);
-                }
-              },
-              child: const Text('测试 BaseCascader'),
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: () async {
-                final res = await showBaseDatePicker(
-                  context,
-                  title: '选择日期',
-                  mode: BaseDatePickerMode.date,
-                );
-                if (res != null) {
-                  Get.snackbar('日期', res.toString());
-                }
-              },
-              child: const Text('测试 Date Picker'),
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: () async {
-                final selected = await showBasePicker(
-                  context,
-                  title: '请选择方向',
-                  options: directionTypeEnum.allItems,
-                );
-                if (selected != null) {
-                  Get.snackbar('Picker', '选择了 ${selected['label']}');
-                }
-              },
-              child: const Text('测试 Picker'),
-            ),
             const SizedBox(height: 12),
             ElevatedButton(
               onPressed: () {
