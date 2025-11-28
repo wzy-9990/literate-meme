@@ -44,8 +44,8 @@ class BaseRadioGroup<T> extends StatelessWidget {
   final Color? unselectedTextColor;
 
   const BaseRadioGroup({
-    super.key,
     required this.options,
+    super.key,
     this.value,
     this.onChanged,
     this.onChangedWithItem,

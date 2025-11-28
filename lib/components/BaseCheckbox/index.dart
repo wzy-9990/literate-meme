@@ -44,8 +44,8 @@ class BaseCheckboxGroup<T> extends StatelessWidget {
   )? buttonBuilder;
 
   const BaseCheckboxGroup({
-    super.key,
     required this.options,
+    super.key,
     this.values = const [],
     this.onChanged,
     this.onChangedWithItem,

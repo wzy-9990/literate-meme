@@ -10,8 +10,8 @@ import 'package:flutter_tem/components/BaseInkWell/index.dart';
 /// - 配合列表使用时可关闭底部分割线（用于最后一个）
 class BaseOperationCell extends StatelessWidget {
   const BaseOperationCell({
-    super.key,
     required this.label,
+    super.key,
     this.required = false,
     this.labelStyle,
     this.requiredStyle,
@@ -343,8 +343,8 @@ enum BaseOperationCellMode { input, select }
 /// 一组操作单元格，自动处理首尾圆角和分割线
 class BaseOperationCellGroup extends StatelessWidget {
   const BaseOperationCellGroup({
-    super.key,
     required this.children,
+    super.key,
     this.radius = 12,
     this.backgroundColor = Colors.white,
     this.padding = EdgeInsets.zero,

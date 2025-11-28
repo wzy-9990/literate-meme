@@ -6,8 +6,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 /// 支持自定义标题/内容/按钮文字及样式，支持单/多按钮
 class BaseCupertinoAlertDialog extends StatelessWidget {
   const BaseCupertinoAlertDialog({
-    super.key,
     required this.title,
+    super.key,
     this.subtitle,
     this.titleStyle,
     this.subtitleStyle,
