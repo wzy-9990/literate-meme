@@ -180,6 +180,8 @@ class _BasePullToRefreshListState extends State<BasePullToRefreshList> {
   bool? _autoUnAuth;
   StreamSubscription<String>? _tokenSub;
   bool _wasUnAuthed = false; // 记录上一次的未登录状态
+  bool _authFirstEventSkipped = false;
+  bool _suppressNextLogin = false;
 
   @override
   void initState() {
@@ -200,7 +202,27 @@ class _BasePullToRefreshListState extends State<BasePullToRefreshList> {
           return;
         }
 
+        if (!_authFirstEventSkipped) {
+          _authFirstEventSkipped = true; // 首次事件作为基线
+          final initialUnAuthed = value.isEmpty;
+          _autoUnAuth = initialUnAuthed;
+          _wasUnAuthed = initialUnAuthed;
+          _suppressNextLogin = initialUnAuthed; // 初始为空则抑制下一次非空触发
+          setState(() {});
+          return;
+        }
+
         final bool isCurrentlyUnAuthed = value.isEmpty;
+
+        if (_suppressNextLogin && !isCurrentlyUnAuthed) {
+          // 启动阶段从空 -> 有值，不视为登录事件
+          _suppressNextLogin = false;
+          _wasUnAuthed = isCurrentlyUnAuthed;
+          setState(() {
+            _autoUnAuth = isCurrentlyUnAuthed;
+          });
+          return;
+        }
 
         // 检测到从未登录变为已登录（登录成功）
         if (_wasUnAuthed && !isCurrentlyUnAuthed) {

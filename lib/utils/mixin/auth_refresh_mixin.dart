@@ -18,6 +18,8 @@ import 'package:get/get.dart';
 mixin AuthRefreshMixin on GetxController {
   StreamSubscription<String>? _authTokenSub;
   bool _wasUnAuthed = false;
+  bool _authFirstEventSkipped = false;
+  bool _suppressNextLogin = false;
 
   /// 登录后自动刷新的回调方法
   ///
@@ -43,7 +45,21 @@ mixin AuthRefreshMixin on GetxController {
       _wasUnAuthed = !indexLogic.isLoggedIn;
 
       _authTokenSub = indexLogic.token.listen((token) {
+        if (!_authFirstEventSkipped) {
+          _authFirstEventSkipped = true; // 首次事件作为基线
+          _wasUnAuthed = token.isEmpty;
+          _suppressNextLogin = _wasUnAuthed; // 如果初始为空，抑制下一次非空触发
+          return;
+        }
+
         final isCurrentlyUnAuthed = token.isEmpty;
+
+        if (_suppressNextLogin && !isCurrentlyUnAuthed) {
+          // 启动阶段从空 -> 有值，不视为登录事件
+          _wasUnAuthed = isCurrentlyUnAuthed;
+          _suppressNextLogin = false;
+          return;
+        }
 
         // 检测到从未登录变为已登录（登录成功）
         if (_wasUnAuthed && !isCurrentlyUnAuthed) {
@@ -82,6 +98,8 @@ mixin AuthRefreshMixin on GetxController {
 mixin SimpleAuthRefreshMixin on GetxController {
   StreamSubscription<String>? _authTokenSub;
   bool _wasUnAuthed = false;
+  bool _authFirstEventSkipped = false;
+  bool _suppressNextLogin = false;
 
   /// 初始化数据的方法（子类需要实现）
   void initData();
@@ -103,7 +121,21 @@ mixin SimpleAuthRefreshMixin on GetxController {
       _wasUnAuthed = !indexLogic.isLoggedIn;
 
       _authTokenSub = indexLogic.token.listen((token) {
+        if (!_authFirstEventSkipped) {
+          _authFirstEventSkipped = true; // 首次事件作为基线
+          _wasUnAuthed = token.isEmpty;
+          _suppressNextLogin = _wasUnAuthed; // 初始为空则抑制下一次非空事件
+          return;
+        }
+
         final isCurrentlyUnAuthed = token.isEmpty;
+
+        if (_suppressNextLogin && !isCurrentlyUnAuthed) {
+          // 启动阶段从空 -> 有值，不视为登录事件
+          _wasUnAuthed = isCurrentlyUnAuthed;
+          _suppressNextLogin = false;
+          return;
+        }
 
         // 检测到从未登录变为已登录（登录成功）
         if (_wasUnAuthed && !isCurrentlyUnAuthed) {

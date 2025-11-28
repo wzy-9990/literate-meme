@@ -45,6 +45,9 @@ class HomeLogic extends BaseLogic {
   }
 
   @override
+  bool get skipDelayedOnReady => true; // 避免 BaseLogic 的延迟加载与手动刷新重复触发
+
+  @override
   Future<void> onLoad() async {
     debugPrint('首页页面初始化');
   }
