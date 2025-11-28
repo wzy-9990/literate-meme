@@ -3,9 +3,10 @@ import 'package:flutter_tem/components/BaseDeveloperOptions/index.dart';
 import 'package:flutter_tem/page/index/logic.dart';
 import 'package:flutter_tem/routers/app_routes.dart';
 import 'package:flutter_tem/routers/index.dart';
+import 'package:flutter_tem/utils/base/auth_refresh_mixin.dart';
 import 'package:get/get.dart';
 
-class MySettingLogic extends GetxController {
+class MySettingLogic extends GetxController with SimpleAuthRefreshMixin {
   final indexLogic = Get.find<IndexLogic>();
   RxBool isLoading = true.obs;
   late final RxMap userInfo;

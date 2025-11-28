@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tem/components/BasePhoneCall/index.dart';
 import 'package:flutter_tem/routers/app_routes.dart';
 import 'package:flutter_tem/routers/index.dart';
+import 'package:flutter_tem/utils/base/auth_refresh_mixin.dart';
 import 'package:flutter_tem/utils/modules/dict/home.dart';
 import 'package:get/get.dart';
 
-class HomeLogic extends GetxController {
+class HomeLogic extends GetxController with SimpleAuthRefreshMixin {
   /// 当前选中的方向（默认取枚举 add_points 对应的值，否则为 1）
   final RxInt selectedDirection =
       ((directionTypeEnum['add_points']?['value'] as int)).obs;
