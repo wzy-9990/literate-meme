@@ -38,3 +38,12 @@ Future<dynamic> listPageUserByOrganizationIdApi222(
     showAuthDialog: false,
   );
 }
+
+Future<dynamic> listPageComplainReportApi(
+  dynamic params,
+) async {
+  return await Api.instance.post(
+    '/pklApi/private/complain/complainReportHead/listPageComplainReport',
+    data: params,
+  );
+}

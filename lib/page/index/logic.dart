@@ -49,13 +49,9 @@ class IndexLogic extends GetxController {
 
   void updateToken(String? value) async {
     final newToken = value ?? '';
-    final wasEmpty = token.value.isEmpty;
+
     token.value = newToken;
     await Storage.setString(StorageKeys.token, newToken);
-
-    if (newToken.isNotEmpty && wasEmpty) {
-      _refreshTab();
-    }
   }
 
   MessageLogic? _getMessageLogic() =>

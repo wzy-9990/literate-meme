@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_tem/components/BaseLoading/index.dart';
+import 'package:flutter_tem/components/BaseText/index.dart';
 import 'package:flutter_tem/page/index/modules/my/logic.dart';
 import 'package:flutter_tem/routers/app_routes.dart';
 import 'package:get/get.dart';
@@ -16,10 +18,26 @@ class MyView extends StatelessWidget {
         children: [
           GetBuilder<MyLogic>(builder: (myLogic) {
             return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Obx(
                   () {
-                    return Text(logic.userInfo['userName'].toString());
+                    return Text(
+                      logic.userInfo['userName'].toString(),
+                      style: TextStyle(
+                          fontSize: 20.sp,
+                          color: const Color.fromARGB(255, 21, 141, 73)),
+                    );
+                  },
+                ),
+                Obx(
+                  () {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: logic.list.map((item) {
+                        return BaseText(item['mainText']);
+                      }).toList(),
+                    );
                   },
                 ),
                 ElevatedButton(
