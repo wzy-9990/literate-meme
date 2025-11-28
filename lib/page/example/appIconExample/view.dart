@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tem/components/BaseAppBar/index.dart';
 import 'package:flutter_tem/config/styles/app_icons.dart';
-import 'package:flutter_tem/utils/base/app_icon_manager.dart';
+import 'package:flutter_tem/utils/helpers/app_icon_manager.dart';
 
 /// App 图标切换示例页面
 class AppIconExamplePage extends StatefulWidget {

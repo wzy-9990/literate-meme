@@ -9,7 +9,7 @@ import 'package:flutter_tem/config/env/index.dart';
 import 'package:flutter_tem/config/theme/index.dart';
 import 'package:flutter_tem/routers/app_pages.dart';
 import 'package:flutter_tem/routers/app_routes.dart';
-import 'package:flutter_tem/utils/base/app_icon_manager.dart';
+import 'package:flutter_tem/utils/helpers/app_icon_manager.dart';
 import 'package:get/get.dart';
 
 Future<void> main() async {

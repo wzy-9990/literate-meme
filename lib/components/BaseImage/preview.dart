@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tem/utils/base/image_saver.dart';
+import 'package:flutter_tem/utils/helpers/image_saver.dart';
 import 'package:photo_view/photo_view.dart';
 
 /// 图片预览页面
