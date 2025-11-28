@@ -1,5 +1,5 @@
-import 'package:flutter_tem/utils/mixin/auth_refresh_mixin.dart';
-import 'package:flutter_tem/utils/mixin/delayed_initial_load_mixin.dart';
+import 'package:flutter_tem/utils/logic/base/mixin/auth_refresh_mixin.dart';
+import 'package:flutter_tem/utils/logic/base/mixin/delayed_initial_load_mixin.dart';
 import 'package:get/get.dart';
 
 /// BaseLogic - 简化的通用基类

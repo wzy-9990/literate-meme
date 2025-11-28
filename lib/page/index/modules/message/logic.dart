@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_tem/api/modules/my.dart';
-import 'package:flutter_tem/utils/base/base_pagination_logic.dart';
+import 'package:flutter_tem/utils/logic/pagination/base_pagination_logic.dart';
 import 'package:get/get.dart';
 
 class MessageLogic extends BasePaginationLogic<Map<String, dynamic>> {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tem/api/modules/my.dart';
-import 'package:flutter_tem/utils/base/base_pagination_logic.dart';
+import 'package:flutter_tem/utils/logic/pagination/base_pagination_logic.dart';
 
 /// 用户列表逻辑示例
 ///

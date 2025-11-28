@@ -1,5 +1,5 @@
 import 'package:flutter_tem/page/index/logic.dart';
-import 'package:flutter_tem/utils/mixin/base_mixin.dart';
+import 'package:flutter_tem/utils/logic/base/base_logic.dart';
 import 'package:get/get.dart';
 
 class ChangePasswordLogic extends BaseLogic {
