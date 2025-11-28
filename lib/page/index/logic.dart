@@ -47,14 +47,8 @@ class IndexLogic extends GetxController {
 
   void updateToken(String? value) async {
     final newToken = value ?? '';
-    final wasEmpty = token.value.isEmpty;
     token.value = newToken;
     await Storage.setString(StorageKeys.token, newToken);
-
-    // 登录后，自动刷新消息列表（若已初始化）
-    if (newToken.isNotEmpty && wasEmpty) {
-      _refreshActiveTab();
-    }
   }
 
   MessageLogic? _getMessageLogic() {
@@ -91,21 +85,5 @@ class IndexLogic extends GetxController {
     userInfo.value = response;
     update();
     return response;
-  }
-
-  void _refreshActiveTab() {
-    switch (currentIndex.value) {
-      case 0:
-        _getHomeLogic()?.initData();
-        break;
-      case 1:
-        _getMessageLogic()?.initData();
-        break;
-      case 2:
-        _getMyLogic()?.initData();
-        break;
-      default:
-        break;
-    }
   }
 }
