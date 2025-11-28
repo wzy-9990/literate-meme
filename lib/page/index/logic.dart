@@ -32,6 +32,7 @@ class IndexLogic extends GetxController {
   Future<void> onLoad() async {
     debugPrint('tab页面初始化');
     _refreshTab(index: homeTab, force: true); // 消息页首屏不主动加载，等切换到消息时再加载
+    _notifyTabShow(homeTab); // 首次进入时通知首页显示
   }
 
   void changeTab(int index) {
@@ -40,7 +41,14 @@ class IndexLogic extends GetxController {
       return;
     }
 
+    // 隐藏当前 Tab
+    _notifyTabHide(currentIndex.value);
+
+    // 切换 Tab
     currentIndex.value = index;
+
+    // 显示新 Tab
+    _notifyTabShow(index);
     _refreshTab(index: index);
   }
 
@@ -93,6 +101,36 @@ class IndexLogic extends GetxController {
         _getMyLogic()?.onLoad();
         break;
       default:
+        break;
+    }
+  }
+
+  /// 通知 Tab 显示（触发 onShow）
+  void _notifyTabShow(int index) {
+    switch (index) {
+      case homeTab:
+        _getHomeLogic()?.onShow();
+        break;
+      case messageTab:
+        _getMessageLogic()?.onShow();
+        break;
+      case myTab:
+        _getMyLogic()?.onShow();
+        break;
+    }
+  }
+
+  /// 通知 Tab 隐藏（触发 onHide）
+  void _notifyTabHide(int index) {
+    switch (index) {
+      case homeTab:
+        _getHomeLogic()?.onHide();
+        break;
+      case messageTab:
+        _getMessageLogic()?.onHide();
+        break;
+      case myTab:
+        _getMyLogic()?.onHide();
         break;
     }
   }

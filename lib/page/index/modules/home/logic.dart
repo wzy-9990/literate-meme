@@ -49,7 +49,19 @@ class HomeLogic extends BaseLogic {
 
   @override
   Future<void> onLoad() async {
-    debugPrint('首页页面初始化');
+    debugPrint('📍 首页 - onLoad: 页面首次加载');
+  }
+
+  @override
+  void onShow() {
+    super.onShow(); // 打印日志
+    debugPrint('👀 首页 - onShow: 页面显示');
+  }
+
+  @override
+  void onHide() {
+    super.onHide(); // 打印日志
+    debugPrint('🙈 首页 - onHide: 页面隐藏');
   }
 
   void openWebView() {
