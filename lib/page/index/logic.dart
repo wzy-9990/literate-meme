@@ -87,16 +87,16 @@ class IndexLogic extends GetxController {
     final tab = index ?? currentIndex.value;
     switch (tab) {
       case homeTab:
-        _getHomeLogic()?.initData();
+        _getHomeLogic()?.onLoad();
         break;
       case messageTab:
         if (force || _getMessageLogic() != null) {
-          _getMessageLogic()?.initData();
+          _getMessageLogic()?.initData(); // 消息页保持首屏刷新逻辑
         }
         break;
       case myTab:
         if (force || _getMyLogic() != null) {
-          _getMyLogic()?.initData(force: force);
+          _getMyLogic()?.onLoad();
         }
         break;
       default:

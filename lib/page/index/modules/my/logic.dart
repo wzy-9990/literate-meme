@@ -3,7 +3,7 @@ import 'package:flutter_tem/page/index/logic.dart';
 import 'package:flutter_tem/utils/mixin/base_mixin.dart';
 import 'package:get/get.dart';
 
-class MyLogic extends GetxController with BaseMixin {
+class MyLogic extends BaseLogic {
   final indexLogic = Get.find<IndexLogic>();
   RxBool isLoading = true.obs;
   RxString avatar = ''.obs;
@@ -12,12 +12,10 @@ class MyLogic extends GetxController with BaseMixin {
   RxMap get userInfo => indexLogic.userInfo;
 
   @override
-  Future<void> onLoad() async {
-    await initData();
-  }
+  bool get skipDelayedOnReady => true; // 由 IndexLogic 切换 Tab 时再触发 initData
 
   @override
-  Future<void> initData({bool force = false}) async {
+  Future<void> onLoad() async {
     debugPrint('我的页面初始化');
     isLoading.value = true;
     await indexLogic.loadUserInfo();

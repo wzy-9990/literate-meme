@@ -6,7 +6,7 @@ import 'package:flutter_tem/routers/index.dart';
 import 'package:flutter_tem/utils/mixin/base_mixin.dart';
 import 'package:get/get.dart';
 
-class MySettingLogic extends GetxController with BaseMixin {
+class MySettingLogic extends BaseLogic {
   final indexLogic = Get.find<IndexLogic>();
   RxBool isLoading = true.obs;
 
@@ -18,11 +18,6 @@ class MySettingLogic extends GetxController with BaseMixin {
 
   @override
   Future<void> onLoad() async {
-    await initData();
-  }
-
-  @override
-  Future<void> initData() async {
     // userInfo 已经通过 getter 引用，无需赋值
     isLoading.value = false;
   }

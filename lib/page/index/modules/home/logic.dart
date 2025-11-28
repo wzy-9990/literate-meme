@@ -6,7 +6,7 @@ import 'package:flutter_tem/utils/mixin/base_mixin.dart';
 import 'package:flutter_tem/utils/modules/dict/home.dart';
 import 'package:get/get.dart';
 
-class HomeLogic extends GetxController with BaseMixin {
+class HomeLogic extends BaseLogic {
   /// 当前选中的方向（默认取枚举 add_points 对应的值，否则为 1）
   final RxInt selectedDirection =
       ((directionTypeEnum['add_points']?['value'] as int)).obs;
@@ -45,24 +45,7 @@ class HomeLogic extends GetxController with BaseMixin {
   }
 
   @override
-  void onInit() {
-    super.onInit();
-    nameController.text = name.value;
-  }
-
-  @override
-  void onClose() {
-    nameController.dispose();
-    super.onClose();
-  }
-
-  @override
   Future<void> onLoad() async {
-    await initData();
-  }
-
-  @override
-  Future<void> initData() async {
     debugPrint('首页页面初始化');
   }
 
