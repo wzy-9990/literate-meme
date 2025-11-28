@@ -9,7 +9,9 @@ import 'package:get/get.dart';
 class MySettingLogic extends GetxController with BaseMixin {
   final indexLogic = Get.find<IndexLogic>();
   RxBool isLoading = true.obs;
-  RxMap userInfo = RxMap();
+
+  // 使用 getter 直接引用 indexLogic.userInfo，保持响应式
+  RxMap get userInfo => indexLogic.userInfo;
 
   // 开发者选项
   final developerOptions = BaseDeveloperOptions();
@@ -21,7 +23,7 @@ class MySettingLogic extends GetxController with BaseMixin {
 
   @override
   Future<void> initData() async {
-    userInfo.value = indexLogic.userInfo.value;
+    // userInfo 已经通过 getter 引用，无需赋值
     isLoading.value = false;
   }
 
