@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tem/utils/logic/base/base_logic.dart';
-import 'package:flutter_tem/utils/logic/base/mixin/page_visibility_mixin.dart';
 
 /// 页面可见性示例 Logic
 ///
-/// 演示如何使用 PageVisibilityMixin 监听页面显示/隐藏
-class PageVisibilityExampleLogic extends BaseLogic with PageVisibilityMixin {
+/// 演示如何使用页面可见性监听（BaseLogic 已自动集成 PageVisibilityMixin）
+class PageVisibilityExampleLogic extends BaseLogic {
   /// 模拟计数器
   int _counter = 0;
   int get counter => _counter;

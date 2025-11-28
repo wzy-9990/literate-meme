@@ -5,10 +5,10 @@ import 'package:flutter_tem/page/index/logic.dart';
 import 'package:flutter_tem/routers/app_routes.dart';
 import 'package:flutter_tem/routers/index.dart';
 import 'package:flutter_tem/utils/logic/base/base_logic.dart';
-import 'package:flutter_tem/utils/logic/base/mixin/page_visibility_mixin.dart';
 import 'package:get/get.dart';
 
-class MySettingLogic extends BaseLogic with PageVisibilityMixin {
+// ✅ BaseLogic 已自动集成 PageVisibilityMixin，无需重复添加
+class MySettingLogic extends BaseLogic {
   final indexLogic = Get.find<IndexLogic>();
   RxBool isLoading = true.obs;
 

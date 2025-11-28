@@ -42,13 +42,15 @@ GetMaterialApp(
 )
 ```
 
-### 2️⃣ Logic 层使用 Mixin
+### 2️⃣ Logic 层继承 BaseLogic
+
+**✅ 自动集成**：`BaseLogic` 已自动集成 `PageVisibilityMixin`，无需手动添加！
 
 ```dart
 import 'package:flutter_tem/utils/logic/base/base_logic.dart';
-import 'package:flutter_tem/utils/logic/base/mixin/page_visibility_mixin.dart';
 
-class MyLogic extends BaseLogic with PageVisibilityMixin {
+// ✅ 直接继承 BaseLogic 即可，PageVisibilityMixin 已自动集成
+class MyLogic extends BaseLogic {
   @override
   Future<void> onLoad() async {
     debugPrint('📍 onLoad - 页面首次加载');
@@ -100,7 +102,7 @@ class MyPage extends GetView<MyLogic> {
 ### 场景 1：列表页返回刷新
 
 ```dart
-class UserListLogic extends BasePaginationLogic<User> with PageVisibilityMixin {
+class UserListLogic extends BasePaginationLogic<User> {
   @override
   void onShow() {
     super.onShow();
@@ -113,7 +115,7 @@ class UserListLogic extends BasePaginationLogic<User> with PageVisibilityMixin {
 ### 场景 2：暂停视频播放
 
 ```dart
-class VideoPlayerLogic extends BaseLogic with PageVisibilityMixin {
+class VideoPlayerLogic extends BaseLogic {
   VideoPlayerController? _controller;
 
   @override
@@ -133,7 +135,7 @@ class VideoPlayerLogic extends BaseLogic with PageVisibilityMixin {
 ### 场景 3：定时器控制
 
 ```dart
-class DashboardLogic extends BaseLogic with PageVisibilityMixin {
+class DashboardLogic extends BaseLogic {
   Timer? _timer;
 
   @override
@@ -158,7 +160,7 @@ class DashboardLogic extends BaseLogic with PageVisibilityMixin {
 ### 场景 4：统计页面停留时长
 
 ```dart
-class AnalyticsLogic extends BaseLogic with PageVisibilityMixin {
+class AnalyticsLogic extends BaseLogic {
   DateTime? _enterTime;
 
   @override
@@ -310,7 +312,7 @@ A.onShow() ← A 重新显示（关键！）
 **检查清单**：
 - ✅ 在 main.dart 中配置了 `PageVisibilityObserver`
 - ✅ View 使用了 `PageVisibilityWrapper` 包裹
-- ✅ Logic 混入了 `PageVisibilityMixin`
+- ✅ Logic 继承了 `BaseLogic`（已自动集成 `PageVisibilityMixin`）
 
 ### Q2: 每次都触发两次 onShow？
 
@@ -357,11 +359,9 @@ Tab 切换需要在 Tab 控制器中手动调用 Logic 的方法。
 ### 2. 组合使用
 
 ```dart
-// ✅ 同时使用多个 Mixin
-class MyLogic extends BaseLogic
-    with PageVisibilityMixin,
-         CustomMixin {
-  // ...
+// ✅ BaseLogic 已自动集成 PageVisibilityMixin，直接添加其他 Mixin 即可
+class MyLogic extends BaseLogic with CustomMixin {
+  // PageVisibilityMixin 已自动集成，无需重复添加
 }
 ```
 
