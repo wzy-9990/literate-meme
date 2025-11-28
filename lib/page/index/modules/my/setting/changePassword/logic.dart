@@ -1,8 +1,10 @@
 import 'package:flutter_tem/page/index/logic.dart';
+import 'package:flutter_tem/utils/base/auth_refresh_mixin.dart';
 import 'package:flutter_tem/utils/base/delayed_initial_load_mixin.dart';
 import 'package:get/get.dart';
 
-class ChangePasswordLogic extends GetxController with DelayedInitialLoadMixin {
+class ChangePasswordLogic extends GetxController
+    with DelayedInitialLoadMixin, SimpleAuthRefreshMixin {
   final indexLogic = Get.find<IndexLogic>();
   RxBool isLoading = true.obs;
   late final RxMap userInfo;
@@ -12,7 +14,9 @@ class ChangePasswordLogic extends GetxController with DelayedInitialLoadMixin {
     initData();
   }
 
+  @override
   void initData() async {
+    // 登录后会自动调用此方法刷新数据
     userInfo = indexLogic.userInfo;
     isLoading.value = false;
   }
