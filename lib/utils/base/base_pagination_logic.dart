@@ -169,7 +169,7 @@ abstract class BasePaginationLogic<T> extends GetxController
   }
 
   /// 下拉刷新
-  void onRefresh() async {
+  Future<void> onRefresh() async {
     _page = 1;
     refreshController.resetNoData();
     refreshController.position?.jumpTo(0);

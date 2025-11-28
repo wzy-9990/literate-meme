@@ -21,17 +21,18 @@ class MessageLogic extends BasePaginationLogic<Map<String, dynamic>> {
   @override
   bool get skipDelayedOnReady => true;
 
-  /// 外部调用入口：首次进入显示 loading，后续无感刷新
-  void initData() {
+  /// 统一的加载入口：首次进入显示 loading，后续无感刷新
+  @override
+  Future<void> onLoad() async {
     debugPrint('消息页面初始化');
     if (_initialized) {
-      onRefresh(); // 保留现有数据，静默刷新
+      await onRefresh(); // 保留现有数据，静默刷新
       return;
     }
     _initialized = true;
     isLoading.value = true;
     refreshController.resetNoData();
-    onRefresh();
+    await onRefresh();
   }
 
   /// 切换 Tab，并根据 Tab 值过滤数据

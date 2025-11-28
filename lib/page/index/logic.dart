@@ -24,11 +24,12 @@ class IndexLogic extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    initData();
+    onLoad();
     _loadToken();
   }
 
-  void initData() {
+  /// 页面统一初始化入口
+  Future<void> onLoad() async {
     debugPrint('tab页面初始化');
     _refreshTab(index: homeTab, force: true); // 消息页首屏不主动加载，等切换到消息时再加载
   }
@@ -86,14 +87,10 @@ class IndexLogic extends GetxController {
         _getHomeLogic()?.onLoad();
         break;
       case messageTab:
-        if (force || _getMessageLogic() != null) {
-          _getMessageLogic()?.initData(); // 消息页保持首屏刷新逻辑
-        }
+        _getMessageLogic()?.onLoad(); // 保持消息页手动触发加载的逻辑
         break;
       case myTab:
-        if (force || _getMyLogic() != null) {
-          _getMyLogic()?.onLoad();
-        }
+        _getMyLogic()?.onLoad();
         break;
       default:
         break;

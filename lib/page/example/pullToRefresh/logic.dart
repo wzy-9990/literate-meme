@@ -34,13 +34,6 @@ import 'package:flutter_tem/utils/base/base_pagination_logic.dart';
 /// ```
 class PullToRefreshExampleLogic
     extends BasePaginationLogic<Map<String, dynamic>> {
-  @override
-  void onInit() {
-    // 页面打开时先展示 loading，等待路由动画结束后再进行首轮加载
-    isLoading.value = true;
-    super.onInit();
-  }
-
   // 搜索框控制器
   final TextEditingController searchController = TextEditingController();
   @override
@@ -71,7 +64,6 @@ class PullToRefreshExampleLogic
     search(null);
   }
 
-  @override
   @override
   void onClose() {
     searchController.dispose();
