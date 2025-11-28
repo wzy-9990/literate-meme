@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_tem/api/modules/my.dart';
 import 'package:flutter_tem/utils/base/base_pagination_logic.dart';
@@ -22,6 +23,7 @@ class MessageLogic extends BasePaginationLogic<Map<String, dynamic>> {
 
   /// 外部调用入口：首次进入显示 loading，后续无感刷新
   void initData() {
+    debugPrint('消息页面初始化');
     if (_initialized) {
       onRefresh(); // 保留现有数据，静默刷新
       return;
