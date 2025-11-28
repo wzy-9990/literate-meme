@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_tem/page/index/logic.dart';
-import 'package:flutter_tem/utils/base/delayed_initial_load_mixin.dart';
+import 'package:flutter_tem/utils/mixin/delayed_initial_load_mixin.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 

@@ -1,4 +1,4 @@
-import 'package:flutter_tem/utils/base/auth_refresh_mixin.dart';
+import 'package:flutter_tem/utils/mixin/auth_refresh_mixin.dart';
 import 'package:get/get.dart';
 
 /// BaseMixin - 所有页面 Logic 的基础 Mixin
@@ -21,10 +21,6 @@ import 'package:get/get.dart';
 /// - 易于维护：修改或添加功能只需改这一个文件
 /// - 自动继承：所有使用 BaseMixin 的页面自动获得新功能
 mixin BaseMixin on GetxController implements SimpleAuthRefreshMixin {
-  // 将来可以在这里添加其他通用功能
-  // 例如：
-  // - 埋点统计
-  // - 性能监控
-  // - 错误追踪
-  // - 等等...
+  @override
+  bool get enableAuthRefresh => throw UnimplementedError();
 }

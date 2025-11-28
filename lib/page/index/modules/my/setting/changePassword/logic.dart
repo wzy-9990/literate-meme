@@ -1,6 +1,6 @@
 import 'package:flutter_tem/page/index/logic.dart';
-import 'package:flutter_tem/utils/base/base_mixin.dart';
-import 'package:flutter_tem/utils/base/delayed_initial_load_mixin.dart';
+import 'package:flutter_tem/utils/mixin/base_mixin.dart';
+import 'package:flutter_tem/utils/mixin/delayed_initial_load_mixin.dart';
 import 'package:get/get.dart';
 
 class ChangePasswordLogic extends GetxController

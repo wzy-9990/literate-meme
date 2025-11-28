@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tem/page/index/logic.dart';
-import 'package:flutter_tem/utils/base/base_mixin.dart';
+import 'package:flutter_tem/utils/mixin/base_mixin.dart';
 import 'package:get/get.dart';
 
 class MyLogic extends GetxController with BaseMixin {

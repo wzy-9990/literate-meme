@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tem/components/BasePhoneCall/index.dart';
 import 'package:flutter_tem/routers/app_routes.dart';
 import 'package:flutter_tem/routers/index.dart';
-import 'package:flutter_tem/utils/base/base_mixin.dart';
+import 'package:flutter_tem/utils/mixin/base_mixin.dart';
 import 'package:flutter_tem/utils/modules/dict/home.dart';
 import 'package:get/get.dart';
 
