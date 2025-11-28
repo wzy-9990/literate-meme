@@ -179,6 +179,7 @@ class BasePullToRefreshList extends StatefulWidget {
 class _BasePullToRefreshListState extends State<BasePullToRefreshList> {
   bool? _autoUnAuth;
   StreamSubscription<String>? _tokenSub;
+  bool _wasUnAuthed = false; // 记录上一次的未登录状态
 
   @override
   void initState() {
@@ -192,12 +193,31 @@ class _BasePullToRefreshListState extends State<BasePullToRefreshList> {
     if (Get.isRegistered<IndexLogic>()) {
       final indexLogic = Get.find<IndexLogic>();
       _autoUnAuth = !indexLogic.isLoggedIn;
+      _wasUnAuthed = _autoUnAuth ?? false; // 初始化上一次状态
+
       _tokenSub = indexLogic.token.listen((value) {
         if (!mounted) {
           return;
         }
+
+        final bool isCurrentlyUnAuthed = value.isEmpty;
+
+        // 检测到从未登录变为已登录（登录成功）
+        if (_wasUnAuthed && !isCurrentlyUnAuthed) {
+          debugPrint('🔄 检测到登录状态变化：未登录 -> 已登录，自动刷新数据');
+
+          // 延迟执行，确保 UI 更新完成
+          Future.delayed(const Duration(milliseconds: 100), () {
+            if (mounted && widget.onRefresh != null) {
+              widget.onRefresh!();
+            }
+          });
+        }
+
+        // 更新状态
         setState(() {
-          _autoUnAuth = value.isEmpty;
+          _autoUnAuth = isCurrentlyUnAuthed;
+          _wasUnAuthed = isCurrentlyUnAuthed;
         });
       });
     } else {
@@ -212,6 +232,7 @@ class _BasePullToRefreshListState extends State<BasePullToRefreshList> {
     }
     setState(() {
       _autoUnAuth = token == null || token.isEmpty;
+      _wasUnAuthed = _autoUnAuth ?? false; // 初始化上一次状态
     });
   }
 
