@@ -10,6 +10,7 @@ import 'package:flutter_tem/config/theme/index.dart';
 import 'package:flutter_tem/routers/app_pages.dart';
 import 'package:flutter_tem/routers/app_routes.dart';
 import 'package:flutter_tem/utils/helpers/app_icon_manager.dart';
+import 'package:flutter_tem/utils/logic/base/mixin/page_visibility_mixin.dart';
 import 'package:get/get.dart';
 
 Future<void> main() async {
@@ -32,6 +33,8 @@ class MyApp extends StatelessWidget {
         getPages: AppPages.routes,
         initialRoute: AppRoutes.guide,
         defaultTransition: Transition.cupertino,
+        // 路由观察器（用于页面可见性监听）
+        navigatorObservers: [PageVisibilityObserver.instance],
         // 添加本地化支持
         localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,
