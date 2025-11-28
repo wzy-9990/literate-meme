@@ -19,21 +19,41 @@ class IndexLogic extends GetxController {
   MessageLogic? messageLogic;
   MyLogic? myLogic;
 
+  Worker? _tabVisibilityWorker;
+  int? _previousTabIndex;
+
   bool get isLoggedIn => token.value.isNotEmpty;
 
   @override
   void onInit() {
     super.onInit();
+    _setupTabVisibilityListener(); // 设置自动监听 Tab 切换
     onLoad();
     _loadToken();
+  }
+
+  /// 设置 Tab 可见性自动监听
+  void _setupTabVisibilityListener() {
+    _tabVisibilityWorker = ever(currentIndex, (index) {
+      // 隐藏之前的 Tab
+      if (_previousTabIndex != null && _previousTabIndex != index) {
+        _notifyTabHide(_previousTabIndex!);
+      }
+
+      // 显示当前 Tab
+      _notifyTabShow(index);
+
+      _previousTabIndex = index;
+    });
   }
 
   /// 页面统一初始化入口
   Future<void> onLoad() async {
     debugPrint('tab页面初始化');
-    _notifyTabShow(homeTab); // 首次进入时通知首页显示（会触发 onShow 自动加载数据）
+    // Worker 会自动触发首页的 onShow，无需手动调用
   }
 
+  /// 切换 Tab - 只需修改 currentIndex，Worker 会自动触发 onShow/onHide
   void changeTab(int index) {
     if (currentIndex.value == index) {
       // 重复点击同一个 Tab，重新触发 onShow 刷新数据
@@ -41,14 +61,14 @@ class IndexLogic extends GetxController {
       return;
     }
 
-    // 隐藏当前 Tab
-    _notifyTabHide(currentIndex.value);
-
-    // 切换 Tab
+    // 修改 currentIndex，Worker 会自动触发 onShow/onHide
     currentIndex.value = index;
+  }
 
-    // 显示新 Tab（会触发 onShow 自动加载数据）
-    _notifyTabShow(index);
+  @override
+  void onClose() {
+    _tabVisibilityWorker?.dispose(); // 释放 Worker
+    super.onClose();
   }
 
   Future<void> _loadToken() async {
