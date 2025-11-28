@@ -113,7 +113,15 @@ void _setupAuthListener() {
 
 ## 使用方法
 
-根据页面类型，选择合适的方案：
+**推荐：所有页面统一使用 `BaseMixin`**
+
+### 为什么使用 BaseMixin？
+
+`BaseMixin` 是项目的基础 Mixin，统一管理所有页面的通用功能：
+- ✅ **统一管理**：所有通用功能集中在一个地方
+- ✅ **易于维护**：添加或修改功能只需改 `BaseMixin` 一个文件
+- ✅ **自动继承**：所有使用 `BaseMixin` 的页面自动获得新功能
+- ✅ **包含登录后自动刷新**：已内置 `SimpleAuthRefreshMixin` 功能
 
 ### 方案1：列表页面 - 使用 BasePullToRefreshList
 
@@ -130,15 +138,14 @@ BasePullToRefreshList(
 )
 ```
 
-### 方案2：普通页面 - 使用 SimpleAuthRefreshMixin
+### 方案2：普通页面 - 使用 BaseMixin（推荐）
 
-适用于修改密码、个人信息等普通页面：
+**适用于所有页面**（修改密码、个人信息、设置等）：
 
 ```dart
-import 'package:flutter_tem/utils/base/auth_refresh_mixin.dart';
+import 'package:flutter_tem/utils/base/base_mixin.dart';
 
-class ChangePasswordLogic extends GetxController
-    with SimpleAuthRefreshMixin {
+class ChangePasswordLogic extends GetxController with BaseMixin {
 
   @override
   void initData() {
@@ -149,9 +156,14 @@ class ChangePasswordLogic extends GetxController
 }
 ```
 
+**优势**：
+- 将来 `BaseMixin` 添加新功能时，所有页面自动获得
+- 统一的代码风格，易于维护
+- 无需关心底层实现细节
+
 ### 方案3：自定义刷新逻辑 - 使用 AuthRefreshMixin
 
-适用于需要自定义刷新逻辑的页面：
+仅在需要特殊刷新逻辑时使用：
 
 ```dart
 import 'package:flutter_tem/utils/base/auth_refresh_mixin.dart';
@@ -175,7 +187,7 @@ class MyPageLogic extends GetxController with AuthRefreshMixin {
 如果某些页面不需要登录后自动刷新：
 
 ```dart
-class MyPageLogic extends GetxController with SimpleAuthRefreshMixin {
+class MyPageLogic extends GetxController with BaseMixin {
 
   @override
   bool get enableAuthRefresh => false; // 禁用自动刷新
@@ -256,14 +268,18 @@ class MyPageLogic extends GetxController with SimpleAuthRefreshMixin {
 ### 核心文件
 - `lib/page/user/login/logic.dart` - 登录逻辑
 - `lib/page/index/logic.dart` - 主页逻辑（token 管理）
-- `lib/utils/base/auth_refresh_mixin.dart` - 登录刷新 Mixin
+- `lib/utils/base/base_mixin.dart` - **基础 Mixin（推荐使用）**
+- `lib/utils/base/auth_refresh_mixin.dart` - 登录刷新 Mixin（底层实现）
 
 ### 组件文件
 - `lib/components/BaseSuperRefreshComponent/components/PullToRefresh/index.dart` - 刷新组件
 
 ### 示例页面
 - `lib/page/index/modules/message/logic.dart` - 消息页面逻辑（列表页面示例）
-- `lib/page/index/modules/my/setting/changePassword/logic.dart` - 修改密码页面逻辑（普通页面示例）
+- `lib/page/index/modules/my/logic.dart` - 我的页面（使用 BaseMixin）
+- `lib/page/index/modules/my/setting/logic.dart` - 设置页面（使用 BaseMixin）
+- `lib/page/index/modules/my/setting/changePassword/logic.dart` - 修改密码页面（使用 BaseMixin）
+- `lib/page/index/modules/home/logic.dart` - 首页（使用 BaseMixin）
 
 ## 完整示例
 
@@ -293,8 +309,9 @@ BasePullToRefreshList(
 
 ```dart
 // logic.dart
-class ChangePasswordLogic extends GetxController
-    with SimpleAuthRefreshMixin {
+import 'package:flutter_tem/utils/base/base_mixin.dart';
+
+class ChangePasswordLogic extends GetxController with BaseMixin {
 
   @override
   void initData() {

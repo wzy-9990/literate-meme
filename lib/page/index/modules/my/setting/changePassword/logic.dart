@@ -1,10 +1,10 @@
 import 'package:flutter_tem/page/index/logic.dart';
-import 'package:flutter_tem/utils/base/auth_refresh_mixin.dart';
+import 'package:flutter_tem/utils/base/base_mixin.dart';
 import 'package:flutter_tem/utils/base/delayed_initial_load_mixin.dart';
 import 'package:get/get.dart';
 
 class ChangePasswordLogic extends GetxController
-    with DelayedInitialLoadMixin, SimpleAuthRefreshMixin {
+    with DelayedInitialLoadMixin, BaseMixin {
   final indexLogic = Get.find<IndexLogic>();
   RxBool isLoading = true.obs;
   late final RxMap userInfo;
