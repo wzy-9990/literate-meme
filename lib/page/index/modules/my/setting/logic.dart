@@ -1,12 +1,14 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_tem/components/BaseDeveloperOptions/index.dart';
 import 'package:flutter_tem/page/index/logic.dart';
 import 'package:flutter_tem/routers/app_routes.dart';
 import 'package:flutter_tem/routers/index.dart';
 import 'package:flutter_tem/utils/logic/base/base_logic.dart';
+import 'package:flutter_tem/utils/logic/base/mixin/page_visibility_mixin.dart';
 import 'package:get/get.dart';
 
-class MySettingLogic extends BaseLogic {
+class MySettingLogic extends BaseLogic with PageVisibilityMixin {
   final indexLogic = Get.find<IndexLogic>();
   RxBool isLoading = true.obs;
 
@@ -18,8 +20,32 @@ class MySettingLogic extends BaseLogic {
 
   @override
   Future<void> onLoad() async {
+    debugPrint('📍 MySettingLogic - onLoad: 页面首次加载');
     // userInfo 已经通过 getter 引用，无需赋值
     isLoading.value = false;
+  }
+
+  @override
+  void onShow() {
+    super.onShow(); // 打印日志
+    debugPrint('👀 MySettingLogic - onShow: 页面显示，刷新用户信息');
+    // 从修改密码页面返回时，自动刷新用户信息
+    _refreshUserInfoIfNeeded();
+  }
+
+  @override
+  void onHide() {
+    super.onHide(); // 打印日志
+    debugPrint('🙈 MySettingLogic - onHide: 页面隐藏');
+  }
+
+  /// 根据需要刷新用户信息
+  void _refreshUserInfoIfNeeded() {
+    // 这里可以添加刷新逻辑，例如：
+    // if (indexLogic.isLoggedIn) {
+    //   indexLogic.loadUserInfo();
+    // }
+    debugPrint('🔄 检查是否需要刷新用户信息');
   }
 
   void logout() async {

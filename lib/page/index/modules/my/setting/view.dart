@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tem/components/BaseAppBar/index.dart';
 import 'package:flutter_tem/components/BaseLoading/index.dart';
 import 'package:flutter_tem/page/index/modules/my/setting/logic.dart';
+import 'package:flutter_tem/utils/logic/base/mixin/page_visibility_mixin.dart';
 import 'package:get/get.dart';
 
 class MySettingView extends StatelessWidget {
@@ -9,14 +10,64 @@ class MySettingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ignore: unused_local_variable
     final logic = Get.find<MySettingLogic>();
-    return Scaffold(
+
+    // ⭐ 使用 PageVisibilityWrapper 包裹，启用页面可见性监听
+    return PageVisibilityWrapper(
+      controller: logic,
+      child: Scaffold(
       appBar: const BaseAppBar(title: '设置'),
       body: Stack(
         children: [
           Column(
             children: [
+              const SizedBox(height: 16),
+              // 页面可见性测试提示
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.blue[50],
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.blue[200]!),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.visibility, color: Colors.blue[700], size: 20),
+                        const SizedBox(width: 8),
+                        Text(
+                          '页面可见性测试',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue[700],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      '✅ 已启用 PageVisibilityMixin',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey[700],
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '📍 查看控制台日志观察生命周期',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey[700],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
               const Center(child: Text('这里是设置页面')),
               Obx(
                 () {
@@ -85,6 +136,7 @@ class MySettingView extends StatelessWidget {
           )
         ],
       ),
-    );
+      ),
+    ); // PageVisibilityWrapper
   }
 }
