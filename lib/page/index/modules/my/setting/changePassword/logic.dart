@@ -9,11 +9,11 @@ class ChangePasswordLogic extends GetxController with BaseMixin {
 
   @override
   Future<void> onLoad() async {
-    initData();
+    await initData();
   }
 
   @override
-  void initData() async {
+  Future<void> initData() async {
     // 登录后会自动调用此方法刷新数据
     userInfo = indexLogic.userInfo;
     isLoading.value = false;

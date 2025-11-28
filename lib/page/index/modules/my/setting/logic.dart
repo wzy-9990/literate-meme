@@ -24,7 +24,8 @@ class MySettingLogic extends GetxController with BaseMixin {
     await initData();
   }
 
-  void initData() async {
+  @override
+  Future<void> initData() async {
     userInfo = indexLogic.userInfo;
     isLoading.value = false;
   }
