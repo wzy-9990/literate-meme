@@ -1,16 +1,14 @@
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_tem/components/BaseDeveloperOptions/index.dart';
 import 'package:flutter_tem/page/index/logic.dart';
-import 'package:flutter_tem/page/index/modules/my/logic.dart';
 import 'package:flutter_tem/routers/app_routes.dart';
 import 'package:flutter_tem/routers/index.dart';
-import 'package:flutter_tem/utils/storage/index.dart';
 import 'package:get/get.dart';
 
 class MySettingLogic extends GetxController {
-  final myLogic = Get.find<MyLogic>();
+  final indexLogic = Get.find<IndexLogic>();
   RxBool isLoading = true.obs;
-  RxMap userInfo = RxMap();
+  late final RxMap userInfo;
 
   // 开发者选项
   final developerOptions = BaseDeveloperOptions();
@@ -21,42 +19,28 @@ class MySettingLogic extends GetxController {
     initData();
   }
 
-  void initData() {
-    Future.delayed(const Duration(seconds: 1), () async {
-      isLoading.value = false;
-      _loadUserInfo();
-    });
+  void initData() async {
+    userInfo = indexLogic.userInfo;
+    isLoading.value = false;
   }
 
   void logout() async {
-    final indexLogic = Get.find<IndexLogic>();
-    await Storage.clear();
-    indexLogic.updateToken('');
-    Get.toNamed(AppRoutes.login);
+    indexLogic.logout();
   }
 
   void changePassword() async {
     await NavigationUtils.toNamed(
       AppRoutes.myChangePassword,
       callback: (result) async {
-        isLoading.value = true;
-        updateUserInfo('张三');
+        updateUserInfo(result as String);
       },
     );
   }
 
-  void _loadUserInfo() async {
-    final dynamic storedName = await Storage.getMap(StorageKeys.userInfo);
-    userInfo.value = storedName;
-  }
-
   void updateUserInfo(String name) async {
-    final int currentMilliseconds = DateTime.now().millisecondsSinceEpoch;
-    final dynamic storedName = await Storage.getMap(StorageKeys.userInfo);
-    storedName['userName'] = '$name$currentMilliseconds';
-    await Storage.setMap(StorageKeys.userInfo, storedName);
-    initData();
-    myLogic.initData();
+    isLoading.value = true;
+    await indexLogic.loadUserInfo(id: name);
+    isLoading.value = false;
     EasyLoading.showToast('操作成功');
   }
 

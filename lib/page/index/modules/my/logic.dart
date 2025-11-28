@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tem/utils/storage/index.dart';
+import 'package:flutter_tem/page/index/logic.dart';
 import 'package:get/get.dart';
 
 class MyLogic extends GetxController {
+  final indexLogic = Get.find<IndexLogic>();
   RxBool isLoading = true.obs;
   RxString avatar = ''.obs;
-  RxMap userInfo = RxMap();
+  late final RxMap userInfo;
 
-  void initData() async {
-    debugPrint('我的页面初始化');
-    // 模拟获取用户信息
-    Future.delayed(const Duration(seconds: 1), () async {
-      isLoading.value = false;
-      // 尝试从存储中获取用户信息
-      _loadUserInfo();
-    });
+  @override
+  void onInit() {
+    super.onInit();
+    userInfo = indexLogic.userInfo;
+    initData();
   }
 
-  void _loadUserInfo() async {
-    final dynamic storedName = await Storage.getMap(StorageKeys.userInfo);
-    userInfo.value = storedName;
+  Future<void> initData() async {
+    debugPrint('我的页面初始化');
+    isLoading.value = true;
+    final data = await indexLogic.loadUserInfo();
+    userInfo.value = data ?? {};
+    isLoading.value = false;
   }
 }

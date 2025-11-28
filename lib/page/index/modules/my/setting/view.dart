@@ -25,7 +25,7 @@ class MySettingView extends StatelessWidget {
               ),
               ElevatedButton(
                 onPressed: () {
-                  logic.updateUserInfo('1');
+                  logic.updateUserInfo('1927611258292748290');
                 },
                 child: const Text('更新用户信息'),
               ),
