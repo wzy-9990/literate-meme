@@ -2,11 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_tem/page/index/logic.dart';
-import 'package:flutter_tem/utils/mixin/delayed_initial_load_mixin.dart';
+import 'package:flutter_tem/utils/mixin/base_mixin.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 /// 通用分页逻辑基类
+///
+/// 继承自 BaseLogic，自动获得：
+/// - 延迟首屏加载能力
+/// - 登录成功后自动刷新能力（需在子类中启用）
 ///
 /// 使用示例：
 /// ```dart
@@ -27,8 +31,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 ///   }
 /// }
 /// ```
-abstract class BasePaginationLogic<T> extends GetxController
-    with DelayedInitialLoadMixin {
+abstract class BasePaginationLogic<T> extends BaseLogic {
   StreamSubscription<String>? _tokenSub;
 
   /// 刷新控制器
@@ -84,12 +87,11 @@ abstract class BasePaginationLogic<T> extends GetxController
     super.onClose();
   }
 
+  /// 分页页面默认自动加载（覆盖 BaseLogic 的 false）
   @override
   bool get autoLoadOnInit => true;
 
-  @override
-  Duration get initialLoadDelay => const Duration(milliseconds: 100);
-
+  /// 覆盖 BaseLogic 的 onLoad，调用分页加载逻辑
   @override
   Future<void> onLoad() => loadData();
 
