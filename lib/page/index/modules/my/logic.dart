@@ -7,13 +7,7 @@ class MyLogic extends GetxController with BaseMixin {
   final indexLogic = Get.find<IndexLogic>();
   RxBool isLoading = true.obs;
   RxString avatar = ''.obs;
-  late final RxMap userInfo;
-
-  @override
-  void onInit() {
-    super.onInit();
-    userInfo = indexLogic.userInfo;
-  }
+  RxMap userInfo = RxMap();
 
   @override
   Future<void> onLoad() async {
@@ -23,6 +17,7 @@ class MyLogic extends GetxController with BaseMixin {
   @override
   Future<void> initData({bool force = false}) async {
     debugPrint('我的页面初始化');
+    isLoading.value = true;
     final data = await indexLogic.loadUserInfo();
     userInfo.value = data ?? {};
     isLoading.value = false;

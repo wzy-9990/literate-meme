@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 class ChangePasswordLogic extends GetxController with BaseMixin {
   final indexLogic = Get.find<IndexLogic>();
   RxBool isLoading = true.obs;
-  late final RxMap userInfo;
+  RxMap userInfo = RxMap();
 
   @override
   Future<void> onLoad() async {
@@ -15,7 +15,7 @@ class ChangePasswordLogic extends GetxController with BaseMixin {
   @override
   Future<void> initData() async {
     // 登录后会自动调用此方法刷新数据
-    userInfo = indexLogic.userInfo;
+    userInfo.value = indexLogic.userInfo.value;
     isLoading.value = false;
   }
 

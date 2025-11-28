@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 class MySettingLogic extends GetxController with BaseMixin {
   final indexLogic = Get.find<IndexLogic>();
   RxBool isLoading = true.obs;
-  late final RxMap userInfo;
+  RxMap userInfo = RxMap();
 
   // 开发者选项
   final developerOptions = BaseDeveloperOptions();
@@ -21,7 +21,7 @@ class MySettingLogic extends GetxController with BaseMixin {
 
   @override
   Future<void> initData() async {
-    userInfo = indexLogic.userInfo;
+    userInfo.value = indexLogic.userInfo.value;
     isLoading.value = false;
   }
 
