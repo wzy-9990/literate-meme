@@ -31,13 +31,13 @@ class IndexLogic extends GetxController {
   /// 页面统一初始化入口
   Future<void> onLoad() async {
     debugPrint('tab页面初始化');
-    _refreshTab(index: homeTab, force: true); // 消息页首屏不主动加载，等切换到消息时再加载
-    _notifyTabShow(homeTab); // 首次进入时通知首页显示
+    _notifyTabShow(homeTab); // 首次进入时通知首页显示（会触发 onShow 自动加载数据）
   }
 
   void changeTab(int index) {
     if (currentIndex.value == index) {
-      _refreshTab(index: index, force: true);
+      // 重复点击同一个 Tab，重新触发 onShow 刷新数据
+      _notifyTabShow(index);
       return;
     }
 
@@ -47,9 +47,8 @@ class IndexLogic extends GetxController {
     // 切换 Tab
     currentIndex.value = index;
 
-    // 显示新 Tab
+    // 显示新 Tab（会触发 onShow 自动加载数据）
     _notifyTabShow(index);
-    _refreshTab(index: index);
   }
 
   Future<void> _loadToken() async {
@@ -86,23 +85,6 @@ class IndexLogic extends GetxController {
     userInfo.value = response;
     update();
     return response;
-  }
-
-  void _refreshTab({int? index, bool force = false}) {
-    final tab = index ?? currentIndex.value;
-    switch (tab) {
-      case homeTab:
-        _getHomeLogic()?.onLoad();
-        break;
-      case messageTab:
-        _getMessageLogic()?.onLoad(); // 保持消息页手动触发加载的逻辑
-        break;
-      case myTab:
-        _getMyLogic()?.onLoad();
-        break;
-      default:
-        break;
-    }
   }
 
   /// 通知 Tab 显示（触发 onShow）

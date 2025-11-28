@@ -24,7 +24,7 @@ class MessageLogic extends BasePaginationLogic<Map<String, dynamic>> {
   /// 统一的加载入口：首次进入显示 loading，后续无感刷新
   @override
   Future<void> onLoad() async {
-    debugPrint('消息页面初始化');
+    debugPrint('📍 消息页 - onLoad: 数据加载');
     if (_initialized) {
       await onRefresh(); // 保留现有数据，静默刷新
       return;
@@ -33,6 +33,19 @@ class MessageLogic extends BasePaginationLogic<Map<String, dynamic>> {
     isLoading.value = true;
     refreshController.resetNoData();
     await onRefresh();
+  }
+
+  @override
+  void onShow() {
+    super.onShow(); // 打印日志
+    debugPrint('👀 消息页 - onShow: 页面显示，执行数据初始化');
+    onLoad(); // 每次显示时刷新数据
+  }
+
+  @override
+  void onHide() {
+    super.onHide(); // 打印日志
+    debugPrint('🙈 消息页 - onHide: 页面隐藏');
   }
 
   /// 切换 Tab，并根据 Tab 值过滤数据

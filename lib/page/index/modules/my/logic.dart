@@ -19,11 +19,24 @@ class MyLogic extends BaseLogic {
 
   @override
   Future<void> onLoad() async {
-    debugPrint('我的页面初始化');
+    debugPrint('📍 我的页 - onLoad: 数据加载');
     isLoading.value = true;
     await indexLogic.loadUserInfo();
     isLoading.value = false;
     await getData();
+  }
+
+  @override
+  void onShow() {
+    super.onShow(); // 打印日志
+    debugPrint('👀 我的页 - onShow: 页面显示，执行数据初始化');
+    onLoad(); // 每次显示时刷新数据
+  }
+
+  @override
+  void onHide() {
+    super.onHide(); // 打印日志
+    debugPrint('🙈 我的页 - onHide: 页面隐藏');
   }
 
   Future<void> getData() async {

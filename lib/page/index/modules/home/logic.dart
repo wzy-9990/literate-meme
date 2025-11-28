@@ -55,7 +55,8 @@ class HomeLogic extends BaseLogic {
   @override
   void onShow() {
     super.onShow(); // 打印日志
-    debugPrint('👀 首页 - onShow: 页面显示');
+    debugPrint('👀 首页 - onShow: 页面显示，执行数据初始化');
+    onLoad(); // 每次显示时刷新数据
   }
 
   @override
