@@ -12,12 +12,10 @@ class MyLogic extends GetxController {
   void onInit() {
     super.onInit();
     userInfo = indexLogic.userInfo;
-    initData();
   }
 
-  Future<void> initData() async {
+  Future<void> initData({bool force = false}) async {
     debugPrint('我的页面初始化');
-    isLoading.value = true;
     final data = await indexLogic.loadUserInfo();
     userInfo.value = data ?? {};
     isLoading.value = false;

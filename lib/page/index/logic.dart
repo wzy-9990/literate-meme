@@ -8,6 +8,10 @@ import 'package:flutter_tem/utils/storage/index.dart';
 import 'package:get/get.dart';
 
 class IndexLogic extends GetxController {
+  static const int homeTab = 0;
+  static const int messageTab = 1;
+  static const int myTab = 2;
+
   final currentIndex = 0.obs;
   final RxString token = ''.obs;
   RxMap userInfo = RxMap();
@@ -26,19 +30,17 @@ class IndexLogic extends GetxController {
 
   void initData() {
     debugPrint('tab页面初始化');
-    _getHomeLogic()?.initData();
-    // 消息页首屏不主动加载，等切换到消息时再加载
+    _refreshTab(index: homeTab, force: true); // 消息页首屏不主动加载，等切换到消息时再加载
   }
 
   void changeTab(int index) {
-    currentIndex.value = index;
-    if (currentIndex.value == 0) {
-      _getHomeLogic()?.initData();
-    } else if (currentIndex.value == 1) {
-      _getMessageLogic()?.initData();
-    } else if (currentIndex.value == 2) {
-      _getMyLogic()?.initData();
+    if (currentIndex.value == index) {
+      _refreshTab(index: index, force: true);
+      return;
     }
+
+    currentIndex.value = index;
+    _refreshTab(index: index);
   }
 
   Future<void> _loadToken() async {
@@ -47,25 +49,19 @@ class IndexLogic extends GetxController {
 
   void updateToken(String? value) async {
     final newToken = value ?? '';
+    final wasEmpty = token.value.isEmpty;
     token.value = newToken;
     await Storage.setString(StorageKeys.token, newToken);
+
+    if (newToken.isNotEmpty && wasEmpty) {
+      _refreshTab();
+    }
   }
 
-  MessageLogic? _getMessageLogic() {
-    messageLogic ??=
-        Get.isRegistered<MessageLogic>() ? Get.find<MessageLogic>() : null;
-    return messageLogic;
-  }
-
-  MyLogic? _getMyLogic() {
-    myLogic ??= Get.isRegistered<MyLogic>() ? Get.find<MyLogic>() : null;
-    return myLogic;
-  }
-
-  HomeLogic? _getHomeLogic() {
-    homeLogic ??= Get.isRegistered<HomeLogic>() ? Get.find<HomeLogic>() : null;
-    return homeLogic;
-  }
+  MessageLogic? _getMessageLogic() =>
+      messageLogic ??= _findLogic<MessageLogic>();
+  MyLogic? _getMyLogic() => myLogic ??= _findLogic<MyLogic>();
+  HomeLogic? _getHomeLogic() => homeLogic ??= _findLogic<HomeLogic>();
 
   Future logout() async {
     updateToken('');
@@ -86,4 +82,28 @@ class IndexLogic extends GetxController {
     update();
     return response;
   }
+
+  void _refreshTab({int? index, bool force = false}) {
+    final tab = index ?? currentIndex.value;
+    switch (tab) {
+      case homeTab:
+        _getHomeLogic()?.initData();
+        break;
+      case messageTab:
+        if (force || _getMessageLogic() != null) {
+          _getMessageLogic()?.initData();
+        }
+        break;
+      case myTab:
+        if (force || _getMyLogic() != null) {
+          _getMyLogic()?.initData(force: force);
+        }
+        break;
+      default:
+        break;
+    }
+  }
+
+  /// Lazily find a registered logic; returns null if not registered.
+  T? _findLogic<T>() => Get.isRegistered<T>() ? Get.find<T>() : null;
 }
