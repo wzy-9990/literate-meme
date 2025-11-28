@@ -15,6 +15,11 @@ class MyLogic extends GetxController with BaseMixin {
     userInfo = indexLogic.userInfo;
   }
 
+  @override
+  Future<void> onLoad() async {
+    await initData();
+  }
+
   Future<void> initData({bool force = false}) async {
     debugPrint('我的页面初始化');
     final data = await indexLogic.loadUserInfo();

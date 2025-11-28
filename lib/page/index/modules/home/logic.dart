@@ -56,6 +56,11 @@ class HomeLogic extends GetxController with BaseMixin {
     super.onClose();
   }
 
+  @override
+  Future<void> onLoad() async {
+    initData();
+  }
+
   void initData() {
     debugPrint('首页页面初始化');
   }
