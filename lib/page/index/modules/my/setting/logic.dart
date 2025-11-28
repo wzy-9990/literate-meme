@@ -15,11 +15,6 @@ class MySettingLogic extends GetxController with BaseMixin {
   final developerOptions = BaseDeveloperOptions();
 
   @override
-  void onInit() {
-    super.onInit();
-  }
-
-  @override
   Future<void> onLoad() async {
     await initData();
   }

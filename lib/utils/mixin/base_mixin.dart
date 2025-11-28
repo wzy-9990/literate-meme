@@ -120,18 +120,25 @@ mixin BaseMixin on GetxController {
   // 生命周期方法
   // ============================================================
 
+  /// 初始化标记，防止重复初始化
+  bool _baseMixinInitialized = false;
+
   @override
   void onInit() {
     super.onInit();
+
+    // 防止重复初始化
+    if (_baseMixinInitialized) return;
+    _baseMixinInitialized = true;
 
     // 登录刷新功能初始化
     if (enableAuthRefresh) {
       _setupAuthListener();
     }
 
-    // 延迟加载功能
+    // 延迟加载功能 - 使用 Future.microtask 避免同步调用
     if (autoLoadOnInit) {
-      onLoad();
+      Future.microtask(() => onLoad());
     }
   }
 
