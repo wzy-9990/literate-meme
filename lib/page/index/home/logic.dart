@@ -1,11 +1,12 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_tem/routers/app_routes.dart';
 import 'package:flutter_tem/routers/index.dart';
-import 'package:get/get.dart';
+import 'package:flutter_tem/utils/base/base_logic.dart';
 
-class HomeLogic extends GetxController {
+class HomeLogic extends BaseLogic {
+  @override
   void initData() {
-    debugPrint('首页页面初始化');
+    super.initData();
+    // 首页初始化逻辑
   }
 
   openWebView() {

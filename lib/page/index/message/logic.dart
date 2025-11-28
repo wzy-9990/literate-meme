@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_tem/utils/base/base_logic.dart';
 
-class MessageLogic extends GetxController {
+class MessageLogic extends BaseLogic {
+  @override
   void initData() {
-    debugPrint('消息页面初始化');
+    super.initData();
+    // 消息页面初始化逻辑
   }
 }

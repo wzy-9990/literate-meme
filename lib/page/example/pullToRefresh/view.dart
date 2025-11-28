@@ -20,7 +20,7 @@ class PullToRefreshExampleView extends StatelessWidget {
             refreshController: logic.refreshController,
             onRefresh: logic.onRefresh,
             onLoadMore: logic.onLoadMore,
-            children: logic.items
+            children: logic.dataList
                 .map(
                   (item) => ListTile(
                     title: Text(item),
