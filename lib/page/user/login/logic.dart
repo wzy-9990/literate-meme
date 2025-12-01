@@ -7,6 +7,7 @@ import 'package:flutter_tem/utils/storage/index.dart';
 import 'package:get/get.dart';
 
 class LoginLogic extends GetxController {
+  final indexLogic = Get.find<IndexLogic>();
   void initData() {
     debugPrint('首页页面初始化');
   }
@@ -18,11 +19,12 @@ class LoginLogic extends GetxController {
       'verificationCode': '6666',
     };
     final data = await loginApi(params);
+    final userData = await indexLogic.loadUserInfo();
 
-    await Storage.setMap(StorageKeys.userInfo, data);
+    await Storage.setMap(StorageKeys.userInfo, userData);
     // 同步更新首页 token
     if (Get.isRegistered<IndexLogic>()) {
-      Get.find<IndexLogic>().updateToken(data['accessToken']?.toString());
+      indexLogic.updateToken(data['accessToken']?.toString());
     }
     EasyLoading.showToast('登录成功');
     Get.previousRoute.isEmpty
