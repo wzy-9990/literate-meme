@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_tem/components/BaseActionSheet/index.dart';
+import 'package:flutter_tem/components/BasePicker/index.dart';
 import 'package:flutter_tem/components/BaseAppBar/index.dart';
 import 'package:flutter_tem/components/BaseButton/index.dart';
 import 'package:flutter_tem/components/BaseCascader/index.dart';
@@ -202,7 +202,7 @@ class HomeView extends StatelessWidget {
                     mode: BaseOperationCellMode.select,
                     value: logic.selected.value,
                     onSelect: () async {
-                      final selected = await showBasePicker(
+                      final selected = await BasePicker.show(
                         context,
                         title: '请选择方向',
                         options: directionTypeEnum.allItems,
