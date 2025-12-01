@@ -28,9 +28,6 @@ class LoginLogic extends GetxController {
     }
     EasyLoading.showToast('登录成功');
 
-    // 等待 Toast 显示完成再跳转（推荐 1.5-2 秒）
-    await Future.delayed(const Duration(milliseconds: 1500));
-
     Get.previousRoute.isEmpty
         ? Get.offAllNamed(AppRoutes.index)
         : Get.back(result: {'login': true, 'msg': '用户已完成登录'});
