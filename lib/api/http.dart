@@ -17,6 +17,7 @@ class ApiService {
   static String? _proxyHost;
   static int? _proxyPort;
   static bool _showAuthDialog = true;
+  static Completer<bool>? _authDialogCompleter;
 
   // -------------------- 初始化配置 --------------------
   static Future<void> init() async {
@@ -103,85 +104,29 @@ class ApiService {
 
           if (response.statusCode == 200) {
             final data = response.data;
-
-            final allowAuthDialog =
-                response.requestOptions.extra['showAuthDialog'] ??
-                    _showAuthDialog;
             final code = ApiConfig.getCode(data);
 
             if (code == ApiConfig.unauthorizedCode) {
               // 只关闭 loading 类型的提示，不关闭 toast/success
               BaseToastLoading.dismissIfLoading();
+              final retryResponse = await _retryRequestIfPossible(
+                response.requestOptions,
+                allowAuthDialog: _shouldShowAuthDialog(response.requestOptions),
+              );
 
-              if (allowAuthDialog == true) {
-                debugPrint('🔐 API拦截器: 检测到401，弹出登录对话框');
-                final loginResult = await BaseAuthDialog.showAuthDialog();
-                debugPrint('🔐 API拦截器: 登录对话框关闭，返回结果: $loginResult');
-
-                final msg = ApiConfig.getMessage(data) ?? '接口返回异常';
-
-                if (loginResult != null && loginResult['login'] == true) {
-                  debugPrint('✅ API拦截器: 登录成功，准备重发请求');
-                  // 登录成功，重发请求
-                  final opts = response.requestOptions;
-                  final newToken = await Storage.getString(StorageKeys.token);
-                  debugPrint('🔑 API拦截器: 获取新token: ${newToken?.substring(0, 10)}...');
-
-                  // 对于包含FormData的请求，我们不自动重试，因为FormData不能重复使用
-                  if (opts.data is FormData) {
-                    // 如果是FormData请求（如文件上传），我们返回一个特殊的错误
-                    // 让调用方知道需要重新准备FormData并重新发起请求
-                    return handler.reject(
-                      DioException(
-                        requestOptions: opts,
-                        error:
-                            'Login required for FormData request, please re-initiate the upload',
-                        type: DioExceptionType.badResponse,
-                      ),
-                    );
-                  }
-
-                  // 非FormData请求可以安全重试
-                  final cloneOpts = opts.copyWith(
-                    headers: {
-                      ...opts.headers,
-                      if (newToken != null && newToken.isNotEmpty)
-                        'accesstoken': newToken,
-                    },
-                  );
-
-                  debugPrint('🔄 API拦截器: 开始重发请求: ${opts.uri}');
-                  try {
-                    final newResponse = await _dio.fetch(cloneOpts);
-                    debugPrint('✅ API拦截器: 重发请求成功');
-                    return handler.resolve(newResponse);
-                  } on DioException catch (e) {
-                    debugPrint('❌ API拦截器: 重发请求失败: ${e.message}');
-                    return handler.reject(e);
-                  }
-                } else {
-                  debugPrint('⚠️ API拦截器: 登录失败或用户取消，不重发请求');
-                }
-
-                return handler.reject(
-                  DioException(
-                    requestOptions: response.requestOptions,
-                    response: response,
-                    error: '接口返回错误: $msg',
-                    type: DioExceptionType.badResponse,
-                  ),
-                );
-              } else {
-                // 调用方不需要弹窗，直接抛出未授权错误，不提示
-                return handler.reject(
-                  DioException(
-                    requestOptions: response.requestOptions,
-                    response: response,
-                    error: 'unauthorized',
-                    type: DioExceptionType.badResponse,
-                  ),
-                );
+              if (retryResponse != null) {
+                return handler.resolve(retryResponse);
               }
+
+              final msg = ApiConfig.getMessage(data) ?? '接口返回异常';
+              return handler.reject(
+                DioException(
+                  requestOptions: response.requestOptions,
+                  response: response,
+                  error: '接口返回错误: $msg',
+                  type: DioExceptionType.badResponse,
+                ),
+              );
             }
 
             if (data is Map<String, dynamic> && !ApiConfig.isSuccess(data)) {
@@ -203,7 +148,13 @@ class ApiService {
           if (response.statusCode == ApiConfig.unauthorizedCode) {
             // 只关闭 loading 类型的提示，不关闭 toast/success
             BaseToastLoading.dismissIfLoading();
-            await BaseAuthDialog.showAuthDialog();
+            final retryResponse = await _retryRequestIfPossible(
+              response.requestOptions,
+              allowAuthDialog: _shouldShowAuthDialog(response.requestOptions),
+            );
+            if (retryResponse != null) {
+              return handler.resolve(retryResponse);
+            }
           } else {
             BaseToastLoading.showToast('请求异常：${response.statusCode}');
           }
@@ -217,7 +168,7 @@ class ApiService {
             ),
           );
         },
-        onError: (DioException e, handler) {
+        onError: (DioException e, handler) async {
           // 自动关闭 loading（如果开启了自动 loading）
           final autoLoading = e.requestOptions.extra['autoLoading'] ?? false;
           if (autoLoading == true) {
@@ -225,7 +176,14 @@ class ApiService {
           }
 
           if (e.response?.statusCode == ApiConfig.unauthorizedCode) {
-            return handler.next(e);
+            BaseToastLoading.dismissIfLoading();
+            final retryResponse = await _retryRequestIfPossible(
+              e.requestOptions,
+              allowAuthDialog: _shouldShowAuthDialog(e.requestOptions),
+            );
+            if (retryResponse != null) {
+              return handler.resolve(retryResponse);
+            }
           }
           BaseToastLoading.showToast('网络异常，请检查网络连接');
           handler.next(e);
@@ -355,4 +313,110 @@ class ApiService {
 
 class Api {
   static final ApiService instance = ApiService();
+}
+
+extension _ApiServiceRetryHelpers on ApiService {
+  bool _requestContainsFormData(RequestOptions options) =>
+      options.data is FormData;
+
+  bool _shouldShowAuthDialog(RequestOptions options) {
+    final extraValue = options.extra['showAuthDialog'];
+    if (extraValue is bool) {
+      return extraValue;
+    }
+    return ApiService._showAuthDialog;
+  }
+
+  Future<Response<dynamic>?> _retryRequestIfPossible(
+    RequestOptions options, {
+    required bool allowAuthDialog,
+  }) async {
+    if (!allowAuthDialog) {
+      debugPrint('⚠️ API拦截器: 调用方禁用登录弹窗，跳过重发');
+      return null;
+    }
+    if (_requestContainsFormData(options)) {
+      debugPrint('⚠️ API拦截器: FormData 请求无法自动重发: ${options.uri}');
+      return null;
+    }
+
+    final authorized = await _ensureAuthenticated();
+    if (!authorized) {
+      debugPrint('⚠️ API拦截器: 登录未完成，放弃重发 ${options.uri}');
+      return null;
+    }
+
+    final clonedOptions = await _cloneRequestOptionsWithLatestToken(options);
+
+    debugPrint('🔄 API拦截器: 开始重发请求: ${options.uri}');
+    try {
+      final newResponse = await _dio.fetch(clonedOptions);
+      debugPrint('✅ API拦截器: 重发请求成功: ${options.uri}');
+      return newResponse;
+    } on DioException catch (e) {
+      debugPrint('❌ API拦截器: 重发请求失败: ${e.message}');
+      rethrow;
+    }
+  }
+
+  Future<RequestOptions> _cloneRequestOptionsWithLatestToken(
+      RequestOptions options) async {
+    final updatedHeaders = Map<String, dynamic>.from(options.headers);
+    final newToken = await Storage.getString(StorageKeys.token);
+    if (newToken != null && newToken.isNotEmpty) {
+      updatedHeaders['accesstoken'] = newToken;
+    }
+
+    final clonedExtra = Map<String, dynamic>.from(options.extra);
+    // 避免重复弹出 loading
+    clonedExtra['autoLoading'] = false;
+
+    return options.copyWith(
+      data: _cloneRequestData(options.data),
+      headers: updatedHeaders,
+      extra: clonedExtra,
+    );
+  }
+
+  dynamic _cloneRequestData(dynamic data) {
+    if (data is Map) {
+      return Map.of(data);
+    }
+    if (data is List) {
+      return List.of(data);
+    }
+    return data;
+  }
+
+  Future<bool> _ensureAuthenticated() async {
+    if (ApiService._authDialogCompleter != null) {
+      debugPrint('⏳ API拦截器: 等待现有登录流程完成');
+      return ApiService._authDialogCompleter!.future;
+    }
+
+    final completer = Completer<bool>();
+    ApiService._authDialogCompleter = completer;
+
+    try {
+      BaseToastLoading.dismissIfLoading();
+      debugPrint('🔐 API拦截器: 弹出登录对话框');
+      final loginResult = await BaseAuthDialog.showAuthDialog();
+      final success = loginResult != null && loginResult['login'] == true;
+      completer.complete(success);
+      if (success) {
+        final newToken = await Storage.getString(StorageKeys.token);
+        debugPrint(
+            '🔑 API拦截器: 登录成功，刷新 token: ${newToken?.substring(0, 10)}...');
+      } else {
+        debugPrint('⚠️ API拦截器: 登录失败或取消');
+      }
+      return success;
+    } catch (e) {
+      debugPrint('⚠️ API拦截器: 登录流程异常: $e');
+      completer.complete(false);
+      return false;
+    } finally {
+      ApiService._authDialogCompleter = null;
+    }
+  }
 }
