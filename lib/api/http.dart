@@ -8,6 +8,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_tem/components/BaseAuthDialog/index.dart';
 import 'package:flutter_tem/config/api/index.dart';
+import 'package:flutter_tem/utils/helpers/loading_manager.dart';
 import 'package:flutter_tem/utils/storage/index.dart';
 
 class ApiService {
@@ -75,6 +76,13 @@ class ApiService {
             options.headers['accesstoken'] = token;
           }
 
+          // 自动 loading 管理（通过 extra 参数控制）
+          final autoLoading = options.extra['autoLoading'] ?? false;
+          if (autoLoading == true) {
+            final loadingText = options.extra['loadingText'] as String?;
+            LoadingManager.show(status: loadingText);
+          }
+
           debugPrint('⏩ 请求接口: ${options.uri}');
           debugPrint('⏩ 请求方式: ${options.method}');
           debugPrint('⏩ 请求头: ${options.headers}');
@@ -83,6 +91,12 @@ class ApiService {
           handler.next(options);
         },
         onResponse: (response, handler) async {
+          // 自动关闭 loading（如果开启了自动 loading）
+          final autoLoading = response.requestOptions.extra['autoLoading'] ?? false;
+          if (autoLoading == true) {
+            LoadingManager.dismiss();
+          }
+
           debugPrint('✅ 响应接口: ${response.requestOptions.uri}');
           debugPrint('✅ 响应状态: ${response.statusCode}');
           debugPrint('✅ 响应数据: ${response.data}');
@@ -96,8 +110,9 @@ class ApiService {
             final code = ApiConfig.getCode(data);
 
             if (code == ApiConfig.unauthorizedCode) {
-              // ⚠️ 不在拦截器中调用 dismiss，避免关闭业务层的 toast/success
-              // 业务层应该使用 try-finally 自行管理 loading 状态
+              // 只关闭 loading 类型的提示，不关闭 toast/success
+              LoadingManager.dismissIfLoading();
+
               if (allowAuthDialog == true) {
                 final loginResult = await BaseAuthDialog.showAuthDialog();
 
@@ -177,10 +192,11 @@ class ApiService {
           }
 
           if (response.statusCode == ApiConfig.unauthorizedCode) {
-            // ⚠️ 不在拦截器中调用 dismiss，避免关闭业务层的 toast/success
+            // 只关闭 loading 类型的提示，不关闭 toast/success
+            LoadingManager.dismissIfLoading();
             await BaseAuthDialog.showAuthDialog();
           } else {
-            EasyLoading.showToast('请求异常：${response.statusCode}');
+            LoadingManager.showToast('请求异常：${response.statusCode}');
           }
 
           return handler.reject(
@@ -193,10 +209,16 @@ class ApiService {
           );
         },
         onError: (DioException e, handler) {
+          // 自动关闭 loading（如果开启了自动 loading）
+          final autoLoading = e.requestOptions.extra['autoLoading'] ?? false;
+          if (autoLoading == true) {
+            LoadingManager.dismiss();
+          }
+
           if (e.response?.statusCode == ApiConfig.unauthorizedCode) {
             return handler.next(e);
           }
-          EasyLoading.showToast('网络异常，请检查网络连接');
+          LoadingManager.showToast('网络异常，请检查网络连接');
           handler.next(e);
         },
       ),
@@ -208,13 +230,19 @@ class ApiService {
     String path, {
     Map<String, dynamic>? params,
     bool? showAuthDialog,
+    bool autoLoading = false,
+    String? loadingText,
   }) async {
     try {
       final response = await _dio.get(
         path,
         queryParameters: params,
         options: Options(
-          extra: {'showAuthDialog': showAuthDialog},
+          extra: {
+            'showAuthDialog': showAuthDialog,
+            'autoLoading': autoLoading,
+            'loadingText': loadingText,
+          },
         ),
       );
       return ApiConfig.getData(response.data);
@@ -233,12 +261,18 @@ class ApiService {
     Duration? sendTimeout,
     Duration? receiveTimeout,
     bool? showAuthDialog,
+    bool autoLoading = false,
+    String? loadingText,
   }) async {
     try {
       final Options options = Options(
         sendTimeout: sendTimeout ?? const Duration(seconds: 5),
         receiveTimeout: receiveTimeout ?? const Duration(seconds: 3),
-        extra: {'showAuthDialog': showAuthDialog},
+        extra: {
+          'showAuthDialog': showAuthDialog,
+          'autoLoading': autoLoading,
+          'loadingText': loadingText,
+        },
       );
 
       Response response;
@@ -252,7 +286,11 @@ class ApiService {
           options: Options(
             sendTimeout: sendTimeout ?? const Duration(seconds: 60),
             receiveTimeout: receiveTimeout ?? const Duration(seconds: 60),
-            extra: {'showAuthDialog': showAuthDialog},
+            extra: {
+              'showAuthDialog': showAuthDialog,
+              'autoLoading': autoLoading,
+              'loadingText': loadingText,
+            },
           ),
         );
       } else {

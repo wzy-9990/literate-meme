@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_tem/api/modules/my.dart';
+import 'package:flutter_tem/utils/helpers/loading_manager.dart';
 import 'package:flutter_tem/utils/logic/pagination/base_pagination_logic.dart';
 import 'package:get/get.dart';
 
@@ -53,7 +53,7 @@ class MessageLogic extends BasePaginationLogic<Map<String, dynamic>> {
     tabValue.value = value;
     _currentParams = {'userName': tabValue.value};
 
-    EasyLoading.show();
+    LoadingManager.show();
     onRefresh();
   }
 
@@ -63,18 +63,15 @@ class MessageLogic extends BasePaginationLogic<Map<String, dynamic>> {
     int pageSize,
     Map<String, dynamic>? searchParams,
   ) async {
-    try {
-      final params = {
-        'pageNo': page,
-        'pageSize': pageSize,
-        'organizationId': '0',
-        ...?_currentParams,
-      };
-      final response = await listPageUserByOrganizationIdApi222(params);
-      return PaginationResponse.fromMap(response);
-    } finally {
-      // 确保无论请求成功或失败都关闭 loading
-      EasyLoading.dismiss();
-    }
+    // 使用 LoadingManager 自动管理，无需 try-finally
+    final params = {
+      'pageNo': page,
+      'pageSize': pageSize,
+      'organizationId': '0',
+      ...?_currentParams,
+    };
+    final response = await listPageUserByOrganizationIdApi222(params);
+    LoadingManager.dismiss(); // 手动关闭 changeTab 中显示的 loading
+    return PaginationResponse.fromMap(response);
   }
 }
