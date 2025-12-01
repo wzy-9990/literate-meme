@@ -20,7 +20,6 @@ class MyLogic extends BaseLogic {
   @override
   Future<void> onLoad() async {
     debugPrint('📍 我的页 - onLoad: 数据加载');
-    isLoading.value = true;
     await indexLogic.loadUserInfo();
     isLoading.value = false;
     await getData();
