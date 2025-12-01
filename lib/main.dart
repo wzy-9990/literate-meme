@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
         // 主题
         theme: AppTheme.lightTheme,
         // darkTheme: AppTheme.darkTheme, // 如需支持深色模式，取消此注释
-        // themeMode: ThemeMode.system, // 跟随系统主题
+        // themeMode: ThemeMode.system, // 跟随系统主题1
         builder: (context, child) {
           return BaseUnfocusOnTap(
             child: BaseDoubleBackExitWrapper(
