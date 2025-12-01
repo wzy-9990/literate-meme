@@ -63,14 +63,18 @@ class MessageLogic extends BasePaginationLogic<Map<String, dynamic>> {
     int pageSize,
     Map<String, dynamic>? searchParams,
   ) async {
-    final params = {
-      'pageNo': page,
-      'pageSize': pageSize,
-      'organizationId': '0',
-      ...?_currentParams,
-    };
-    final response = await listPageUserByOrganizationIdApi222(params);
-    EasyLoading.dismiss();
-    return PaginationResponse.fromMap(response);
+    try {
+      final params = {
+        'pageNo': page,
+        'pageSize': pageSize,
+        'organizationId': '0',
+        ...?_currentParams,
+      };
+      final response = await listPageUserByOrganizationIdApi222(params);
+      return PaginationResponse.fromMap(response);
+    } finally {
+      // 确保无论请求成功或失败都关闭 loading
+      EasyLoading.dismiss();
+    }
   }
 }

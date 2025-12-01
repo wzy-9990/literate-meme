@@ -96,7 +96,8 @@ class ApiService {
             final code = ApiConfig.getCode(data);
 
             if (code == ApiConfig.unauthorizedCode) {
-              EasyLoading.dismiss();
+              // ⚠️ 不在拦截器中调用 dismiss，避免关闭业务层的 toast/success
+              // 业务层应该使用 try-finally 自行管理 loading 状态
               if (allowAuthDialog == true) {
                 final loginResult = await BaseAuthDialog.showAuthDialog();
 
@@ -176,7 +177,7 @@ class ApiService {
           }
 
           if (response.statusCode == ApiConfig.unauthorizedCode) {
-            EasyLoading.dismiss();
+            // ⚠️ 不在拦截器中调用 dismiss，避免关闭业务层的 toast/success
             await BaseAuthDialog.showAuthDialog();
           } else {
             EasyLoading.showToast('请求异常：${response.statusCode}');
