@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tem/components/BaseToastLoading/index.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_tem/components/BaseAppBar/index.dart';
-import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_tem/components/BaseInkWell/index.dart';
 import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_tem/config/styles/index.dart';
-import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 
 /// 水波纹组件示例页面
 class InkWellExampleView extends StatelessWidget {
@@ -127,7 +122,8 @@ class InkWellExampleView extends StatelessWidget {
                   child: BaseInkWell(
                     onTap: () => BaseToastLoading.showToast('成功色水波纹'),
                     borderRadius: AppRadius.baseRadius,
-                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: AppSpacing.md),
                     backgroundColor: AppColors.success,
                     splashColor: Colors.white.withOpacity(0.3),
                     child: const Center(
@@ -146,7 +142,8 @@ class InkWellExampleView extends StatelessWidget {
                   child: BaseInkWell(
                     onTap: () => BaseToastLoading.showToast('警告色水波纹'),
                     borderRadius: AppRadius.baseRadius,
-                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: AppSpacing.md),
                     backgroundColor: AppColors.warning,
                     splashColor: Colors.white.withOpacity(0.3),
                     child: const Center(

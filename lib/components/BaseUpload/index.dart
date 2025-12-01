@@ -1,36 +1,20 @@
 import 'dart:io';
-import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 
 import 'package:dio/dio.dart';
-import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tem/components/BaseToastLoading/index.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_tem/api/http.dart';
-import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_tem/components/BaseImage/preview.dart';
-import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_tem/components/BaseInkWell/index.dart';
 import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_tem/config/api/index.dart';
-import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_tem/utils/permission/index.dart';
-import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:mime/mime.dart';
-import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:path/path.dart' as path;
-import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 
 /// 上传文件信息
 class BaseUploadFileInfo {

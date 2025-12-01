@@ -9,9 +9,10 @@ pre-commit:
     fix:
       glob: "*.dart"
       run: |
-        echo "自动修复常见 lint（导入排序、单行控制体、冗余 const、局部变量 final 等）..."
+        echo "自动修复常见 lint（导入排序、移除未使用导入、单行控制体、冗余 const、局部变量 final 等）..."
         dart fix --apply \
           --code=directives_ordering \
+          --code=unused_import \
           --code=always_put_required_named_parameters_first \
           --code=always_put_control_body_on_new_line \
           --code=unnecessary_const \

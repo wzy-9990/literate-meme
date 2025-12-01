@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tem/components/BaseToastLoading/index.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 
 // 双击退出
 class BaseDoubleBackExitWrapper extends StatefulWidget {

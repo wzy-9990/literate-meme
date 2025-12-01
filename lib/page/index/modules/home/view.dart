@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_tem/components/BasePicker/index.dart';
 import 'package:flutter_tem/components/BaseAppBar/index.dart';
 import 'package:flutter_tem/components/BaseButton/index.dart';
 import 'package:flutter_tem/components/BaseCascader/index.dart';
@@ -8,6 +7,7 @@ import 'package:flutter_tem/components/BaseCheckbox/index.dart';
 import 'package:flutter_tem/components/BaseCupertinoAlertDialog/index.dart';
 import 'package:flutter_tem/components/BaseDatePicker/index.dart';
 import 'package:flutter_tem/components/BaseOperationCell/index.dart';
+import 'package:flutter_tem/components/BasePicker/index.dart';
 import 'package:flutter_tem/components/BaseRadio/index.dart';
 import 'package:flutter_tem/components/BaseSkeleton/index.dart';
 import 'package:flutter_tem/components/BaseTab/index.dart';
