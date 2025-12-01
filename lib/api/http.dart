@@ -114,14 +114,18 @@ class ApiService {
               BaseToastLoading.dismissIfLoading();
 
               if (allowAuthDialog == true) {
+                debugPrint('🔐 API拦截器: 检测到401，弹出登录对话框');
                 final loginResult = await BaseAuthDialog.showAuthDialog();
+                debugPrint('🔐 API拦截器: 登录对话框关闭，返回结果: $loginResult');
 
                 final msg = ApiConfig.getMessage(data) ?? '接口返回异常';
 
                 if (loginResult != null && loginResult['login'] == true) {
+                  debugPrint('✅ API拦截器: 登录成功，准备重发请求');
                   // 登录成功，重发请求
                   final opts = response.requestOptions;
                   final newToken = await Storage.getString(StorageKeys.token);
+                  debugPrint('🔑 API拦截器: 获取新token: ${newToken?.substring(0, 10)}...');
 
                   // 对于包含FormData的请求，我们不自动重试，因为FormData不能重复使用
                   if (opts.data is FormData) {
@@ -146,12 +150,17 @@ class ApiService {
                     },
                   );
 
+                  debugPrint('🔄 API拦截器: 开始重发请求: ${opts.uri}');
                   try {
                     final newResponse = await _dio.fetch(cloneOpts);
+                    debugPrint('✅ API拦截器: 重发请求成功');
                     return handler.resolve(newResponse);
                   } on DioException catch (e) {
+                    debugPrint('❌ API拦截器: 重发请求失败: ${e.message}');
                     return handler.reject(e);
                   }
+                } else {
+                  debugPrint('⚠️ API拦截器: 登录失败或用户取消，不重发请求');
                 }
 
                 return handler.reject(
