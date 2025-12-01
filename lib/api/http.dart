@@ -5,7 +5,6 @@ import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_tem/components/BaseAuthDialog/index.dart';
 import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_tem/config/api/index.dart';
@@ -92,7 +91,8 @@ class ApiService {
         },
         onResponse: (response, handler) async {
           // 自动关闭 loading（如果开启了自动 loading）
-          final autoLoading = response.requestOptions.extra['autoLoading'] ?? false;
+          final autoLoading =
+              response.requestOptions.extra['autoLoading'] ?? false;
           if (autoLoading == true) {
             BaseToastLoading.dismiss();
           }
