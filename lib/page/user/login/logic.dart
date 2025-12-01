@@ -26,7 +26,11 @@ class LoginLogic extends GetxController {
     if (Get.isRegistered<IndexLogic>()) {
       indexLogic.updateToken(data['accessToken']?.toString());
     }
+
     BaseToastLoading.showToast('登录成功');
+
+    // 等待 Toast 显示完成再跳转/关闭
+    await Future.delayed(const Duration(milliseconds: 1500));
 
     Get.previousRoute.isEmpty
         ? Get.offAllNamed(AppRoutes.index)
