@@ -83,10 +83,10 @@ class ApiService {
             BaseToastLoading.show(status: loadingText);
           }
 
-          debugPrint('⏩ 请求接口: ${options.uri}');
-          debugPrint('⏩ 请求方式: ${options.method}');
-          debugPrint('⏩ 请求头: ${options.headers}');
-          debugPrint('⏩ 请求参数: ${options.data ?? options.queryParameters}');
+          debugPrint('⏩ 接口-请求路径: ${options.uri}');
+          debugPrint('⏩ 接口-请求方式: ${options.method}');
+          debugPrint('⏩ 接口-请求头: ${options.headers}');
+          debugPrint('⏩ 接口-请求参数: ${options.data ?? options.queryParameters}');
 
           handler.next(options);
         },
@@ -98,9 +98,8 @@ class ApiService {
             BaseToastLoading.dismiss();
           }
 
-          debugPrint('✅ 响应接口: ${response.requestOptions.uri}');
-          debugPrint('✅ 响应状态: ${response.statusCode}');
-          debugPrint('✅ 响应数据: ${response.data}');
+          debugPrint('✅ 接口-响应状态: ${response.statusCode}');
+          debugPrint('✅ 接口-响应数据: ${response.data}');
 
           if (response.statusCode == 200) {
             final data = response.data;
