@@ -10,6 +10,10 @@ class MessageLogic extends BasePaginationLogic<Map<String, dynamic>> {
   bool _initialized = false;
   Map<String, dynamic>? _currentParams;
 
+  /// 登录成功后自动刷新消息列表（兼容弹窗登录和页面跳转登录）
+  @override
+  bool get enableAuthRefresh => true;
+
   @override
   bool get clearOnLogout => true;
 
@@ -48,15 +52,6 @@ class MessageLogic extends BasePaginationLogic<Map<String, dynamic>> {
     debugPrint('🙈 消息页 - onHide: 页面隐藏');
   }
 
-  /// 切换 Tab，并根据 Tab 值过滤数据
-  void changeTab(String value, {String? type}) {
-    tabValue.value = value;
-    _currentParams = {'userName': tabValue.value};
-
-    BaseToastLoading.show();
-    onRefresh();
-  }
-
   @override
   Future<PaginationResponse<Map<String, dynamic>>> fetchData(
     int page,
@@ -73,5 +68,14 @@ class MessageLogic extends BasePaginationLogic<Map<String, dynamic>> {
     final response = await listPageUserByOrganizationIdApi222(params);
     BaseToastLoading.dismiss(); // 手动关闭 changeTab 中显示的 loading
     return PaginationResponse.fromMap(response);
+  }
+
+  /// 切换 Tab，并根据 Tab 值过滤数据
+  void changeTab(String value, {String? type}) {
+    tabValue.value = value;
+    _currentParams = {'userName': tabValue.value};
+
+    BaseToastLoading.show();
+    onRefresh();
   }
 }
