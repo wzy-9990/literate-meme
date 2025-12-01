@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_tem/components/BaseAppBar/index.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_tem/components/BaseUpload/index.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 
 /// 上传组件示例页面
 class UploadExampleView extends StatefulWidget {
@@ -98,7 +102,7 @@ class _UploadExampleViewState extends State<UploadExampleView> {
               displayMode: 'list',
               customUpload: _mockUpload,
               onUploadSuccess: (item) {
-                EasyLoading.showSuccess('文档上传成功');
+                BaseToastLoading.showSuccess('文档上传成功');
               },
             ),
 

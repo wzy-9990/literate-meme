@@ -1,10 +1,17 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_tem/api/modules/common.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_tem/components/BaseEmpty/index.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_tem/components/BaseLoading/index.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 
 /// 级联节点
 class BaseCascaderNode {
@@ -138,7 +145,7 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
             ..add(node.id);
         } else {
           if (_selectedIds.length >= widget.maxSelectCount) {
-            EasyLoading.showToast(
+            BaseToastLoading.showToast(
               '最多选择${widget.maxSelectCount}项',
             );
             return;
@@ -491,7 +498,7 @@ class _BaseCascaderPickerState extends State<BaseCascaderPicker> {
                     onPressed: () {
                       final selected = _collectSelected();
                       if (selected.isEmpty) {
-                        EasyLoading.showToast('请至少选择一个地区');
+                        BaseToastLoading.showToast('请至少选择一个地区');
                         return;
                       }
                       final payload = _collectSelectedObjects();

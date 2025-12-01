@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_tem/api/modules/user.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_tem/page/index/logic.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_tem/routers/app_routes.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_tem/utils/storage/index.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:get/get.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 
 class LoginLogic extends GetxController {
   final indexLogic = Get.find<IndexLogic>();
@@ -26,7 +33,7 @@ class LoginLogic extends GetxController {
     if (Get.isRegistered<IndexLogic>()) {
       indexLogic.updateToken(data['accessToken']?.toString());
     }
-    EasyLoading.showToast('登录成功');
+    BaseToastLoading.showToast('登录成功');
 
     Get.previousRoute.isEmpty
         ? Get.offAllNamed(AppRoutes.index)

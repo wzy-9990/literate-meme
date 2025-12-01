@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_tem/page/index/logic.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_tem/routers/app_routes.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_tem/utils/storage/index.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:get/get.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 
 /// 开发者选项组件
 ///
@@ -47,7 +55,7 @@ class BaseDeveloperOptions {
     // 显示剩余点击次数提示
     if (_clickCount < _maxClickCount) {
       final remaining = _maxClickCount - _clickCount;
-      EasyLoading.showToast('再点击 $remaining 次进入开发者选项');
+      BaseToastLoading.showToast('再点击 $remaining 次进入开发者选项');
     } else {
       // 达到次数，重置计数器并显示开发者选项
       _clickCount = 0;
@@ -288,7 +296,7 @@ class BaseDeveloperOptions {
                 onPressed: () {
                   final newApiUrl = apiUrlController.text.trim();
                   if (newApiUrl.isEmpty) {
-                    EasyLoading.showToast('请输入 API 地址');
+                    BaseToastLoading.showToast('请输入 API 地址');
                     return;
                   }
 
@@ -297,12 +305,12 @@ class BaseDeveloperOptions {
                     final proxyHost = proxyHostController.text.trim();
                     final proxyPort = proxyPortController.text.trim();
                     if (proxyHost.isEmpty || proxyPort.isEmpty) {
-                      EasyLoading.showToast('请完整填写代理配置');
+                      BaseToastLoading.showToast('请完整填写代理配置');
                       return;
                     }
                     final port = int.tryParse(proxyPort);
                     if (port == null || port < 1 || port > 65535) {
-                      EasyLoading.showToast('端口号必须在 1-65535 之间');
+                      BaseToastLoading.showToast('端口号必须在 1-65535 之间');
                       return;
                     }
                   }
@@ -372,7 +380,7 @@ class BaseDeveloperOptions {
       await Storage.remove(StorageKeys.proxyPort);
     }
 
-    EasyLoading.showToast('配置已保存，正在退出登录...');
+    BaseToastLoading.showToast('配置已保存，正在退出登录...');
 
     // 延迟退出登录，让用户看到提示
     Future.delayed(const Duration(seconds: 1), () async {
@@ -397,7 +405,7 @@ class BaseDeveloperOptions {
     await Storage.remove(StorageKeys.proxyHost);
     await Storage.remove(StorageKeys.proxyPort);
 
-    EasyLoading.showToast('已恢复默认配置，正在退出登录...');
+    BaseToastLoading.showToast('已恢复默认配置，正在退出登录...');
 
     Future.delayed(const Duration(seconds: 1), () async {
       await Storage.remove(StorageKeys.token);

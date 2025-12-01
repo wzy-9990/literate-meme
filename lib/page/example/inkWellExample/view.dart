@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_tem/components/BaseAppBar/index.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_tem/components/BaseInkWell/index.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_tem/config/styles/index.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 
 /// 水波纹组件示例页面
 class InkWellExampleView extends StatelessWidget {
@@ -28,7 +33,7 @@ class InkWellExampleView extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.md),
             BaseInkWell(
-              onTap: () => EasyLoading.showToast('基础水波纹点击'),
+              onTap: () => BaseToastLoading.showToast('基础水波纹点击'),
               padding: const EdgeInsets.all(AppSpacing.base),
               backgroundColor: AppColors.surface,
               child: const Row(
@@ -51,7 +56,7 @@ class InkWellExampleView extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.md),
             BaseInkWell(
-              onTap: () => EasyLoading.showToast('圆角水波纹点击'),
+              onTap: () => BaseToastLoading.showToast('圆角水波纹点击'),
               borderRadius: AppRadius.baseRadius,
               padding: const EdgeInsets.all(AppSpacing.base),
               backgroundColor: AppColors.primaryOpacity10,
@@ -77,7 +82,7 @@ class InkWellExampleView extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.md),
             BaseInkWell.card(
-              onTap: () => EasyLoading.showToast('卡片点击'),
+              onTap: () => BaseToastLoading.showToast('卡片点击'),
               padding: const EdgeInsets.all(AppSpacing.base),
               backgroundColor: AppColors.surface,
               child: const Column(
@@ -120,7 +125,7 @@ class InkWellExampleView extends StatelessWidget {
               children: [
                 Expanded(
                   child: BaseInkWell(
-                    onTap: () => EasyLoading.showToast('成功色水波纹'),
+                    onTap: () => BaseToastLoading.showToast('成功色水波纹'),
                     borderRadius: AppRadius.baseRadius,
                     padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
                     backgroundColor: AppColors.success,
@@ -139,7 +144,7 @@ class InkWellExampleView extends StatelessWidget {
                 const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: BaseInkWell(
-                    onTap: () => EasyLoading.showToast('警告色水波纹'),
+                    onTap: () => BaseToastLoading.showToast('警告色水波纹'),
                     borderRadius: AppRadius.baseRadius,
                     padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
                     backgroundColor: AppColors.warning,
@@ -169,7 +174,7 @@ class InkWellExampleView extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.md),
             BaseInkWell(
-              onTap: () => EasyLoading.showToast('无水波纹点击'),
+              onTap: () => BaseToastLoading.showToast('无水波纹点击'),
               enableRipple: false,
               borderRadius: AppRadius.baseRadius,
               padding: const EdgeInsets.all(AppSpacing.base),
@@ -195,22 +200,22 @@ class InkWellExampleView extends StatelessWidget {
                 _buildCircleButton(
                   icon: Icons.favorite,
                   color: AppColors.error,
-                  onTap: () => EasyLoading.showToast('点赞'),
+                  onTap: () => BaseToastLoading.showToast('点赞'),
                 ),
                 _buildCircleButton(
                   icon: Icons.share,
                   color: AppColors.info,
-                  onTap: () => EasyLoading.showToast('分享'),
+                  onTap: () => BaseToastLoading.showToast('分享'),
                 ),
                 _buildCircleButton(
                   icon: Icons.download,
                   color: AppColors.success,
-                  onTap: () => EasyLoading.showToast('下载'),
+                  onTap: () => BaseToastLoading.showToast('下载'),
                 ),
                 _buildCircleButton(
                   icon: Icons.more_horiz,
                   color: AppColors.textSecondary,
-                  onTap: () => EasyLoading.showToast('更多'),
+                  onTap: () => BaseToastLoading.showToast('更多'),
                 ),
               ],
             ),
@@ -236,21 +241,21 @@ class InkWellExampleView extends StatelessWidget {
                     icon: Icons.person,
                     title: '个人信息',
                     subtitle: '编辑你的个人资料',
-                    onTap: () => EasyLoading.showToast('个人信息'),
+                    onTap: () => BaseToastLoading.showToast('个人信息'),
                   ),
                   const Divider(height: 1),
                   _buildListItem(
                     icon: Icons.settings,
                     title: '设置',
                     subtitle: '应用设置和偏好',
-                    onTap: () => EasyLoading.showToast('设置'),
+                    onTap: () => BaseToastLoading.showToast('设置'),
                   ),
                   const Divider(height: 1),
                   _buildListItem(
                     icon: Icons.help,
                     title: '帮助与反馈',
                     subtitle: '获取帮助或提供反馈',
-                    onTap: () => EasyLoading.showToast('帮助与反馈'),
+                    onTap: () => BaseToastLoading.showToast('帮助与反馈'),
                   ),
                 ],
               ),

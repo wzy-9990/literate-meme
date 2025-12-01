@@ -1,11 +1,18 @@
 import 'dart:io';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'dart:isolate';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'dart:typed_data';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 
 import 'package:dio/dio.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_tem/utils/permission/index.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 
 /// 图片保存工具类
 class ImageSaver {
@@ -56,31 +63,31 @@ class ImageSaver {
     try {
       // 请求相册权限
       if (await PermissionUtil.requestPhotos()) {
-        EasyLoading.show(status: '保存中...');
+        BaseToastLoading.show(status: '保存中...');
 
         final bytes = await bytesProvider();
         final success = await _saveImageToGallery(bytes, fileName);
-        EasyLoading.dismiss();
+        BaseToastLoading.dismiss();
         if (success) {
-          EasyLoading.showSuccess('保存成功');
+          BaseToastLoading.showSuccess('保存成功');
           return true;
         }
-        EasyLoading.showError('保存失败');
+        BaseToastLoading.showError('保存失败');
         return false;
       } else {
-        EasyLoading.dismiss();
+        BaseToastLoading.dismiss();
         return false;
       }
     } on DioException {
-      EasyLoading.dismiss();
-      EasyLoading.showError(downloadFailMessage);
+      BaseToastLoading.dismiss();
+      BaseToastLoading.showError(downloadFailMessage);
       return false;
     } on FileSystemException {
-      EasyLoading.dismiss();
-      EasyLoading.showError(fileReadFailMessage);
+      BaseToastLoading.dismiss();
+      BaseToastLoading.showError(fileReadFailMessage);
       return false;
     } catch (e) {
-      EasyLoading.dismiss();
+      BaseToastLoading.dismiss();
 
       return false;
     }

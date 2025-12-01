@@ -7,8 +7,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_tem/components/BaseAuthDialog/index.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_tem/config/api/index.dart';
-import 'package:flutter_tem/utils/helpers/loading_manager.dart';
 import 'package:flutter_tem/utils/storage/index.dart';
 
 class ApiService {
@@ -80,7 +80,7 @@ class ApiService {
           final autoLoading = options.extra['autoLoading'] ?? false;
           if (autoLoading == true) {
             final loadingText = options.extra['loadingText'] as String?;
-            LoadingManager.show(status: loadingText);
+            BaseToastLoading.show(status: loadingText);
           }
 
           debugPrint('⏩ 请求接口: ${options.uri}');
@@ -94,7 +94,7 @@ class ApiService {
           // 自动关闭 loading（如果开启了自动 loading）
           final autoLoading = response.requestOptions.extra['autoLoading'] ?? false;
           if (autoLoading == true) {
-            LoadingManager.dismiss();
+            BaseToastLoading.dismiss();
           }
 
           debugPrint('✅ 响应接口: ${response.requestOptions.uri}');
@@ -111,7 +111,7 @@ class ApiService {
 
             if (code == ApiConfig.unauthorizedCode) {
               // 只关闭 loading 类型的提示，不关闭 toast/success
-              LoadingManager.dismissIfLoading();
+              BaseToastLoading.dismissIfLoading();
 
               if (allowAuthDialog == true) {
                 final loginResult = await BaseAuthDialog.showAuthDialog();
@@ -177,7 +177,7 @@ class ApiService {
 
             if (data is Map<String, dynamic> && !ApiConfig.isSuccess(data)) {
               final msg = ApiConfig.getMessage(data) ?? '接口返回异常';
-              EasyLoading.showToast(msg);
+              BaseToastLoading.showToast(msg);
               return handler.reject(
                 DioException(
                   requestOptions: response.requestOptions,
@@ -193,10 +193,10 @@ class ApiService {
 
           if (response.statusCode == ApiConfig.unauthorizedCode) {
             // 只关闭 loading 类型的提示，不关闭 toast/success
-            LoadingManager.dismissIfLoading();
+            BaseToastLoading.dismissIfLoading();
             await BaseAuthDialog.showAuthDialog();
           } else {
-            LoadingManager.showToast('请求异常：${response.statusCode}');
+            BaseToastLoading.showToast('请求异常：${response.statusCode}');
           }
 
           return handler.reject(
@@ -212,13 +212,13 @@ class ApiService {
           // 自动关闭 loading（如果开启了自动 loading）
           final autoLoading = e.requestOptions.extra['autoLoading'] ?? false;
           if (autoLoading == true) {
-            LoadingManager.dismiss();
+            BaseToastLoading.dismiss();
           }
 
           if (e.response?.statusCode == ApiConfig.unauthorizedCode) {
             return handler.next(e);
           }
-          LoadingManager.showToast('网络异常，请检查网络连接');
+          BaseToastLoading.showToast('网络异常，请检查网络连接');
           handler.next(e);
         },
       ),

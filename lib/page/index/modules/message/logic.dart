@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tem/api/modules/my.dart';
-import 'package:flutter_tem/utils/helpers/loading_manager.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_tem/utils/logic/pagination/base_pagination_logic.dart';
 import 'package:get/get.dart';
 
@@ -53,7 +53,7 @@ class MessageLogic extends BasePaginationLogic<Map<String, dynamic>> {
     tabValue.value = value;
     _currentParams = {'userName': tabValue.value};
 
-    LoadingManager.show();
+    BaseToastLoading.show();
     onRefresh();
   }
 
@@ -63,7 +63,7 @@ class MessageLogic extends BasePaginationLogic<Map<String, dynamic>> {
     int pageSize,
     Map<String, dynamic>? searchParams,
   ) async {
-    // 使用 LoadingManager 自动管理，无需 try-finally
+    // 使用 BaseToastLoading 自动管理，无需 try-finally
     final params = {
       'pageNo': page,
       'pageSize': pageSize,
@@ -71,7 +71,7 @@ class MessageLogic extends BasePaginationLogic<Map<String, dynamic>> {
       ...?_currentParams,
     };
     final response = await listPageUserByOrganizationIdApi222(params);
-    LoadingManager.dismiss(); // 手动关闭 changeTab 中显示的 loading
+    BaseToastLoading.dismiss(); // 手动关闭 changeTab 中显示的 loading
     return PaginationResponse.fromMap(response);
   }
 }

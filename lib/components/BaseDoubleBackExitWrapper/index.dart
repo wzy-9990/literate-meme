@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_tem/components/BaseToastLoading/index.dart';
 
 // 双击退出
 class BaseDoubleBackExitWrapper extends StatefulWidget {
@@ -23,7 +25,7 @@ class _DoubleBackExitWrapperState extends State<BaseDoubleBackExitWrapper> {
         if (_lastPressedAt == null ||
             now.difference(_lastPressedAt!) > const Duration(seconds: 2)) {
           _lastPressedAt = now;
-          EasyLoading.showToast('再按一次退出应用');
+          BaseToastLoading.showToast('再按一次退出应用');
           return false;
         }
         return true;
